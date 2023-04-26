@@ -1,0 +1,25 @@
+parameters:
+    choice_of_task_name:  [prediction]
+    fuse_representations:
+        representation_files: [/media/DATA2/sinem/multi_modal_rep_ae_multi_col_256.csv,/media/DATA2/sinem/node2vec_d_50_p_0.5_q_0.25_multi_col.csv]
+        min_fold_number:  2
+        representation_names:  [modal_rep_ae,node2vec,bertavg]        
+    prepare_datasets:  
+        positive_sample_data:  [/media/DATA2/sinem/positive.csv]
+        negative_sample_data:  [/media/DATA2/sinem/neg_data.csv]
+        prepared_representation_file:  [/media/DATA2/sinem/multi_modal_rep_ae_multi_col_256.csv] 
+        representation_names:  [modal_rep_ae] 
+    
+    model_training:
+        representation_names:  [modal_rep_ae]
+        scoring_function:  ["f_max"]  
+        prepared_path:  ["/media/DATA2/sinem/code_refactoring/1003_code/holoprotrep/results/modal_rep_ae_binary_data.pickle"]
+        classifier_name:  ["Fully_Connected_Neural_Network"] 
+   
+    prediction:
+        representation_names:  [modal_rep_ae]
+        scoring_func:  [] 
+        prepared_path:  ["/media/DATA/home/sinem/yayin_calismasi/rep_file/rep_dif_ae.csv"]
+        classifier_name:  ['Fully_Connected_Neural_Network']         
+        model_directory:  ["/media/DATA2/sinem/27nisan/1003_code-d94756e62f745c705e0d2bb94d865630890229e8/results/test/modal_rep_ae_Fully_Connected_Neural_Network_binary_classifier.pt"] 
+        
