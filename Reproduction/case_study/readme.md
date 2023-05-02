@@ -1,4 +1,4 @@
-# HoloprotRep: Protein Representation Classification
+# HOPER: Protein Representation Classification
 
 - HoloprotRep aims to construct models for protein function prediction Holoprotrep can concate protein representations in to prepare datasets  for training and testing models
 
