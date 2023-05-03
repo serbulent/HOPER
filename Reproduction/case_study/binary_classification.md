@@ -1,7 +1,7 @@
 
-# HoloprotRep: Protein Representation Binary Classification
+# HOPER: Protein Representation Binary Classification
 
-- HoloprotRep aims to construct models for protein function prediction Holoprotrep can concate protein representations in to prepare datasets  for training and testing models
+- HOPER aims to construct models for protein function prediction HOPER can concate protein representations in to prepare datasets  for training and testing models
 We construct a model consisting of  4 steps that can be used independently or contiguously:
 We compare it with  other methods from the literature.
  1. Fuse_representations:
@@ -9,7 +9,7 @@ We compare it with  other methods from the literature.
  2. Prepare_datasets:
     - Concantation of positive_sample_dataset and negative_sample_dataset for preperation of dataset which have "Entry" and multi columns representation vector and  save pickle format of dataset   
 
- 3. Model_training:
+ 3. Model_training and Test:
     - Training and test for prepared data. Using models are Fully Connected Neural Network,RandomForestClassifier,SVC,KNeighborsClassifier
  6. Model_prediction:
     - Make prediction for binary label

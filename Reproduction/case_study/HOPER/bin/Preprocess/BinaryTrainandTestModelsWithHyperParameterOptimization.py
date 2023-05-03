@@ -49,20 +49,20 @@ import math
 from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_curve, auc
-from HoloProtRepAFPML import binary_evaluate
+import binary_evaluate
 from sklearn.metrics import make_scorer
 from sklearn import metrics
-from HoloProtRepAFPML import binary_pytorch_network
-from HoloProtRepAFPML.binary_pytorch_network import NN
-from HoloProtRepAFPML import binary_prediction
+import binary_pytorch_network
+from binary_pytorch_network import NN
+import binary_prediction
 import torch
 import joblib
 random_state=42
 from sklearn.metrics import make_scorer
-from HoloProtRepAFPML import Kneighbors_Classifier_parameters
-from HoloProtRepAFPML import SVC_Classifier_parameters
-from HoloProtRepAFPML import RandomForest_Classifier_parameters
-from HoloProtRepAFPML import F_max_scoring
+import Kneighbors_Classifier_parameters
+import SVC_Classifier_parameters
+import RandomForest_Classifier_parameters
+import F_max_scoring
 import random
 # if every fold contains at least 2 positive samples return true,otherwise return false
 def check_for_at_least_two_class_sample_exits(y):
@@ -174,8 +174,8 @@ def select_best_model_with_hyperparameter_tuning(
         "Fully_Connected_Neural_ Network",
     ],
 ):
-    import pdb
-    pdb.set_trace()
+    #import pdb
+    #pdb.set_trace()
     scoring_function_dictionary = {
         "f1_micro": "f1_micro",
         "f1_macro": "f1_macro",
@@ -206,7 +206,7 @@ def select_best_model_with_hyperparameter_tuning(
     model_count = 0
     representation_name_concated = ""
     file_name = "_"
-    path = os.path.dirname(os.getcwd()) + "/results"
+    path = os.path.dirname(os.path.dirname(os.getcwd())) + "/results"
     if "training" not in os.listdir(path):
         os.makedirs(path + "/training", exist_ok=True)
     file_name = file_name.join(models)

@@ -1,5 +1,5 @@
 parameters:
-    choice_of_task_name:  [prediction]
+    choice_of_task_name:  [model_training]
     fuse_representations:
         representation_files: [/media/DATA2/sinem/multi_modal_rep_ae_multi_col_256.csv,/media/DATA2/sinem/node2vec_d_50_p_0.5_q_0.25_multi_col.csv]
         min_fold_number:  2

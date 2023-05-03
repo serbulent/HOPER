@@ -18,7 +18,7 @@ if torch.cuda.is_available():
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 import numpy as np
 #from HoloProtRepAFPML import BinaryTrainModelsWithHyperParameterOptimization
-from HoloProtRepAFPML import F_max_scoring
+import F_max_scoring
 
 class Net(nn.Module):
     def __init__(self, input_size, class_number):

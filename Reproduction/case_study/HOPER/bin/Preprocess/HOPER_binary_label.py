@@ -10,25 +10,26 @@ import glob
 import yaml
 import pandas as pd
 import tqdm
-from preprocess import Binary_DataSetPreprocess
-from preprocess import RepresentationFusion
-from HoloProtRepAFPML import BinaryTrainandTestModelsWithHyperParameterOptimization
+import Binary_DataSetPreprocess
+import RepresentationFusion
+import BinaryTrainandTestModelsWithHyperParameterOptimization
 from sklearn.utils import shuffle
 import os
 import pickle
-from HoloProtRepAFPML import binary_prediction
-from HoloProtRepAFPML import binary_Test_score_calculator
+import binary_prediction
+import binary_Test_score_calculator
 import imghdr
 import ModelParameterClass as Model_parameter
 # upload yaml file
 yaml_file_path = os.getcwd()
-stream = open(yaml_file_path + "/holoprotRep_binary_label_config.yaml", "r")
+path = os.path.dirname(os.path.dirname(os.getcwd()))
+stream = open(path + "/holoprotRep_binary_label_config.yaml", "r")
 data = yaml.safe_load(stream)
-path = os.path.dirname(os.getcwd())
+
 datapreprocessed_lst = []
 # check if results file exist
 if "results" not in os.listdir(path):
-    os.makedirs(path + "/results", exist_ok=True)
+    os.makedirs(os.path.dirname(path) + "/results", exist_ok=True)
 parameter_class_obj=Model_parameter.ModelParameterClass(data["parameters"]["choice_of_task_name"],
     data["parameters"]["fuse_representations"],data["parameters"]["prepare_datasets"],
     data["parameters"]["model_training"],data["parameters"]["prediction"])

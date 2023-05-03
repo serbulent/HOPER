@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 path = os.path.dirname(os.getcwd())
-from preprocess import RepresentationFusion
+import RepresentationFusion
 class ModelParameterClass:
   def __init__(self,choice_of_task_name,fuse_representations,prepare_datasets,model_training,prediction):
     self.choice_of_task_name=choice_of_task_name

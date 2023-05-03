@@ -42,7 +42,7 @@ import math
 from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix
-from HoloProtRepAFPML import binary_pytorch_network
+import binary_pytorch_network
 
 # from  pytorch_network import NN
 
@@ -52,7 +52,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-from HoloProtRepAFPML import report_results_of_training
+import report_results_of_training
 
 
 def compute_roc(labels, preds):
