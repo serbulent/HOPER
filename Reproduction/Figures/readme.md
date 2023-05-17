@@ -37,7 +37,8 @@ Used default parameters except perplexity (10) (perplexity :float, default=30.0)
 
 * aspect,num_cat,termsif
 
-* example: 
+example: 
+
            aspect=['MF']
 
            num_cat=['Low']
