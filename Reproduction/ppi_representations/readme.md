@@ -21,6 +21,7 @@ We used undirected graph as protein-protein interaction data.
 *Example:
 
 Node pairs 
+
 1 2
 
 1 3
@@ -29,8 +30,12 @@ Node pairs
 #### How to run HOPER
 
 *Create edgelist (input data)
+
 *İdentify the protein names corresponding to the nodes
+
 *Set parameters
+
 *Determine directed or undirected graph
+
 *Create embeddings
 
