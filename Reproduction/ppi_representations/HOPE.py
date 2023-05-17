@@ -47,6 +47,7 @@ def hope_repesentation_call(edge_f,isDirected,d,beta):
             
 emb=hope_repesentation_call(edge_f,isDirected,d,beta)            
 emb_list=list(emb)
+# Writing the names of the proteins corresponding to the nodes in the edgelist
 protein_id=pd.read_csv("/media/DATA/home/isik/hope_pkls/proteins_id.csv")
           
 protein_id_list=protein_id['0'].tolist()
