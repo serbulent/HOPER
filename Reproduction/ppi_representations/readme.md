@@ -27,6 +27,7 @@ Node pairs
 1 3
 
 2 3
+Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py 
 #### How to run HOPER
 
 *Create edgelist (input data)
