@@ -13,9 +13,9 @@ Please refer https://palash1992.github.io/GEM/ to access the readme as a webpage
 We used undirected graph as protein-protein interaction data.
 
 ## Data Format
-# Edge List
-Read and write NetworkX graphs as edge lists.
-With the edgelist format simple edge data can be stored
+### Edge List
+-Read and write NetworkX graphs as edge lists.
+-With the edgelist format simple edge data can be stored
 *Example
-Node pairs with no data:
+Node pairs 
 1 2
