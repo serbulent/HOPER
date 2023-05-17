@@ -2,6 +2,7 @@
 ## Parameters
 
 Used default parameters except perplexity (10) (perplexity :float, default=30.0)
+
 ! The perplexity must be less than the number of samples.
 
 ## Dependencies
@@ -31,12 +32,13 @@ Used default parameters except perplexity (10) (perplexity :float, default=30.0)
 ### Data Required For the Function
 
 * go_category_dataframe :Data containing GO ids
-* 
+
 * multi_col_representation_processdata
-* 
+
 * aspect,num_cat,termsif
-* 
-* example: aspect=['MF']
+
+* example: 
+           aspect=['MF']
 
            num_cat=['Low']
            
