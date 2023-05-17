@@ -33,7 +33,7 @@ Used default parameters except perplexity (10) (perplexity :float, default=30.0)
 
 * go_category_dataframe :Data containing GO ids
 
-* multi_col_representation_processdata
+* multi_col_representation_processdata : Example of processdata file see tsne_preprocess_data.py
 
 * aspect,num_cat,termsif
 
@@ -46,3 +46,9 @@ example:
            termsif=['Shallow']
 
 Example of TSNE file see tsne_def.py
+
+### RUN TSNE
+
+* GO_IDs are selected as labels in the data.
+* The part other than the label is selected as train and the model is run.
+
