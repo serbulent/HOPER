@@ -30,7 +30,7 @@ Node pairs
 
 Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py 
 
-#### How to run HOPER
+#### How to run Methods
 
 * Create edgelist (input data)
 
@@ -41,4 +41,6 @@ Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_repre
 * Determine directed or undirected graph
 
 * Create embeddings
+
+
 
