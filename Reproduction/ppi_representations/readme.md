@@ -20,6 +20,9 @@ We used undirected graph as protein-protein interaction data.
 *Example:
 
 Node pairs 
+
 1 2
+
 1 3
+
 2 3
