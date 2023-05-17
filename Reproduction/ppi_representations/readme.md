@@ -32,13 +32,13 @@ Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_repre
 
 #### How to run HOPER
 
-*Create edgelist (input data)
+* Create edgelist (input data)
 
-*İdentify the protein names corresponding to the nodes
+* İdentify the protein names corresponding to the nodes
 
-*Set parameters
+* Set parameters
 
-*Determine directed or undirected graph
+* Determine directed or undirected graph
 
-*Create embeddings
+* Create embeddings
 
