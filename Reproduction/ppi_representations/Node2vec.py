@@ -54,7 +54,7 @@ def node2vec(edge_f,isDirected,d,p,q):
 emb=node2vec(edge_f,isDirected,d,p,q)
 emb_list=list(emb)
             
-            
+# Writing the names of the proteins corresponding to the nodes in the edgelist            
 protein_id=pd.read_csv("/media/DATA/home/isik/hope_pkls/proteins_id.csv")
             #print(protein_id)
    
