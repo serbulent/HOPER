@@ -5,6 +5,5 @@ Please refer https://palash1992.github.io/GEM/ to access the readme as a webpage
 
 
 ## Implemented Methods
-*[node2vec](# node2vec)
-
-*[Higher-Order Proximity preserved Embedding (HOPE)](# Higher-Order Proximity preserved Embedding (HOPE))
+*node2vec
+*Higher-Order Proximity preserved Embedding (HOPE)
