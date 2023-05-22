@@ -2,7 +2,7 @@
 
 This repository contains Python scripts for analyzing prediction results and creating figures and significance tables for ontology-based function prediction.
 
-## Scripts
+## Definition of Scripts
 
 ### create_figures.py
 
@@ -57,16 +57,6 @@ This script serves as the main entry point for running the analysis. It uses the
 
 - `main()`: The main function that parses command-line arguments and runs the analysis.
 
-## Usage
-
-To run the analysis and generate figures and significance tables, you can execute the following command:
-
-```
-python main.py -f <result_path>
-```
-
-- `<result_path>`: The path to the directory containing the prediction result files.
-
 ## Data
 
 The function prediction data should be provided in CSV format with the following columns:
@@ -89,29 +79,29 @@ The script supports the following command-line options:
 
 At least one option should be selected. If no options are provided, an error message will be displayed.
 
-### Examples
+### How to Run
 
 1. To create figures from the result files:
 
 ```
-python script_name.py -f -rfp /path/to/result/files
+python visualize_results -f -rfp /path/to/result/files
 ```
 
 2. To create significance tables from the result files:
 
 ```
-python script_name.py -s -rfp /path/to/result/files
+python visualize_results -s -rfp /path/to/result/files
 ```
 
 3. To create both figures and significance tables:
 
 ```
-python script_name.py -a -rfp /path/to/result/files
+python visualize_results -a -rfp /path/to/result/files
 ```
 
 Make sure to replace `/path/to/result/files` with the actual path to your result files.
 
-## Output
+## Definition of Output
 
 The script will load the results and perform the selected actions based on the provided options. The output will be generated in the following manner:
 
@@ -123,4 +113,10 @@ The script will load the results and perform the selected actions based on the p
 
 ## License
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+Copyright (C)
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
