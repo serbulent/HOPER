@@ -49,7 +49,7 @@ def integrate_go_lables_and_representations_for_binary(
     
     
     with open(
-            str(Path(path).parent)
+            str(Path(path))
             + "/"
             + "results"
             + "/"

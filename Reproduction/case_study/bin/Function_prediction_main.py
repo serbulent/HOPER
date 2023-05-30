@@ -23,13 +23,13 @@ from Function_Prediction import ModelParameterClass as Model_parameter
 # upload yaml file
 yaml_file_path = os.getcwd()
 path = os.path.dirname(os.getcwd())
-stream = open(path + "/holoprotRep_binary_label_config.yaml", "r")
+stream = open(path + "/Protein_Function_Prediction_config.yaml", "r")
 data = yaml.safe_load(stream)
 
 datapreprocessed_lst = []
 # check if results file exist
 if "results" not in os.listdir(path):
-    os.makedirs(os.path.dirname(path) + "/results", exist_ok=True)
+    os.makedirs(path + "/results", exist_ok=True)
 parameter_class_obj=Model_parameter.ModelParameterClass(data["parameters"]["choice_of_task_name"],
     data["parameters"]["fuse_representations"],data["parameters"]["prepare_datasets"],
     data["parameters"]["model_training_test"],data["parameters"]["prediction"])

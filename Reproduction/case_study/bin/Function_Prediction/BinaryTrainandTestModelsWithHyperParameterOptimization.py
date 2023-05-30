@@ -115,7 +115,7 @@ def neural_network_eval(
     best_parameter_dataframe.to_csv(
         path
         + "/"
-        + eval_type
+        + "training"
         + "/"
         + "Neural_network"
         + "_"
@@ -126,7 +126,8 @@ def neural_network_eval(
         + ".csv",
         index=False,
     )
-    
+    #import pdb
+    #pdb.set_trace()
     binary_evaluate.evaluate(
         kf,
         model_label_pred_lst,
