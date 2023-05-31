@@ -13,17 +13,17 @@ Please refer https://palash1992.github.io/GEM/ to access the readme as a webpage
 
 ## Node2vec parameters
 
-d = [10,50,100,200,500,1000]
-p = [0.25,0.5,1,2]
-q = [0.25,0.5,1,2]
-max_iter=1
-walk_len=80
-num_walks=10
+d = [10,50,100,200,500,1000],
+p = [0.25,0.5,1,2],
+q = [0.25,0.5,1,2],
+max_iter=1,
+walk_len=80,
+num_walks=10,
 con_size=10
 
 ## HOPE parameters
 
-d = [10,50,100,200,500,1000]
+d = [10,50,100,200,500,1000],
 beta = [0.00390625,0.0078125,0.015625,0.03125,0.0625,0.125,0.25,0.5]
 
 ## Graph Format
