@@ -1,13 +1,30 @@
-# GEM: Graph Embedding Methods
-GEM is a Python package which offers a general framework for graph embedding methods.
+# Protein-Protein Interaction (PPI) representation
 
-Please refer https://palash1992.github.io/GEM/ to access the readme as a webpage.
+Protein-Protein Interaction (PPI) representation refers to the various ways in which the interactions between proteins can be represented or encoded. PPI representations aim to capture the structural, functional, and relational aspects of protein interactions and are used in various computational methods and analyses.
+Methods used for representation:
 
-
-## Implemented Methods
 * node2vec
 
 * Higher-Order Proximity preserved Embedding (HOPE)
+
+Node2Vec and HOPE are a popular algorithm used for generating node embeddings in network analysis, including graph-based protein representations. It is a representation learning method that learns low-dimensional vector representations, or embeddings, for nodes in a graph.
+
+Please refer https://palash1992.github.io/GEM/ to access the readme as a webpage.
+
+## Node2vec parameters
+
+d = [10,50,100,200,500,1000]
+p = [0.25,0.5,1,2]
+q = [0.25,0.5,1,2]
+max_iter=1
+walk_len=80
+num_walks=10
+con_size=10
+
+## HOPE parameters
+
+d = [10,50,100,200,500,1000]
+beta = [0.00390625,0.0078125,0.015625,0.03125,0.0625,0.125,0.25,0.5]
 
 ## Graph Format
 We used undirected graph as protein-protein interaction data.
@@ -40,7 +57,7 @@ Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_repre
 
 * Determine directed or undirected graph
 
-* Create embeddings
+* Create representations
 
 
 
