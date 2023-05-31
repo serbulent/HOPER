@@ -1,6 +1,6 @@
 # Protein Function Prediction
 
-- # Protein Function Prediction aims to construct models for protein function prediction. It can concate protein representations in to prepare datasets  for training and testing models
+- Protein Function Prediction aims to construct models for protein function prediction. It can concate protein representations in to prepare datasets  for training and testing models
 
 
 # How to run Protein Function Prediction
