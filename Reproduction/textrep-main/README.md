@@ -17,16 +17,6 @@ This repository contains Python scripts for analyzing prediction results and cre
 
 ### create_significance.py
 
-This script calculates significance scores for ontology-based function prediction. It uses the following Python libraries:
-
-- `pandas`: Used for data manipulation and analysis.
-- `glob`: Used for searching for files using pattern matching.
-- `os`: Used for interacting with the operating system.
-- `numpy`: Used for mathematical operations on arrays.
-- `ast`: Used for evaluating literal values from strings.
-- `scipy`: Used for statistical computations.
-- `math`: Used for mathematical operations.
-
 #### Functions
 
 - `calculate_q_vals(go_pred_score_table)`: Calculates q-values using the Benjamini/Hochberg method.
@@ -35,14 +25,6 @@ This script calculates significance scores for ontology-based function predictio
 - `create_significance_tables()`: Creates significance tables for different aspects.
 
 ### visualize_results.py
-
-This script serves as the main entry point for running the analysis. It uses the following Python libraries:
-
-- `argparse`: Used for parsing command-line arguments.
-- `create_figures`: A module that contains functions for creating figures.
-- `create_significance`: A module that contains functions for calculating significance scores.
-- `pandas`: Used for data manipulation and analysis.
-- `tqdm`: Used for creating progress bars.
 
 #### Functions
 
