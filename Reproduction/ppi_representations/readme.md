@@ -3,9 +3,9 @@
 Protein-Protein Interaction (PPI) representation refers to the various ways in which the interactions between proteins can be represented or encoded. PPI representations aim to capture the structural, functional, and relational aspects of protein interactions and are used in various computational methods and analyses.
 Methods used for representation:
 
-* Node2vec
+* [Node2vec](https://www.kdd.org/kdd2016/papers/files/rfp0218-groverA.pdf)
 
-* Higher-Order Proximity preserved Embedding (HOPE)
+* [Higher-Order Proximity preserved Embedding (HOPE)](https://www.kdd.org/kdd2016/papers/files/rfp0184-ouA.pdf)
 
 Node2Vec and HOPE are a popular algorithm used for generating node embeddings in network analysis, including graph-based protein representations. It is a representation learning method that learns low-dimensional vector representations, or embeddings, for nodes in a graph.
 
