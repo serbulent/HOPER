@@ -6,15 +6,6 @@ This repository contains Python scripts for analyzing prediction results and cre
 
 ### create_figures.py
 
-This script generates figures for ontology-based function prediction. It uses the following Python libraries:
-
-- `pandas`: Used for data manipulation and analysis.
-- `glob`: Used for searching for files using pattern matching.
-- `os`: Used for interacting with the operating system.
-- `seaborn`: Used for statistical data visualization.
-- `numpy`: Used for mathematical operations on arrays.
-- `matplotlib`: Used for creating plots and figures.
-
 #### Functions
 
 - `create_index_from_model_name(index_names)`: Creates an index list from model names.
