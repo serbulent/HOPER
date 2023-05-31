@@ -12,6 +12,16 @@ Node2Vec and HOPE are a popular algorithm used for generating node embeddings in
 Please refer https://palash1992.github.io/GEM/ to access the readme as a webpage.
 
 ## Node2vec parameters
+|Interaction A|Interaction B|
+| ------------| ------------|
+|       d     |  embedding dimension   |
+|     ret_p   |        return parameter    |
+|    inout_p  |       In-out parameter    |
+|   max_iter  |        maximum iterations    |
+|   walk_len  |        random walk length    |
+|   con_size  |        context size    |
+|   num_walks |         number of random walks    |
+
 
 d = [10,50,100,200,500,1000],
 p = [0.25,0.5,1,2],
@@ -20,7 +30,7 @@ max_iter=1,
 walk_len=80,
 num_walks=10,
 con_size=10
-
+embedding dimension (d), maximum iterations (max_iter), random walk length (walk_len), number of random walks (num_walks), context size (con_size), return weight (ret_p), inout weight (inout_p) 
 ## HOPE parameters
 
 d = [10,50,100,200,500,1000],
