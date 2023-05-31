@@ -3,7 +3,7 @@
 Protein-Protein Interaction (PPI) representation refers to the various ways in which the interactions between proteins can be represented or encoded. PPI representations aim to capture the structural, functional, and relational aspects of protein interactions and are used in various computational methods and analyses.
 Methods used for representation:
 
-* node2vec
+* Node2vec
 
 * Higher-Order Proximity preserved Embedding (HOPE)
 
