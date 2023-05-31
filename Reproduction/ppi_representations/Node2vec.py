@@ -64,7 +64,7 @@ ent_vec = {'Entry':protein_id_list,'Vector':emb_list}
           
 ent_vec_data_frame = pd.DataFrame(ent_vec)
 print(ent_vec_data_frame )
-output = open('Node2vec_'+'d_'+str(x) + '_' +'beta_'+str(y) +'.pkl', 'wb')
+output = open('Node2vec_'+'d_'+str(i) + '_' +'p_'+str(j) +  '_' +'q_'+str(k) +'.pkl', 'wb')
 pickle.dump(ent_vec_data_frame, output)
 output.close()
     
