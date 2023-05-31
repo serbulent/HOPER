@@ -36,14 +36,13 @@ We used undirected graph as protein-protein interaction data.
 -With the edgelist format simple edge data can be stored
 
 *Example:
+ 
+|Interaction A|Interaction B|
+| ------------| ------------|
+|       1     |        2    |
+|       1     |        3    |
+|       2     |        3    |
 
-Node pairs 
-
-1 2
-
-1 3
-
-2 3
 
 Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py 
 
