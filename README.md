@@ -27,6 +27,3 @@ Step by step operation:
  4.	Scikit-MultiLearn
 
 - Example of binary classification configuration file see documentation [binary_classification.md](binary_classification.md)
-
--Prepraration of the input vector dataset: 
-- Generate your representation vectors for all human proteins ([amino acid sequences of canonical isoform human proteins](https://drive.google.com/file/d/1wXF2lmj4ZTahMrl66QpYM2TvHmbcIL6b/view?usp=sharing)), and for the samples in the [SKEMPI dataset](https://drive.google.com/file/d/1m5jssC0RMsiFT_w-Ykh629Pw_An3PInI/view?usp=sharing).
