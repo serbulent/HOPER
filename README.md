@@ -2,7 +2,8 @@
 
 -Holistic protein representation uses  multimodal learning model to predict protein functions even with low-data. 
 -Representation vectors created using protein sequence, protein text and protein-protein interaction data types to achieve this goal.
--The rationale behind  incorporating protein-protein interactions into our holistic protein representation model is the assumption that interacting proteins are likely to act in the same biological process. Also, these proteins are probably located at the same location in the cell.  
+-The rationale behind  incorporating protein-protein interactions into our holistic protein representation model is the assumption 
+that interacting proteins are likely to act in the same biological process. Also, these proteins are probably located at the same location in the cell.  
 -Text-based protein representations calculated with pre-trained natural language processing models.
 -We aim to increase low-data prediction performance by using these three data types together.
 
