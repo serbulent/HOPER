@@ -75,6 +75,8 @@ Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_repre
 
 * Create representations
 
+* GEM version 213189b
+
 It can be run  as python Node2vec.py and HOPE.py
 
 
