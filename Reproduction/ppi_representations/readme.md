@@ -65,11 +65,13 @@ Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_repre
 
 * Create edgelist (input data)
 
-* İdentify the protein names corresponding to the nodes
+* Clone repository   https://github.com/snap-stanford/snap 
+
+* Compiles SNAP , make node2vec executable and add to system PATH
+
+* İdentify the protein names corresponding to the nodes(.edgelist)
 
 * Set parameters
-
-* Determine directed or undirected graph
 
 * Create representations
 
