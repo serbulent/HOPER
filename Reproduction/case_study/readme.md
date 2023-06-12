@@ -80,16 +80,10 @@ Parameters:
 - Training result files:
 
    - "training/representation_names_model_name_training.tsv": training results which contains 29 columns
-   | Header    | Heading |
-| --------- | ------- |
-| first     |         |
-|           |         |
-|           |         |
-|           |         |
-|           |         |
-|           |         |
-|           |         |
-   
+
+| Command | Description |
+| --- | --- |
+| git status | List all new or modified files |
    
    
    -   "representation_name","classifier_name", "accuracy", "std_accuracy",   "f1_micro",   "std_f1_micro", "f1_macro", "std_f1_macro","f_max", "std_f_max", "f1_weighted","std_f1_weighted","precision_micro", "std_precision_micro","precision_macro",    "std_precision_macro", "precision_weighted", "std_precision_weighted", "recall_micro", "std_recall_micro","recall_macro", "std_recall_macro", "recall_weighted",     "std_recall_weighted",  "hamming distance","std_hamming distance","auc","std_auc","matthews correlation coefficient" 
