@@ -81,7 +81,7 @@ Parameters:
 
    - "training/representation_names_model_name_training.tsv": training results which contains 29 columns
 
-| Command | Description |
+|column names Description |
 | --- | --- |
 | git status | List all new or modified files |
    
