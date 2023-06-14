@@ -33,10 +33,10 @@ con_size=10
 
 ## HOPE parameters
 
-| Parameter  |Description|
-| ------------| ------------|
-|       d     |  embedding dimension   |
-|      beta     |  decay factor  |
+| Parameter  |Description |  Value   | 
+| ------------| ------------|------------|
+|       d     |  embedding dimension   |10,50,100,200,500,1000 |
+|      beta     |  decay factor  | 0.00390625,0.0078125,0.015625,0.03125,0.0625,0.125,0.25,0.5 |
 
 d = [10,50,100,200,500,1000],
 beta = [0.00390625,0.0078125,0.015625,0.03125,0.0625,0.125,0.25,0.5]
