@@ -12,34 +12,27 @@ Node2Vec and HOPE are a popular algorithm used for generating node embeddings in
 Please refer https://palash1992.github.io/GEM/ to access the readme as a webpage.
 
 ## Node2vec parameters
-| Parameter  |Description|
-| ------------| ------------|
-|       d     |  embedding dimension   |
-|     ret_p   |        return parameter    |
-|    inout_p  |       In-out parameter    |
-|   max_iter  |        maximum iterations    |
-|   walk_len  |        random walk length    |
-|   con_size  |        context size    |
-|   num_walks |         number of random walks    |
+| Parameter  |Description|  Value |
+| ------------| ------------| ------------|
+|       d     |  embedding dimension   | 10, 50, 100, 200, 500, 1000  |
+|     ret_p   |        return parameter    |  0.25, 0.5, 1, 2 |
+|    inout_p  |       In-out parameter    |   0.25, 0.5, 1, 2  |
+|   max_iter  |        maximum iterations    | 1  |
+|   walk_len  |        random walk length    |  80 |
+|   con_size  |        context size    |  10 |
+|   num_walks |         number of random walks    |10 |
 
 
-d = [10,50,100,200,500,1000],
-p = [0.25,0.5,1,2],
-q = [0.25,0.5,1,2],
-max_iter=1,
-walk_len=80,
-num_walks=10,
-con_size=10
+
 
 ## HOPE parameters
 
 | Parameter  |Description |  Value   | 
 | ------------| ------------|------------|
-|       d     |  embedding dimension   |10,50,100,200,500,1000 |
-|      beta     |  decay factor  | 0.00390625,0.0078125,0.015625,0.03125,0.0625,0.125,0.25,0.5 |
+|       d     |  embedding dimension   |10, 50, 100, 200, 500, 1000 |
+|      beta     |  decay factor  | 0.00390625, 0.0078125, 0.015625, 0.03125, 0.0625, 0.125, 0.25, 0.5 |
 
-d = [10,50,100,200,500,1000],
-beta = [0.00390625,0.0078125,0.015625,0.03125,0.0625,0.125,0.25,0.5]
+
 
 ## Graph Format
 We used undirected graph as protein-protein interaction data.
