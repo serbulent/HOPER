@@ -35,7 +35,7 @@ We compare it with  other methods from the literature.
 - You can access the information about the fuse_representations, prepare_datasets, model_training_test, prediction sub-modules of the function prediction module via the .py extension file of the relevant sub-module.
 # Example of binary classification configuration file 
 
-parameters:
+  parameters:
     choice_of_task_name:  [prepare_datasets,model_training_test,prediction]
     fuse_representations:
         representation_files: [../multi_modal_rep_ae_multi_col_256.csv,/media/DATA2/sinem/node2vec_d_50_p_0.5_q_0.25_multi_col.csv]
