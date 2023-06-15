@@ -42,20 +42,22 @@ def produce_fused_representations(
             The saved dataframes has a different structure than the returned ones. The saved dataframes has a coloumn named as 'Entry',
             but the following columns are a varying number based on representation vector length.
     """
-   
+    
     if minimum_number_of_combinations == len(list_of_protein_representation_dataframes):
         fused_dataframes = list_of_protein_representation_dataframes[0]
         for dataset in list_of_protein_representation_dataframes[1:]:
             fused_dataframes = fused_dataframes.merge(dataset, on="Entry")
 
-        # name = '_'.join(representation_name_list)
-        """path=os.path.dirname(os.getcwd())
+        name = '_'.join(representation_name_list)
+        path=os.path.dirname(os.getcwd())
         if 'results' in os.listdir(path):
                 paths=path+"/results/"
         else:
                 os.makedirs(path+"/results",exist_ok=True)
-                paths=path+"/results/"   """
-        # fused_dataframes.to_csv(paths+ name +'.csv',index=False)
+                paths=path+"/results/"   
+        #import pdb
+        #pdb.set_trace()
+        fused_dataframes.to_csv(paths+ name +'.csv',index=False)
         return fused_dataframes
     else:
      
@@ -88,8 +90,14 @@ def produce_fused_representations(
 
             # print(fused_list)
             # name = '_'.join(representation_name_list)
+            
             print(fused_name)
-            # fused_list.to_csv('../results/' + fused_name + '.csv')
+            path = os.path.dirname(os.getcwd()) + "/results/"
+            
+            if "results" not in os.listdir(path):
+                os.makedirs(path, exist_ok=True)
+    
+            fused_list.to_csv(path + fused_name + '.csv')
             # df.to_csv('fused/' + name + ".csv")
             fused_dataframes.append(fused_list)
         return fused_dataframes

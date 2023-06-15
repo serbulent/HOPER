@@ -19,7 +19,9 @@ class ModelParameterClass:
       representation_file_list.append(
                     pd.read_csv(rep_file)
                 )
-    if self.fuse_representations["min_fold_number"]!="None" and self.fuse_representations["min_fold_number"]>0:
+    if self.fuse_representations["min_fold_number"]!="None" and self.fuse_representations["min_fold_number"]>0 and self.fuse_representations["min_fold_number"]<=len(
+                    representation_file_list
+                ):
       self.min_fold_number=self.fuse_representations["min_fold_number"]
     else:
       self.min_fold_number = len(
@@ -37,14 +39,14 @@ class ModelParameterClass:
         ],
                 )
             )
-    pd.DataFrame(representation_dataframe).to_csv(
+    """pd.DataFrame(representation_dataframe).to_csv(
                 path
                 + "/results/"
                 + "_".join(
                 [str(representation) for representation in self.fuse_representations["representation_names"]])
                 + "_binary_fused_representations_dataframe_multi_col.csv",
                 index=False,
-            )
+            )"""
     return representation_dataframe
     
   

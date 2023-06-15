@@ -126,8 +126,7 @@ def neural_network_eval(
         + ".csv",
         index=False,
     )
-    #import pdb
-    #pdb.set_trace()
+
     binary_evaluate.evaluate(
         kf,
         model_label_pred_lst,
