@@ -40,7 +40,8 @@ We compare it with  other methods from the literature.
     fuse_representations:
         representation_files: [../multi_modal_rep_ae_multi_col_256.csv,/media/DATA2/sinem/node2vec_d_50_p_0.5_q_0.25_multi_col.csv]
         min_fold_number:  2
-        representation_names:  [modal_rep_ae,node2vec,bertavg]        
+        representation_names:  [modal_rep_ae,node2vec,bertavg]     
+        
     prepare_datasets:  
         positive_sample_data:  [../positive.csv]
         negative_sample_data:  [../neg_data.csv]
