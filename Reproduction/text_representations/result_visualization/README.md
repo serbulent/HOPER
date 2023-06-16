@@ -54,6 +54,13 @@ At least one option should be selected. If no options are provided, an error mes
 
 ### How to Run
 
+Step by step operation:
+  1. Clone repository
+  2. Install dependencies(given below)
+  3. Run the script
+
+Examples:
+
 1. To create figures from the result files:
 
 ```
@@ -73,6 +80,19 @@ python visualize_results -a -rfp /path/to/result/files
 ```
 
 Make sure to replace `/path/to/result/files` with the actual path to your result files.
+
+# Dependencies
+ 1.	Python 3.7.3
+ 2.	pandas 1.1.4
+ 3.	scipy
+ 4.	seaborn
+ 5.	matplotlib
+ 6.	numpy
+ 7.	glob
+ 8.	os
+ 9.	statsmodels
+ 10.	math
+ 11.	ast
 
 ## Definition of Output
 
