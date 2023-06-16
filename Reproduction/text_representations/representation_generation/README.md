@@ -66,6 +66,15 @@ The script allows users to specify different options to create specific types of
 
 ### How to Run
 
+Step by step operation:
+  1. Clone repository
+  2. Install dependencies(given below)
+  3. Define the path to save output files in the script
+  4. Define path for biosentvec and biowordvec models
+  5. Run the script
+
+Examples:
+
 1. To create TF-IDF representations:
 
 ```
@@ -89,6 +98,16 @@ python createtextrep.py --bwv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed
 ```
 python createtextrep.py --a -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
 ```
+
+# Dependencies
+ 1.	Python 3.7.3
+ 2.	pandas 1.1.4
+ 3.	sklearn
+ 4.	os
+ 5.	fasttext
+ 6.	string
+ 7.	nltk
+ 8.	sent2vec
 
 ## Definition of Output
 
