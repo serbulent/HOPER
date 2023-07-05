@@ -14,11 +14,12 @@ that interacting proteins are likely to act in the same biological process. Also
 # How to run HOPER
 
 Step by step operation:
-  1. Clone repostory
+  1. Clone repository: git clone https://github.com/serbulent/HOPER.git
   2. Install dependencies(given below)
-  3. Download datasets,unzip and place the folder
-  4. Edit the configuration file (according to classification methods, for binary classification: **file_name_config.yaml** 
-- i.e., python **HOPER_binary_label.py**
+  3. Download datasets,unzip and place the your folder
+  4. Edit the configuration file (Necessary adjustments (for example, giving the file location) are made in the configuration file of the method intended to be used.
+How the editing should be done is in the README.md file of the relevant module, for case study make edition on **Protein_Function_Prediction_config.yaml** configuration file
+  5. Run module main function  i.e., python **Function_prediction_main.py**
 
 # Dependencies
  1.	Python 3.7.3
@@ -26,4 +27,4 @@ Step by step operation:
  3.	scikit-learn 0.22.1.
  4.	Scikit-MultiLearn
 
-- Example of binary classification configuration file see documentation [binary_classification.md](binary_classification.md)
+- Example of case study configuration file see documentation [readme.md](readme.md)
