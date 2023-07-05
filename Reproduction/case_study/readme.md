@@ -1,13 +1,13 @@
 # Protein Function Prediction
 
-- Protein Function Prediction aims to construct models for protein function prediction. It can concate protein representations in to prepare datasets  for training, testing models and making predictions
+- Protein Function Prediction aims to construct models for protein function prediction. It can concate protein representations in to prepare datasets  for training, testing models and making predictions.
 
 
 # How to run Protein Function Prediction
 
 
 Step by step operation:
-  1. Clone repostory
+  1. Clone repository
   2. Install dependencies(given below)
   3. Download datasets,unzip and place the folder
   4. Edit the configuration file (according to classification methods, for binary classification: **Protein_Function_Prediction_config.yaml** 
@@ -25,10 +25,10 @@ We compare it with  other methods from the literature.
  1. Fuse_representations:
     - Concatenate of protein representation vectors
  2. Prepare_datasets:
-    - Concantation of positive_sample_dataset and negative_sample_dataset for preperation of dataset which have "Entry" and multi columns representation vector and  save pickle format of dataset   
+    - Concantation of positive_sample_dataset and negative_sample_dataset for preperation of dataset which have "Entry" and multi-columns representation vector and  save pickle format of dataset   
 
  3. Model_training and Test:
-    - Training and test for prepared data. Using models are Fully Connected Neural Network,RandomForestClassifier,SVC,KNeighborsClassifier
+    - Training and test for prepared data. Using models are Fully Connected Neural Network, RandomForestClassifier,SVC, KNeighborsClassifier
  6. Model_prediction:
     - Make prediction for binary label
 
