@@ -27,4 +27,4 @@ How the editing should be done is in the README.md file of the relevant module, 
  3.	scikit-learn 0.22.1.
  4.	Scikit-MultiLearn
 
-- Example of case study configuration file see documentation [https://github.com/serbulent/HOPER/blob/main/Reproduction/case_study/readme.md](readme.md)
+- Example of case study configuration file see documentation [readme.md](https://github.com/serbulent/HOPER/blob/main/Reproduction/case_study/readme.md)
