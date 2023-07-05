@@ -15,7 +15,7 @@ that interacting proteins are likely to act in the same biological process. Also
 
 Step by step operation:
   1. Clone repository: git clone https://github.com/serbulent/HOPER.git
-  2. Install dependencies(given below)
+  2. Install dependencies(given below): i.e, pip install pandas==1.1.4 etc.
   3. Download datasets,unzip and place the your folder
   4. Edit the configuration file (Necessary adjustments (for example, giving the file location) are made in the configuration file of the method intended to be used.
 How the editing should be done is in the README.md file of the relevant module, for case study make edition on **Protein_Function_Prediction_config.yaml** configuration file
