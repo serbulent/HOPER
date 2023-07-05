@@ -24,6 +24,9 @@ We construct a model consisting of  4 steps that can be used independently or co
 We compare it with  other methods from the literature.
  1. Fuse_representations:
     - Concatenate of protein representation vectors
+    -  min_fold_number specifiy  minimum_number_of_combinations For example if 3 representations are supplied and min_fold_number = 2
+    then the function will produce double and triple combinations of the protein representation vector.
+        Such as Vec1_Vec2, Vec1_Vec3, Vec2_Vec3 and Vec1_Vec2_Vec3
  2. Prepare_datasets:
     - Concantation of positive_sample_dataset and negative_sample_dataset for preperation of dataset which have "Entry" and multi-columns representation vector and  save pickle format of dataset   
 
