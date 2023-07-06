@@ -355,7 +355,7 @@ def select_best_model_with_hyperparameter_tuning(
             model_count = model_count + 1
 
             if(scoring_key[0] =="f_max"):        
-                model_tunning = GridSearchCV(estimator=model_pipline, param_grid=parameters, cv=kf,pre_dispatch = 20,scoring=F_max_Scoring.scoring_f_max_machine  , n_jobs=-1)
+                model_tunning = GridSearchCV(estimator=model_pipline, param_grid=parameters, cv=kf,pre_dispatch = 20,scoring=F_max_scoring.scoring_f_max_machine  , n_jobs=-1)
             else:
                 model_tunning = GridSearchCV(estimator=model_pipline, param_grid=parameters, cv=kf,pre_dispatch = 20,scoring=scoring_function_dictionary[scoring_key[0]] , n_jobs=-1)   
             classifier_name_lst.append(classifier_name)
