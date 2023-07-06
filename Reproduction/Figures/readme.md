@@ -6,7 +6,7 @@ The primary goal of t-SNE is to represent each data point in a lower-dimensional
 
 Used default parameters except perplexity (10) (perplexity :float, default=30.0)
 
-! The perplexity must be less than the number of samples.
+!The perplexity must be less than the number of samples.
 
 ## Dependencies
 
