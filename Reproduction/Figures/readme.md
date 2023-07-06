@@ -11,7 +11,6 @@ Used default parameters except perplexity (10) (perplexity :float, default=30.0)
 ## Dependencies
 
 1.Pandas 
-
 2.Numpy
 
 3.Seaborn
