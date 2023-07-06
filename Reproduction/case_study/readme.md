@@ -6,11 +6,14 @@
   
  **1. Fuse_representations:**
  - This step make concatenation of protein representation vectors.
+   
  **2. Prepare_datasets:**
   - Concation of positive_sample_dataset and negative_sample_dataset for preparation of model dataset ( "Entry" and multi-columns representation vector )
-  - Save pickle format of dataset   
+  - Save pickle format of dataset
+    
  **3. Model_training and Test:**
   - Training and test for prepared data. Using models are Fully Connected Neural Network, RandomForestClassifier, SVC, KNeighborsClassifier
+    
   **4. Model_prediction:** 
   - Make prediction for protein function
 You can access the information about the fuse_representations, prepare_datasets, model_training_test, prediction sub-modules of the function prediction module via the .py extension file of the relevant sub-module.
