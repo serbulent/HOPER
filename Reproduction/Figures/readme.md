@@ -1,4 +1,7 @@
-# TSNE (T-distributed Stochastic Neighbor Embedding)
+# t-SNE (t-Distributed Stochastic Neighbor Embedding)
+t-SNE  is a machine learning algorithm commonly used for visualizing high-dimensional data in a lower-dimensional space.
+
+The primary goal of t-SNE is to represent each data point in a lower-dimensional space, typically two or three dimensions, while preserving the pairwise similarities between data points as much as possible. It is particularly useful for visualizing complex datasets that cannot be easily visualized in their original high-dimensional space. 
 ## Parameters
 
 Used default parameters except perplexity (10) (perplexity :float, default=30.0)
