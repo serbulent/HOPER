@@ -1,5 +1,5 @@
 import pandas as pd
-intactdata_dataframe=pd.read_excel('/media/DATA2/isik/HOPER/Reproduction/ppi_representations/intact_data_frame_filter_srtd.xlsx', engine='openpyxl')
+intactdata_dataframe=pd.read_excel('Reproduction/ppi_representations/data/small_example.xlsx', engine='openpyxl')
 intactdata_dataframe=intactdata_dataframe.drop(["Unnamed: 0"],axis=1)
 #converted to edgelist format required for vector operation.
 protein=[]
