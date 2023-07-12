@@ -53,7 +53,4 @@ intact_data_frame_filter_sorted.to_excel("intact_data_frame_filter_sorted.xlsx")
 intact_data_read=pd.read_excel("intact_data_frame_filter_sorted.xlsx")
 
 
-protein_id_df=pd.DataFrame(newlist)
-protein_id_df.to_csv("proteins_id.csv")
-protein_id=pd.read_csv("/content/drive/MyDrive/proteins_id.csv")
-mylist=protein_id['0'].tolist()
+
