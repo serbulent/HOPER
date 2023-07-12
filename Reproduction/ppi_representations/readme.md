@@ -60,7 +60,6 @@ We used undirected graph as protein-protein interaction data.
 |  P16070     |   P14902    |
 |  P16410     |   P05362    |
 
-</td><td>
  
 |Interaction A|Interaction B|
 | ------------| ------------|
@@ -71,7 +70,7 @@ We used undirected graph as protein-protein interaction data.
 |  4    |   2    |
 |  5    |   1    |
 
-</td></tr> </table>
+|<table> <tr><th>Table 1 Heading 1</th><th>Table 1 Heading 2</th></tr><tr><td>Row 1 Column 1</td><td>Row 1 Column 2</td></tr> </table>| <table> <tr><th>Table 2 Heading 1</th><th>Table 2 Heading 2</th></tr><tr><td>Row 1 Column 1</td><td>Row 1 Column 2</td></tr> </table>|
 
 Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py 
 
