@@ -71,6 +71,8 @@ We used undirected graph as protein-protein interaction data.
 |  4    |   2    |
 |  5    |   1    |
 
+</td></tr> </table>
+
 Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py 
 
 #### How to run Methods
