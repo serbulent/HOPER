@@ -48,8 +48,6 @@ We used undirected graph as protein-protein interaction data.
 -With the edgelist format simple edge data can be stored
 
 *Example:
-
- Interaction data
  
  <table>
 <tr><th> Interaction data </th><th></th><th></th><th> Edgelist Data </th></tr>
@@ -77,7 +75,6 @@ We used undirected graph as protein-protein interaction data.
 
 </td></tr> </table>
 
-Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py 
 
 #### How to run Methods
 
@@ -109,7 +106,8 @@ Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_repre
 
 * You can use small sample for application (The sample interaction is randomly generated) (data konum) 
 
-* Preprocessing is required for the IntAct database. The relevant code for this  ()
+* Preprocessing is required for the IntAct database. The relevant code for 
+ this  https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py 
  
 * Set parameters
 
