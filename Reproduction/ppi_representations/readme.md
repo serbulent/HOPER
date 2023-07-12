@@ -102,8 +102,11 @@ We used undirected graph as protein-protein interaction data.
 
 * Make node2vec executable and add to system PATH or move it to the location you run.
 
-* Identify the protein names corresponding to the nodes(.edgelist)
+* Identify the protein names corresponding to the nodes(Reproduction/ppi_representations/data/proteins_id.csv)
 
+You can make protein names using **edgelist_code.py** These names will be needed later for the node2vec.py and HOPE.py files. Do not forget the location information.
+
+  
 * You can use small sample for application (The sample interaction is randomly generated) (Reproduction/ppi_representations/data/small_example.xlsx) 
 
 * Preprocessing is required for the IntAct database. The relevant code for 
