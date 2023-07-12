@@ -118,7 +118,7 @@ You can make protein names using **edgelist_code.py** These names will be needed
 
 
 
-It can be run  as python Node2vec.py and HOPE.py
+It can be run  as python Node2vec.py and HOPE.py(input data: .edgelist file and proteins id names file)
 
 
 
