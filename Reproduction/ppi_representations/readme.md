@@ -52,7 +52,7 @@ We used undirected graph as protein-protein interaction data.
  Interaction data
  
  <table>
-<tr><th>Table 1 Heading 1 </th><th></th><th></th><th> Table 1 Heading 2</th></tr>
+<tr><th> Interaction data </th><th></th><th></th><th> Edgelist Data </th></tr>
 <tr><td>
  
 |Interaction A|Interaction B|                
