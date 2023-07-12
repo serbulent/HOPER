@@ -63,7 +63,9 @@ Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_repre
   pip install git+https://github.com/palash1992/GEM.git
 
   * GEM version 213189b; use for old version:
+  
     git clone [https://github.com/palash1992/GEM.git]
+    
     git checkout  [213189b]
 
 *To make Node2vec executable; Clone repository   https://github.com/snap-stanford/snap
