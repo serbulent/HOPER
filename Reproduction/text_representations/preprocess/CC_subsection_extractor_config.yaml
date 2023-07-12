@@ -1,0 +1,4 @@
+parameters: 
+        uniprot_dir: /media/DATA/amine/uniprot_sprot.xml.gz                        
+        new_file_dir: /media/DATA/amine/deneme/son/ 
+        error_file_dir: /media/DATA/amine/deneme/error_file  
