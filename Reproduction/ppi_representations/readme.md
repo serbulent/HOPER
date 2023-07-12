@@ -58,17 +58,37 @@ Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_repre
 
 * Create edgelist (input data)
 
-* Clone repository   https://github.com/snap-stanford/snap 
+* To install packages to use for Node2vec and HOPE in your home directory, use:
 
-* Compiles SNAP , make node2vec executable and add to system PATH
+  pip install git+https://github.com/palash1992/GEM.git
+
+  * GEM version 213189b; use for old version:
+    git clone [https://github.com/palash1992/GEM.git]
+    git checkout  [213189b]
+
+*To make Node2vec executable; Clone repository   https://github.com/snap-stanford/snap
+*Compiles SNAP
+
+    cd snap-master/
+       rm -rf examples/Release
+          make all
+              cd examples/node2vec
+                   chmod +x node2vec
+                        ls -alh node2vec
+
+* Make node2vec executable and add to system PATH or move it to the location you run.
 
 * İdentify the protein names corresponding to the nodes(.edgelist)
 
+* you can use small sample for application (data konum)
+
+* Preprocessing is required for the IntAct database. The relevant code for this  ()
+ 
 * Set parameters
 
 * Create representations
 
-* GEM version 213189b
+
 
 It can be run  as python Node2vec.py and HOPE.py
 
