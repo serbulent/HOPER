@@ -104,7 +104,7 @@ We used undirected graph as protein-protein interaction data.
 
 * Identify the protein names corresponding to the nodes(.edgelist)
 
-* You can use small sample for application (The sample interaction is randomly generated) (data konum) 
+* You can use small sample for application (The sample interaction is randomly generated) (Reproduction/ppi_representations/data/small_example.xlsx) 
 
 * Preprocessing is required for the IntAct database. The relevant code for 
  this  https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py 
