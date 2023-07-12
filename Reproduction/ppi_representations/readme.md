@@ -80,9 +80,9 @@ Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_repre
 
 * Make node2vec executable and add to system PATH or move it to the location you run.
 
-* İdentify the protein names corresponding to the nodes(.edgelist)
+* Identify the protein names corresponding to the nodes(.edgelist)
 
-* you can use small sample for application (data konum)
+* You can use small sample for application (The sample interaction is randomly generated) (data konum) 
 
 * Preprocessing is required for the IntAct database. The relevant code for this  ()
  
