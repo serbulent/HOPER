@@ -1,4 +1,4 @@
-# Protein-Protein Interaction (PPI) Representation
+![image](https://github.com/serbulent/HOPER/assets/59953184/2daf7697-e64a-4371-8d6c-4dd731e262db)# Protein-Protein Interaction (PPI) Representation
 
 Protein-Protein Interaction (PPI) representation refers to the various ways in which the interactions between proteins can be represented or encoded. PPI representations aim to capture the structural, functional, and relational aspects of protein interactions and are used in various computational methods and analyses.
 Methods used for representation:
@@ -10,6 +10,10 @@ Methods used for representation:
 Node2Vec and HOPE are a popular algorithm used for generating node embeddings in network analysis, including graph-based protein representations. It is a representation learning method that learns low-dimensional vector representations, or embeddings, for nodes in a graph.
 
 Please refer https://palash1992.github.io/GEM/ to access the readme as a webpage.
+
+## Dependencies
+
+Related dependencies are available in the **ppi_environment.yml** file. Related dependencies can be installed by importing **ppi_environment.yml** file.
 
 ## Node2vec parameters
 | Parameter  |Description|  Value |
@@ -44,13 +48,28 @@ We used undirected graph as protein-protein interaction data.
 -With the edgelist format simple edge data can be stored
 
 *Example:
+
+ Interaction data
+ 
+|Interaction A|Interaction B|                
+| ------------| ------------|
+|  P05089     |   P05362    |
+|  P05362	    |   P14902    |
+|  P14902     |   P16410    |
+|  P15692     |   P14902    |
+|  P16070     |   P14902    |
+|  P16410     |   P05362    |
+
+</td><td>
  
 |Interaction A|Interaction B|
 | ------------| ------------|
-|       1     |        2    |
-|       1     |        3    |
-|       2     |        3    |
-
+|  0    |   1    |
+|  1    |   2    |
+|  2    |   5    |
+|  3    |   2    |
+|  4    |   2    |
+|  5    |   1    |
 
 Please refer https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py 
 
