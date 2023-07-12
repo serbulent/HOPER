@@ -52,7 +52,7 @@ We used undirected graph as protein-protein interaction data.
  Interaction data
  
  <table>
-<tr><th>Table 1 Heading 1 </th><th> </th><th> Table 1 Heading 2</th></tr>
+<tr><th>Table 1 Heading 1 </th><th></th><th> Table 1 Heading 2</th></tr>
 <tr><td>
  
 |Interaction A|Interaction B|                
@@ -64,7 +64,7 @@ We used undirected graph as protein-protein interaction data.
 |  P16070     |   P14902    |
 |  P16410     |   P05362    |
 
-</td><td>
+</td><td></th><th>
  
 |Interaction A|Interaction B|
 | ------------| ------------|
