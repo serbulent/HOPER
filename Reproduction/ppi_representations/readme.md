@@ -38,9 +38,6 @@ Related dependencies are available in the **ppi_environment.yml** file. Related 
 
 
 
-## Graph Format
-We used undirected graph as protein-protein interaction data.
-
 ## Data Format
 ### Edge List
 -Read and write NetworkX graphs as edge lists.
@@ -78,7 +75,9 @@ We used undirected graph as protein-protein interaction data.
 
 #### How to run Methods
 
-* Create edgelist (input data)
+* Dependencies are imported first.
+
+* Create edgelist (input data)  Please refer  **edgelist_code.py**
 
 * To install packages to use for Node2vec and HOPE in your home directory, use:
 
@@ -115,7 +114,6 @@ You can make protein names using **edgelist_code.py** These names will be needed
 * Set parameters
 
 * Create representations
-
 
 
 It can be run  as python Node2vec.py and HOPE.py(input data: .edgelist file and proteins id names file)
