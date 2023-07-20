@@ -81,8 +81,6 @@ Related dependencies are available in the **ppi_environment.yml** file. Related 
 
 * To install packages to use for Node2vec and HOPE in your home directory, use:
 
-  pip install git+https://github.com/palash1992/GEM.git
-
   * GEM version 213189b; use for old version:
   
     git clone [https://github.com/palash1992/GEM.git]
