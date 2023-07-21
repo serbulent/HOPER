@@ -89,7 +89,7 @@ Related dependencies are available in the **ppi_environment.yml** file. Related 
 
   * To make Node2vec executable; Clone repository   https://github.com/snap-stanford/snap and Compiles SNAP. The code for compiles is as below:
   
-     - cd snap-master/
+      - cd snap-master/
        - rm -rf examples/Release
         - make all
           - cd examples/node2vec
