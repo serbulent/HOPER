@@ -20,11 +20,11 @@ Related dependencies are available in the **ppi_environment.yml** file. Related 
 | ------------| ------------| ------------|
 |       d     |  embedding dimension   | 10, 50, 100, 200, 500, 1000  |
 |       p     |        return parameter(Parameter p controls the likelihood of immediately revisiting a node in the walk) |  0.25, 0.5, 1, 2 |
-|       q     |       In-out parameter    |   0.25, 0.5, 1, 2  |
+|       q     |       In-out parameter(Parameter q allows the search to differentiate between “inward” and “outward” nodes) | 0.25, 0.5, 1, 2|
 |   max_iter  |        maximum iterations    | 1  |
 |   walk_len  |        random walk length    |  80 |
 |   con_size  |        context size    |  10 |
-|   num_walks |         number of random walks    |10 |
+|   num_walks |        number of random walks    |10 |
 
 
 
