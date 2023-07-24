@@ -22,16 +22,13 @@ You can access the information about the fuse_representations, prepare_datasets,
 
 Step by step operation:
   1. Clone repository
-  2. Install dependencies(given below)
   3. Download datasets,unzip and place the folder
-  4. Edit the configuration file (according to classification methods, for binary classification: **Protein_Function_Prediction_config.yaml** 
+  4. Edit the configuration file : **Hoper.yaml** 
 - i.e., python **Function_prediction_main.py**
 
 # Dependencies
 
- 1.	Python 3.7.3
- 2.	pandas 1.1.4
- 3.	scikit-learn 0.22.1
+ You can access dependencies from case_study_env.yml file
  
 # Example of protein function prediction configuration file 
 
@@ -58,7 +55,7 @@ Step by step operation:
         representation_names:  [modal_rep_ae] 
         prepared_path:  ["../rep_file/rep_dif_ae.csv"]
         classifier_name:  ['Fully_Connected_Neural_Network']         
-        model_directory:  ["../results/test/modal_rep_ae_Fully_Connected_Neural_Network_binary_classifier.pt"] 
+        model_directory:  ["../case_study_results/test/modal_rep_ae_Fully_Connected_Neural_Network_binary_classifier.pt"] 
 
 # Definition of output files (results)
 
@@ -66,7 +63,7 @@ Step by step operation:
 
 - Training result files:
 
-   - "results/training/representation_names_model_name_training.tsv": training results which contains 29 columns
+   - "case_study_results/training/representation_names_model_name_training.tsv": training results which contains 29 columns
 
 | Column names | Column names | Column names |
 | ------------- | ------------- | ------------- |
@@ -82,22 +79,22 @@ Step by step operation:
 |  "std_auc"  | "matthews correlation coefficient" |  |
    
   
-    - "results/training/representation_model_name_binary_classifier.pt" : saved model
+    - "case_study_results/training/representation_model_name_binary_classifier.pt" : saved model
 
-    - "results/training/representation_model_name_means.tsv" : mean of 5 fold results
+    - "case_study_results/training/representation_model_name_means.tsv" : mean of 5 fold results
 
-    - "results/training/model_name_representation_name_binary_classifier_best_parameter.csv"
+    - "case_study_results/training/model_name_representation_name_binary_classifier_best_parameter.csv"
 
-    - "results/training/representation_name_model_name_binary_classifier_training_predictions.tsv"
+    - "case_study_results/training/representation_name_model_name_binary_classifier_training_predictions.tsv"
 
 
 - Test result files:
 
-   - "results/test/representation_names_model_name_test.tsv":contains same columns as training results
+   - "case_study_results/test/representation_names_model_name_test.tsv":contains same columns as training results
 
-    - "results/test/representation_model_name_binary_classifier.pt" : saved model
+    - "case_study_results/test/representation_model_name_binary_classifier.pt" : saved model
 
-    - "results/test/representation_name_model_name_test_means.tsv" : mean of 5 fold results
+    - "case_study_results/test/representation_name_model_name_test_means.tsv" : mean of 5 fold results
 
     - "results/test/model_name_representation_name_binary_classifier_best_parameter.csv"
 
