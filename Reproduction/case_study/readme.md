@@ -24,7 +24,7 @@ Step by step operation:
   1. Clone repository
   3. Download datasets,unzip and place the folder
   4. Edit the configuration file : **Hoper.yaml** 
-- i.e., python **Function_prediction_main.py**
+- i.e., python **HOPER_main.py**
 
 # Dependencies
 
@@ -96,9 +96,9 @@ Step by step operation:
 
     - "case_study_results/test/representation_name_model_name_test_means.tsv" : mean of 5 fold results
 
-    - "results/test/model_name_representation_name_binary_classifier_best_parameter.csv"
+    - "case_study_results/test/model_name_representation_name_binary_classifier_best_parameter.csv"
 
-    - "results/test/representation_name_model_name_binary_classifier_test_predictions.tsv"
+    - "case_study_results/test/representation_name_model_name_binary_classifier_test_predictions.tsv"
  - Prediction result files:
-   - "results/prediction/Representation_name_prediction_binary_classifier_classifier_name.tsv"
+   - "case_study_results/prediction/Representation_name_prediction_binary_classifier_classifier_name.tsv"
 
