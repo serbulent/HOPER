@@ -1,5 +1,5 @@
 parameters:
-    choice_of_module: [case_study]
+    choice_of_module: [case_study] # Module selection PPI,Preprocessing,case_study
     #*************************************MODULES********************************************************************
     #********************PPI Module********************************
     module_name: PPI
