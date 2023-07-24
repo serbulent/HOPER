@@ -19,12 +19,12 @@ Related dependencies are available in the **ppi_environment.yml** file. Related 
 | Parameter  |Description|  Value |
 | ------------| ------------| ------------|
 |       d     |  embedding dimension   | 10, 50, 100, 200, 500, 1000  |
-|     ret_p   |        return parameter    |  0.25, 0.5, 1, 2 |
-|    inout_p  |       In-out parameter    |   0.25, 0.5, 1, 2  |
+|       p     |        return parameter(Parameter p controls the likelihood of immediately revisiting a node in the walk) |  0.25, 0.5, 1, 2 |
+|       q     |       In-out parameter(Parameter q allows the search to differentiate between “inward” and “outward” nodes) | 0.25, 0.5, 1, 2|
 |   max_iter  |        maximum iterations    | 1  |
 |   walk_len  |        random walk length    |  80 |
 |   con_size  |        context size    |  10 |
-|   num_walks |         number of random walks    |10 |
+|   num_walks |        number of random walks    |10 |
 
 
 
@@ -79,9 +79,10 @@ Related dependencies are available in the **ppi_environment.yml** file. Related 
 
 * Create edgelist (input data)  Please refer  **edgelist_code.py**
 
-* To install packages to use for Node2vec and HOPE in your home directory, use:
+* If you are going to use the IntAct database, Preprocessing is required for the IntAct database.The relevant code for 
+ this  https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py  
 
-  pip install git+https://github.com/palash1992/GEM.git
+* To install packages to use for Node2vec and HOPE in your home directory, use:
 
   * GEM version 213189b; use for old version:
   
@@ -89,15 +90,14 @@ Related dependencies are available in the **ppi_environment.yml** file. Related 
     
     git checkout  [213189b]
 
-*To make Node2vec executable; Clone repository   https://github.com/snap-stanford/snap
-*Compiles SNAP
-
-    cd snap-master/
-       rm -rf examples/Release
-          make all
-              cd examples/node2vec
-                   chmod +x node2vec
-                        ls -alh node2vec
+  * To make Node2vec executable; Clone repository   https://github.com/snap-stanford/snap and Compiles SNAP. The code for compiles is as below:
+  
+      - cd snap-master/
+        - rm -rf examples/Release
+          - make all
+            - cd examples/node2vec
+              - chmod +x node2vec
+                - ls -alh node2vec
 
 * Make node2vec executable and add to system PATH or move it to the location you run.
 
@@ -107,16 +107,15 @@ You can make protein names using **edgelist_code.py** These names will be needed
 
   
 * You can use small sample for application . The sample interaction is randomly generated (Reproduction/ppi_representations/data/small_example.xlsx) 
-
-* Preprocessing is required for the IntAct database. The relevant code for 
- this  https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py 
  
 * Set parameters
 
 * Create representations
 
 
-It can be run  as python Node2vec.py and HOPE.py(input data: .edgelist file and proteins id names file)
+It can be run  as python Node2vec.py and HOPE.py(input data: .edgelist file and proteins id names file **ppi_representations/data**)
+
+Node2vec and HOPE outputs are recorded in **ppi_representations/data**.
 
 
 
