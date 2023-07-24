@@ -49,12 +49,12 @@ def produce_fused_representations(
             fused_dataframes = fused_dataframes.merge(dataset, on="Entry")
 
         name = '_'.join(representation_name_list)
-        path=os.path.dirname(os.getcwd())
-        if 'results' in os.listdir(path):
-                paths=path+"/results/"
+        path=os.getcwd()
+        if 'case_study_results' in os.listdir(path+"/case_study"):
+                paths=path+ "/case_study/case_study_results/"
         else:
-                os.makedirs(path+"/results",exist_ok=True)
-                paths=path+"/results/"   
+                os.makedirs(path+ "/case_study/case_study_results",exist_ok=True)
+                paths=path+ "/case_study/case_study_results/"   
         #import pdb
         #pdb.set_trace()
         fused_dataframes.to_csv(paths+ name +'.csv',index=False)
@@ -90,14 +90,14 @@ def produce_fused_representations(
 
             # print(fused_list)
             # name = '_'.join(representation_name_list)
-            
+            breakpoint()
             print(fused_name)
-            path = os.path.dirname(os.getcwd()) + "/results/"
             
-            if "results" not in os.listdir(path):
-                os.makedirs(path, exist_ok=True)
+            
+            #if "results" not in os.listdir(path):
+            #    os.makedirs(path, exist_ok=True)
     
-            fused_list.to_csv(path + fused_name + '.csv')
+            fused_list.to_csv( os.getcwd() + "/case_study/case_study_results/" + fused_name + '.csv')
             # df.to_csv('fused/' + name + ".csv")
             fused_dataframes.append(fused_list)
         return fused_dataframes

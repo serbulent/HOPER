@@ -8,16 +8,18 @@ from time import time
 import pandas as pd
 import pickle
 from gem.embedding.node2vec import node2vec
+import os
+
 
 # File that contains the edges. Format: source target
 # Optionally, you can add weights as third column: source target weight
-edge_f="/media/DATA2/isik/HOPER/Reproduction/ppi_representations/GEM/examples/data/deneme.edgelist"
-protein_id=pd.read_csv("/media/DATA2/isik/HOPER/Reproduction/ppi_representations/proteins_id_deneme.csv")
+#edge_f="/media/DATA2/isik/HOPER/Reproduction/ppi_representations/GEM/examples/data/deneme.edgelist"
+#protein_id=pd.read_csv("/media/DATA2/isik/HOPER/Reproduction/ppi_representations/proteins_id_deneme.csv")
 # Specify whether the edges are not directed
-isDirected =False
-d = [2,20]
-p = [0.25,1]
-q = [0.25]
+#isDirected =False
+#d = [2,20]
+#p = [0.25,1]
+#q = [0.25]
 
 def node2vec_repesentation_call(edge_f,protein_id,isDirected,d,p,q):
 # Load graph
@@ -54,11 +56,11 @@ def node2vec_repesentation_call(edge_f,protein_id,isDirected,d,p,q):
             ent_vec = {'Entry':protein_id_list,'Vector':emb_list}
             
             ent_vec_data_frame = pd.DataFrame(ent_vec)
-    
-            output = open('Node2vec_'+'d_'+str(i) + '_' +'p_'+str(j) +  '_' +'q_'+str(k) +'.pkl', 'wb')
+            path=os.getcwd() 
+            output = open(path+ '/'+"ppi_representations"+'/'+"data"+ '/Node2vec_'+'d_'+str(i) + '_' +'p_'+str(j) +  '_' +'q_'+str(k) +'.pkl', 'wb')
             pickle.dump(ent_vec_data_frame, output)
             output.close()   
             
-node2vec_repesentation_call(edge_f,protein_id,isDirected,d,p,q)           
+#node2vec_repesentation_call(edge_f,protein_id,isDirected,d,p,q)           
 
 

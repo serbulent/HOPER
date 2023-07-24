@@ -15,7 +15,7 @@ random.seed(seed_plt)
 torch.manual_seed(seed_plt)
 if torch.cuda.is_available():
     torch.cuda.manual_seed_all(seed_plt)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu") #"cuda" if torch.cuda.is_available() else
 import numpy as np
 #from HoloProtRepAFPML import BinaryTrainModelsWithHyperParameterOptimization
 from Function_Prediction import F_max_scoring

@@ -13,16 +13,11 @@ from tqdm.notebook import tqdm
 #subsections are function, cofactor, subunit, tissue specificity, induction, domain, PTM, disease
 #Main function takes an input file handle and returns an iterator giving SeqRecord objects
 
-yaml_file_path=os.getcwd()                                                  #upload yaml file
-stream = open(yaml_file_path+'/1_CC_subsection_extractor_config.yaml', 'r')
-data = yaml.safe_load(stream)
-uniprot_dir=data["parameters"]["uniprot_dir"]                              #downloading Uniprot database
-new_file_dir=data["parameters"]["new_file_dir"]                               #creating directory to save output files         
-error_file = open( data["parameters"]["error_file_dir"] + '.txt','w')      #printing the exceptions
 
-def extract_relevant_info_from_uniprot(record):
+def extract_relevant_info_from_uniprot(record,new_file_dir,error_file):
+  #breakpoint()
     
-    try:                         
+  try:                         
             new_file = open( new_file_dir + record.id + '.txt','w')     #getting the uniprot id of each protein with the record.id and using it in the file name
 
             if ("comment_function" in record.annotations.keys()):
@@ -66,17 +61,30 @@ def extract_relevant_info_from_uniprot(record):
                     new_file.write(diseases[0])
                     break               
                               
-    except Exception as e:
+  except Exception as e:
         error_file.write(record.id)
         error_file.write("\n")
         error_file.write(str(e))
         error_file.write("\n\n")
         
 def main():
+  yaml_file_path=os.getcwd()
+  #upload yaml file
+  stream = open(yaml_file_path+'/Hoper.yaml', 'r') 
+  data = yaml.safe_load(stream)
+
+  #breakpoint()
+  os.makedirs(yaml_file_path + "/text_representations/preprocess/data/", exist_ok=True)
+  
+  os.makedirs(yaml_file_path + "/text_representations/preprocess/data/subsections/", exist_ok=True)
+  
+  os.makedirs(yaml_file_path + "/text_representations/preprocess/data/error_file/", exist_ok=True)
+  
+  uniprot_dir=data["parameters"]["uniprot_dir"]                              #downloading Uniprot database
+  new_file_dir=yaml_file_path + "/text_representations/preprocess/data/subsections/"                  #creating directory to save output files         
+  error_file = open( yaml_file_path + "/text_representations/preprocess/data/error_file/" + '.txt','w')      #printing the exceptions
+
+
   with gzip.open(uniprot_dir, 'rb') as handle:    
     for uniprot_record in tqdm(SeqIO.UniprotIO.UniprotIterator(handle)):
-        extract_relevant_info_from_uniprot(uniprot_record)
-
-
-if __name__ == "__main__":
-    main()
+        extract_relevant_info_from_uniprot(uniprot_record,new_file_dir,error_file)

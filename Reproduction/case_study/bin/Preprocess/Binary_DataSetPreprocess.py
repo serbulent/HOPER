@@ -5,7 +5,7 @@ import tqdm
 import pandas as pd
 from pathlib import Path
 
-path = os.path.dirname(os.getcwd())
+path = os.getcwd()+ "/case_study/"
 def integrate_go_lables_and_representations_for_binary(
     label_dataframe, representation_dataframe, dataset_names
 ):
@@ -47,11 +47,11 @@ def integrate_go_lables_and_representations_for_binary(
             integrated_dataframe.filter(regex="Unname"), axis=1, inplace=True
         )
     
-    
+    breakpoint()
     with open(
-            str(Path(path))
+            path
             + "/"
-            + "results"
+            + "case_study_results"
             + "/"
             + dataset_names
             + "_"

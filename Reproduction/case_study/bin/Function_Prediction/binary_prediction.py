@@ -50,7 +50,7 @@ def make_prediction(representation_name,data_preproceed,tested_model,classifier_
     representation_vector = [ast.literal_eval(label) for label in protein_representation['Vector']]  
     protein_representation_array = np.array(representation_vector, dtype=float)    
     f_max_cv = []  
-    path=os.path.dirname(os.getcwd())+'/results'
+    path=os.getcwd()+"/case_study/case_study_results"
     if 'prediction'  not in os.listdir(path):
         os.makedirs(path+"/prediction",exist_ok=True)         
     

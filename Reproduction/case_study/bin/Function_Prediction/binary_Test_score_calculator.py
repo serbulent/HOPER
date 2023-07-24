@@ -188,7 +188,7 @@ def Model_test(representation_name, integrated_dataframe, parameteter_file):
 
     f_max_cv = []
     # representation_name="_".join(representation_name_list)
-    path = os.path.dirname(os.getcwd()) + "/results"
+    path = os.getcwd() + "/case_study/case_study_results"
     if "test" not in os.listdir(path):
         os.makedirs(path + "/test", exist_ok=True)
     classifier_name_lst = []

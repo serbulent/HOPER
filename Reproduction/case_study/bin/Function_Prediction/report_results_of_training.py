@@ -15,7 +15,7 @@ def report_results_of_training(
     index,
     classifier_type,
 ):
-    path = os.path.dirname(os.getcwd()) + "/results"
+    path = os.getcwd() + "/case_study/case_study_results"
     if "test" not in os.listdir(path):
         os.makedirs(path + classifier_type, exist_ok=True)
     # inex-1=len(class_len)

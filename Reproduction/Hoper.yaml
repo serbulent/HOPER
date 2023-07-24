@@ -1,0 +1,47 @@
+parameters:
+    choice_of_module: [case_study]
+    #*************************************MODULES********************************************************************
+    #********************PPI Module********************************
+    module_name: PPI
+    choice_of_representation_name:  [Node2vec,HOPE]
+    interaction_data_path:  [/media/DATA2/sinem/hoper_config/HOPER/Reproduction/ppi_representations/data/example.edgelist]
+    protein_id_list:  [/media/DATA2/sinem/hoper_config/HOPER/Reproduction/ppi_representations/data/proteins_id.csv]
+    node2vec_module:
+        parameter_selection:
+            d:  [10]  
+            p: [0.25]
+            q:  [0.25]
+    HOPE_module:
+        parameter_selection:
+            d:  [5]
+            beta:  [0.00390625]
+    #********************Preprocessing Module********************************
+    module_name: Preprocessing
+    uniprot_dir: /media/DATA2/sinem/hoper_config/HOPER/Reproduction/text_representations/preprocess/data/uniprot_sprot.xml.gz          
+    
+    #********************case_study Module********************************
+    module_name: case_study
+    choice_of_task_name:  [prediction] #prepare_datasets,fuse_representations,model_training_test,prediction
+    fuse_representations:
+        representation_files: [/media/DATA2/sinem/multi_modal_rep_ae_multi_col_256.csv,/media/DATA2/sinem/node2vec_d_50_p_0.5_q_0.25_multi_col.csv]
+        min_fold_number:  2
+        representation_names:  [modal_rep_ae,node2vec]        
+    prepare_datasets:  
+        positive_sample_data:  [/media/DATA2/sinem/positive.csv]
+        negative_sample_data:  [/media/DATA2/sinem/neg_data.csv]
+        prepared_representation_file:  [/media/DATA2/sinem/multi_modal_rep_ae_multi_col_256.csv] 
+        representation_names:  [modal_rep_ae] 
+    
+    model_training_test:
+        representation_names:  [modal_rep_ae]
+        scoring_function:  ["f_max"]  
+        prepared_path:  ["/media/DATA2/sinem/code_refactoring/1003_code/holoprotrep/results/modal_rep_ae_binary_data.pickle"]
+        classifier_name:  ["Fully_Connected_Neural_Network"] 
+   
+    prediction:
+        representation_names:  [modal_rep_ae]
+        prepared_path:  ["/media/DATA/home/sinem/yayin_calismasi/rep_file/rep_dif_ae.csv"]
+        classifier_name:  ['Fully_Connected_Neural_Network']         
+        model_directory:  ["/media/DATA2/sinem/27nisan/1003_code-d94756e62f745c705e0d2bb94d865630890229e8/results/test/modal_rep_ae_Fully_Connected_Neural_Network_binary_classifier.pt"] 
+            
+    

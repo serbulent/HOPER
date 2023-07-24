@@ -49,12 +49,15 @@ import math
 from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_curve, auc
-from Function_Prediction import binary_evaluate
 from sklearn.metrics import make_scorer
 from sklearn import metrics
+import sys
+path = os.getcwd()
+sys.path.append(path + "/case_study/bin/")
 from Function_Prediction import binary_pytorch_network
 from Function_Prediction.binary_pytorch_network import NN
 from Function_Prediction import binary_prediction
+from Function_Prediction import binary_evaluate
 import torch
 import joblib
 random_state=42
@@ -64,6 +67,7 @@ from Function_Prediction.Model_Parameters import SVC_Classifier_parameters
 from Function_Prediction.Model_Parameters import RandomForest_Classifier_parameters
 from Function_Prediction import F_max_scoring
 import random
+
 # if every fold contains at least 2 positive samples return true,otherwise return false
 def check_for_at_least_two_class_sample_exits(y):
 
@@ -94,7 +98,7 @@ def neural_network_eval(
     path,
     parameter,
 ):
-
+    breakpoint()
     representation_name_concated = "_".join(representation_name)
     paths = (
         path
@@ -114,7 +118,6 @@ def neural_network_eval(
     best_parameter_dataframe = pd.DataFrame(parameter)
     best_parameter_dataframe.to_csv(
         path
-        + "/"
         + "training"
         + "/"
         + "Neural_network"
@@ -146,7 +149,6 @@ def neural_network_eval(
     label_predictions.insert(0, "protein_id", protein_name)
     label_predictions.to_csv(
         path
-        + "/"
         + eval_type
         + "/"
         + representation_name_concated
@@ -207,7 +209,7 @@ def select_best_model_with_hyperparameter_tuning(
     model_count = 0
     representation_name_concated = ""
     file_name = "_"
-    path = os.path.dirname(os.getcwd()) + "/results"
+    path = os.getcwd() + "/case_study/case_study_results/"
     if "training" not in os.listdir(path):
         os.makedirs(path + "/training", exist_ok=True)
         os.makedirs(path + "/test", exist_ok=True)
