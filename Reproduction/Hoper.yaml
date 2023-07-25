@@ -1,5 +1,5 @@
 parameters:
-    choice_of_module: [case_study] # Module selection PPI,Preprocessing,case_study
+    choice_of_module: [text] # Module selection PPI,Preprocessing,case_study
     #*************************************MODULES********************************************************************
     #********************PPI Module********************************
     module_name: PPI
@@ -15,6 +15,16 @@ parameters:
         parameter_selection:
             d:  [5]
             beta:  [0.00390625]
+    #********************Text Module********************************
+    module_name: text
+    choice_of_process:  [generate,visualize]
+    generate_module:
+        choice_of_representation_type:  [all]
+        uniprot_files_path:  [/media/DATA2/amine_from_data/uniprot_human/]
+        pubmed_files_path:  [/media/DATA2/amine_from_data/pubmed_yeni_abstractlar/human_pubmed_abstract/]
+    visualize_module:
+        choice_of_visualization_type:  [a]
+        result_files_path:  [/media/DATA/serbulent/DATA/Thesis/TheRepresentation/ProtText/results/]
     #********************Preprocessing Module********************************
     module_name: Preprocessing
     uniprot_dir: /media/DATA2/sinem/hoper_config/HOPER/Reproduction/text_representations/preprocess/data/uniprot_sprot.xml.gz          

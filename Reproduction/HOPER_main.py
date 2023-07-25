@@ -32,6 +32,13 @@ if "PPI" in data["parameters"]["choice_of_module"] :
   if "HOPE" in  data["parameters"]["choice_of_representation_name"]:
     HOPE.hope_repesentation_call(edge_f,protein_id,isDirected,data["parameters"]["HOPE_module"]["parameter_selection"]["d"],data["parameters"]["HOPE_module"]["parameter_selection"]["beta"])
 
+if "text" in data["parameters"]["choice_of_module"] :
+  os.system("conda env create -f /media/DATA/home/muammer/text_representations.yml")
+  if "generate" in data["parameters"]["choice_of_process"]:
+    os.system('python text_representations/representation_generation/createtextrep.py --' + data["parameters"]["generate_module"]["choice_of_representation_type"][0] + ' -upfp ' + data["parameters"]["generate_module"]["uniprot_files_path"][0] + ' -pmfp ' + data["parameters"]["generate_module"]["pubmed_files_path"][0])
+  if "visualize" in  data["parameters"]["choice_of_process"]:
+    os.system('python text_representations/result_visualization/visualize_results.py -' + data["parameters"]["visualize_module"]["choice_of_visualization_type"][0] + ' -rfp ' + data["parameters"]["visualize_module"]["result_files_path"][0])
+
 if "case_study" in data["parameters"]["choice_of_module"]:
   
   os.system("conda env create -f case_study/case_study_env.yml")
