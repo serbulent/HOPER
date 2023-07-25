@@ -1,5 +1,8 @@
 # Currently Under Improvment! We are diligently streamlining this repository for seamless automation!
 # HOPER (Holistic Protein Representation)
+<p align="center" width="100%">
+    <img width="33%" src="Figures/figure_.jpg ">
+</p>
 
 ![](Figures/figure_.jpg )
 
