@@ -88,6 +88,6 @@ def create_significance_tables():
     cc_qval_df = calculate_q_vals(go_pred_signinificance_score_cc)
 
 
-    mf_qval_df.to_csv("significance/mf_qval_df.csv")
-    bp_qval_df.to_csv("significance/bp_qval_df.csv")
-    cc_qval_df.to_csv("significance/cc_qval_df.csv")
+    mf_qval_df.to_csv("/media/DATA/home/muammer/HOPER/Reproduction/text_representations/result_visualization/significance/mf_qval_df.csv")
+    bp_qval_df.to_csv("/media/DATA/home/muammer/HOPER/Reproduction/text_representations/result_visualization/significance/bp_qval_df.csv")
+    cc_qval_df.to_csv("/media/DATA/home/muammer/HOPER/Reproduction/text_representations/result_visualization/significance/cc_qval_df.csv")
