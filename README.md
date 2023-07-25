@@ -1,5 +1,7 @@
 # Currently Under Improvment! We are diligently streamlining this repository for seamless automation!
 # HOPER (Holistic Protein Representation)
+![](Figures/figure_.jpg 100*20)
+
 
 -Holistic protein representation uses  multimodal learning model to predict protein functions even with low-data. 
 
