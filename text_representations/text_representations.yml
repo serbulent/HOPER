@@ -1,4 +1,4 @@
-name: base
+name: text
 channels:
   - conda-forge
   - defaults
@@ -388,4 +388,3 @@ dependencies:
     - wheel==0.37.0
     - wily==1.24.0
     - wrapt==1.12.1
-prefix: /media/DATA/home/muammer/anaconda3
