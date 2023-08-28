@@ -1,4 +1,4 @@
-name: text
+name: textrep
 channels:
   - conda-forge
   - defaults
