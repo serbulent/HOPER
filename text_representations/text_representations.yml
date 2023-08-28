@@ -364,7 +364,7 @@ dependencies:
     - sacremoses==0.0.43
     - scikit-multilearn==0.2.0
     - seaborn==0.11.1
-    - sent2vec==0.0.0
+    - sent2vec==0.1.5
     - smart-open==4.0.1
     - smmap==5.0.0
     - spacy==2.3.5
