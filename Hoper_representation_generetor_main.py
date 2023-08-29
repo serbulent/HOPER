@@ -35,6 +35,7 @@ if "text" in data["parameters"]["choice_of_module"] :
   os.system("pip install sent2vec")
   os.system("pip install -U nltk")
   os.system("python -m nltk.downloader stopwords")
+  os.system("pip install fasttext")
   os.system("conda env create -f text_representations/text_representations.yml")
   if "generate" in data["parameters"]["choice_of_process"]:
     os.system('python text_representations/representation_generation/createtextrep.py --' + data["parameters"]["generate_module"]["choice_of_representation_type"][0] + ' -upfp ' + data["parameters"]["generate_module"]["uniprot_files_path"][0] + ' -pmfp ' + data["parameters"]["generate_module"]["pubmed_files_path"][0])
