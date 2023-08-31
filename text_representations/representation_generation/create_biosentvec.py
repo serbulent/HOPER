@@ -30,7 +30,7 @@ def create_reps(tp):
     model = sent2vec.Sent2vecModel()
     print("\n\nLoading model...\n")
     try:
-            model.load_model('path_to_biosentvec_model')
+            model.load_model('/media/DATA/home/muammer/textrep-main/models/BioSentVec_PubMed_MIMICIII-bigram_d700.bin')
     except Exception as e:
             print(e)
             print('model successfully loaded')
