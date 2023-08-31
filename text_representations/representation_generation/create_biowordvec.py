@@ -30,7 +30,7 @@ def create_reps(tp):
     files = os.listdir(pfiles_path)
     print("\n\nLoading model...\n")
     try:
-            model = fasttext.load_model('path_to_biowordvec_model')
+            model = fasttext.load_model('/media/DATA/home/muammer/textrep-main/models/BioWordVec_PubMed_MIMICIII_d200.bin')
     except Exception as e:
             print(e)
             print('model successfully loaded')
