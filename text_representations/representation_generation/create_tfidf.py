@@ -53,7 +53,7 @@ def create_reps(tp):
         df1 = df1.append(df, ignore_index=True)
         
     entry = df1.Entry
-    df1.to_csv('/media/DATA/home/muammer/HOPER/Reproduction/text_representations/representation_generation/tfidf_representations/' + tp + '_tfidf_vectors.csv', index = False)
+    df1.to_csv('tfidf_representations/' + tp + '_tfidf_vectors.csv', index = False)
     
     df1.drop('Entry', inplace=True, axis=1)
     print('Performing principal component analysis...')
@@ -62,25 +62,25 @@ def create_reps(tp):
     principalComponents = pca.fit_transform(df1)
     pca_vectors = pd.DataFrame(principalComponents)
     pca_vectors.insert(0, "Entry", entry, True)
-    pca_vectors.to_csv('/media/DATA/home/muammer/HOPER/Reproduction/text_representations/representation_generation/tfidf_representations/' + tp + '_tfidf_vectors_pca256_multi_col.csv', index = False)
+    pca_vectors.to_csv('tfidf_representations/' + tp + '_tfidf_vectors_pca256_multi_col.csv', index = False)
 
     pca = PCA(n_components=512)
     principalComponents = pca.fit_transform(df1)
     pca_vectors = pd.DataFrame(principalComponents)
     pca_vectors.insert(0, "Entry", entry, True)
-    pca_vectors.to_csv('/media/DATA/home/muammer/HOPER/Reproduction/text_representations/representation_generation/tfidf_representations/' + tp + '_tfidf_vectors_pca512_multi_col.csv', index = False)
+    pca_vectors.to_csv('tfidf_representations/' + tp + '_tfidf_vectors_pca512_multi_col.csv', index = False)
 
     pca = PCA(n_components=1024)
     principalComponents = pca.fit_transform(df1)
     pca_vectors = pd.DataFrame(principalComponents)
     pca_vectors.insert(0, "Entry", entry, True)
-    pca_vectors.to_csv('/media/DATA/home/muammer/HOPER/Reproduction/text_representations/representation_generation/tfidf_representations/' + tp + '_tfidf_vectors_pca1024_multi_col.csv', index = False)
+    pca_vectors.to_csv('tfidf_representations/' + tp + '_tfidf_vectors_pca1024_multi_col.csv', index = False)
 
     pca = PCA(n_components=2048)
     principalComponents = pca.fit_transform(df1)
     pca_vectors = pd.DataFrame(principalComponents)
     pca_vectors.insert(0, "Entry", entry, True)
-    pca_vectors.to_csv('/media/DATA/home/muammer/HOPER/Reproduction/text_representations/representation_generation/tfidf_representations/' + tp + '_tfidf_vectors_pca2048_multi_col.csv', index = False)
+    pca_vectors.to_csv('tfidf_representations/' + tp + '_tfidf_vectors_pca2048_multi_col.csv', index = False)
 
 def main():
     create_reps("uniprot")
