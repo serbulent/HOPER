@@ -18,12 +18,7 @@ that interacting proteins are likely to act in the same biological process. Also
 
 -We aim to increase low-data prediction performance by using these three data types together.
 
-# How to run HOPER
-
-Step by step operation:
-  1. Clone repository: git clone https://github.com/serbulent/HOPER.git
-  2. Edit the configuration file Hoper.yaml
-  3. Run module main function  i.e., python **HOPER_main.py**
+# Installation
 
 * To install packages to use for Node2vec and HOPE in your home directory, use:
 
@@ -45,3 +40,26 @@ Step by step operation:
 * Make node2vec executable and add to system PATH or move it to the location you run.
 
 - Example of case study configuration file see documentation [readme.md](https://github.com/serbulent/HOPER/blob/main/Reproduction/case_study/readme.md)
+
+* Clone the repo 
+
+    git clone https://github.com/serbulent/HOPER.git
+
+
+
+# How to run HOPER
+
+Run module main function  i.e., python **HOPER_main.py** after editing  the configuration file Hoper.yaml as below examples
+
+* Run HOPER to produce text representation example
+
+* Run HOPER to produce PPI representation example
+
+* Run HOPER to produce SimpleAE example
+
+* Run HOPER to produce MultiModalAE example
+
+* Run HOPER to produce TransferAE example
+
+
+
