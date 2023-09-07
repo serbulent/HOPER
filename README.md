@@ -49,7 +49,7 @@ that interacting proteins are likely to act in the same biological process. Also
 
 # How to run HOPER
 
-Run module main function  i.e., python **HOPER_main.py** after editing  the configuration file Hoper.yaml as below examples
+Run module main function  i.e., python **Hoper_representation_generetor_main.py** after editing  the configuration file Hoper.yaml as below examples
 
 * Run HOPER to produce text representation example
 [readme.md](https://github.com/serbulent/HOPER/blob/main/text_representations/representation_generation/README.md)
