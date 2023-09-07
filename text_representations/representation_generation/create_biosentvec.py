@@ -37,7 +37,8 @@ def create_reps(tp):
 
     df = pd.DataFrame(columns=['Entry', 'Vector'])
     print("\n\nCreating " + tp + "biosentvec vectors...\n")
-    for i in tqdm(range(len(files))):
+    for i in tqdm(range(20)):
+    #for i in tqdm(range(len(files))):
         if tp == 'uniprot':
             contentu = open(ufiles_path + files[i])
             sentence = preprocess_sentence(contentu.read())
@@ -53,7 +54,7 @@ def create_reps(tp):
         df = df.append({'Entry' : files[i][:-4], 'Vector' : sentence_vector[0]}, ignore_index = True)
 
     df = convert_dataframe_to_multi_col(df)
-    df.to_csv('biosentvec_representations/' + tp + '_biosentvec_vectors_multi_col.csv', index = False)
+    df.to_csv('text_representations/representation_generation/biosentvec_representations/' + tp + '_biosentvec_vectors_multi_col.csv', index = False)
 
 def main():
     create_reps("uniprot")
