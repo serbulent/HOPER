@@ -2,6 +2,8 @@
 
 This repository contains Python scripts to generate text representations using different techniques. It provides options to create TF-IDF representations, BioSentVec representations, and BioWordVec representations for input data.  It takes input data from UniProt and PubMed sources and generates vector representations for each entry. 
 
+Dataset is temporarily limited to 20 entries to make testing easier. PCA analysis for tfidf vectors also disabled because the limit is less than the PCA components.
+
 ## Definition of Scripts
 
 ### create_tfidf.py
