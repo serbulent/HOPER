@@ -15,7 +15,7 @@ parameters:
         parameter_selection:
             d:  [5]
             beta:  [0.00390625]
-    #********************Text Module********************************
+    #********************Text Representation Module********************************
     module_name: text
     choice_of_process:  [generate,visualize]
     generate_module:
