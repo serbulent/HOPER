@@ -19,10 +19,10 @@ import extracting_abstracts
 
 
 
-'''CC_subsection_extractor.main()
+CC_subsection_extractor.main()
 subsection.main()
 subsection.removing_parentheses()
 subsection.removing_dots()
 subsection.removing_spaces()
-parsing_pubmed_ids.main()'''
+parsing_pubmed_ids.main()
 extracting_abstracts.main()
