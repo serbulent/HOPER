@@ -12,7 +12,7 @@ import sys
 
 # upload yaml file
 path = os.getcwd()
-sys.path.append(path + "/case_study/bin/")
+#sys.path.append(path + "/case_study/bin/")
 stream = open(path + "/Hoper_representation_generetor.yaml", "r")
 data = yaml.safe_load(stream)
 module_name=data["parameters"]["module_name"]
