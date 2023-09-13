@@ -49,12 +49,39 @@ that interacting proteins are likely to act in the same biological process. Also
 
 # How to run HOPER
 
-Run module main function  i.e., python **Hoper_representation_generetor_main.py** after editing  the configuration file Hoper.yaml as below examples
+Run module main function after editing  the configuration file Hoper.yaml as below examples as;
+
+```
+python Hoper_representation_generetor_main.py 
+```
+
 
 * Run HOPER to produce text representation example for more information please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/text_representations/representation_generation/README.md)
+
 * Run HOPER to produce PPI representation example for more information please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/ppi_representations/readme.md)
+
+```
+parameters:
+    choice_of_module: [text] # Module selection PPI,Preprocessing,case_study
+    #********************PPI Module********************************
+    module_name: PPI
+    # Define representation model(s) used to calculate PPI representation vectors
+    choice_of_representation_name:  [Node2vec,HOPE]
+    interaction_data_path:  [./ppi_representations/data/example.edgelist]
+    protein_id_list:  [./ppi_representations/data/proteins_id.csv]
+    node2vec_module:
+        parameter_selection:
+            d:  [10]  
+            p: [0.25]
+            q:  [0.25]
+    HOPE_module:
+        parameter_selection:
+            d:  [5]
+            beta:  [0.00390625]
+```
+
 * Run HOPER to produce SimpleAE example
 
 * Run HOPER to produce MultiModalAE example
