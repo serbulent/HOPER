@@ -48,7 +48,18 @@ Creating biowordvec representations: If the biowordvec or all flags are set, the
 
 ## Data
 
-Uniprot and Pubmed files must be in text format and named with the uniprot ids.
+Uniprot and Pubmed files must be in text format and named with the uniprot ids. Download and unzip the files to the data folder from the urls given below.
+
+https://drive.google.com/file/d/1jZJiL6R9c4hsxh_k5pCBsX6LG1zzbITX/view?usp=drive_link
+https://drive.google.com/file/d/1BwU2DXCXdtHGxtY1TlQxTuNbc7xVBzDp/view?usp=drive_link
+
+## Models
+
+biosentvec and biowordvec models must be downloaded to models folder from the urls below.
+
+https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
+https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
+
 
 ### Options
 
@@ -71,8 +82,8 @@ The script allows users to specify different options to create specific types of
 Step by step operation:
   1. Clone repository
   2. Install dependencies(given below)
-  3. Define the path to save output files in the script
-  4. Define path for biosentvec and biowordvec models
+  3. Download biosentvec and biowordvec models to models folder
+  4. Download and unzip uniprot and pubmed files to data folder
   5. Run the script
 
 Examples:
