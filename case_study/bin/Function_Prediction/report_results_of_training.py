@@ -15,7 +15,7 @@ def report_results_of_training(
     index,
     classifier_type,
 ):
-    path = os.getcwd() + "/case_study/case_study_results"
+    path = os.path.join(os.getcwd(),"case_study/case_study_results")
     if "test" not in os.listdir(path):
         os.makedirs(path + classifier_type, exist_ok=True)
     # inex-1=len(class_len)
@@ -92,159 +92,40 @@ def report_results_of_training(
 
         mean_result_dataframe.loc[index - 1] = mean_result_list[0]
         mean_result_dataframe.reset_index(drop=True, inplace=True)
-        result_df.to_csv(
-            path
-            + "/"
-            + classifier_type
-            + "/"
-            + representation_name
-            + "_"
-            + file_name
-            + "_"
-            + classifier_type
-            + ".tsv",
-            sep="\t",
-            index=False,
-        )
-        mean_result_dataframe.to_csv(
-            path
-            + "/"
-            + classifier_type
-            + "/"
-            + representation_name
-            + "_"
-            + file_name
-            + "_"
-            + classifier_type
-            + "_means"
-            + ".tsv",
-            sep="\t",
-            index=False,
-        )
+        result_df.to_csv(os.path.join(path,classifier_type,representation_name+ "_"+ file_name+ "_"+ classifier_type+ ".tsv"),sep="\t",index=False,)
+
+        mean_result_dataframe.to_csv(os.path.join(path,classifier_type,representation_name+"_"+file_name+ "_"+ classifier_type+ "_means.tsv"),sep="\t",index=False,)
 
     # rep_name="_".join(representation_name)
 
     elif index > 1:
 
         if index > 2:
-            result_df = pd.read_csv(
-                path
-                + "/"
-                + classifier_type
-                + "/"
-                + representation_name
-                + "_"
-                + file_name
-                + "_"
-                + classifier_type
-                + ".tsv",
-                sep="\t",
-            )
+            result_df = pd.read_csv(os.path.join(path,classifier_type,representation_name+"-"+file_name+"_"+classifier_type+".tsv"),sep="\t",)
             result_df.loc[index - 1] = result_list[0]
             result_df.reset_index(drop=True, inplace=True)
-            result_df.to_csv(
-                path
-                + "/"
-                + classifier_type
-                + "/"
-                + representation_name
-                + "_"
-                + file_name
-                + "_"
-                + classifier_type
-                + ".tsv",
-                sep="\t",
-                index=False,
-            )
+            result_df.to_csv(os.path.join(path,classifier_type,representation_name+"_"+file_name+"_"+classifier_type+".tsv"),sep="\t",index=False,)
 
-            mean_result_dataframe = pd.read_csv(
-                path
-                + "/"
-                + classifier_type
-                + "/"
-                + representation_name
-                + file_name
-                + "_"
-                + classifier_type
-                + "_means"
-                + ".tsv",
-                sep="\t",
-            )
+
+            mean_result_dataframe = pd.read_csv(os.path.join(path,classifier_type,representation_name+file_name+"_"+classifier_type+"_means.tsv"),sep="\t",)
+
             mean_result_dataframe.loc[index - 1] = mean_result_list
             mean_result_dataframe.reset_index(drop=True, inplace=True)
-            mean_result_dataframe.to_csv(
-                path
-                + "/"
-                + classifier_type
-                + "/"
-                + representation_name
-                + file_name
-                + "_"
-                + classifier_type
-                + "_means"
-                + ".tsv",
-                sep="\t",
-                index=False,
-            )
+            mean_result_dataframe.to_csv(os.path.join(path,classifier_type,representation_name+file_name+"_"+classifier_type+"_means.tsv"),sep="\t",index=False,)
+              
         else:
-            result_df = pd.read_csv(
-                path
-                + "/"
-                + classifier_type
-                + "/"
-                + representation_name
-                + "_"
-                + file_name
-                + "_"
-                + classifier_type
-                + ".tsv",
-                sep="\t",
-            )
+            result_df = pd.read_csv(os.path.join(path,classifier_type,representation_name+ "_"+ file_name+ "_"+ classifier_type+ ".tsv"),sep="\t")
+
             result_df.loc[index - 1] = result_list[0]
             result_df.reset_index(drop=True, inplace=True)
 
-            result_df.to_csv(
-                path
-                + "/"
-                + classifier_type
-                + "/"
-                + representation_name
-                + "_"
-                + file_name
-                + "_"
-                + classifier_type
-                + ".tsv",
-                sep="\t",
-                index=False,
-            )
-            mean_result_dataframe = pd.read_csv(
-                path
-                + "/"
-                + classifier_type
-                + "/"
-                + representation_name
-                + "_"
-                + file_name
-                + "_"
-                + classifier_type
-                + "_means"
-                + ".tsv",
-                sep="\t",
-            )
+            result_df.to_csv(os.path.join(path,classifier_type,representation_name+ "_"+ file_name+ "_"+ classifier_type+ ".tsv"),sep="\t",index=False,)
+
+            mean_result_dataframe = pd.read_csv(os.path.join(path,classifier_type,representation_name+ "_"+ file_name+ "_"+ classifier_type+ "_means.tsv"),sep="\t",)
+
             mean_result_dataframe.loc[index - 1] = mean_result_list[0]
             mean_result_dataframe.reset_index(drop=True, inplace=True)
 
-            mean_result_dataframe.to_csv(
-                path
-                + "/"
-                + classifier_type
-                + "/"
-                + representation_name
-                + file_name
-                + "_"
-                + classifier_type
-                + "_means"
-                + ".tsv",
-                index=False,
-            )
+            mean_result_dataframe.to_csv(os.path.join(path,classifier_type,representation_name+ file_name+ "_"+ classifier_type+ "_means.tsv"),index=False,)
+                
     pass

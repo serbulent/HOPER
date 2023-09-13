@@ -293,24 +293,16 @@ def Model_test(representation_name, integrated_dataframe, parameteter_file):
                             protein_name.append(protein)
                             continue
 
-            paths = (
-                path
-                + "/test"
-                + "/"
-                + representation_name
-                + "_"
-                + classifier_name
-                + "_"
-                + "binary_classifier"
-                + ".pt"
-            )
-            # torch.save(model,paths )
+            paths =os.path.join(path,"test",representation_name+"_"+classifier_name+"_"+"binary_classifier.pt")
+            breakpoint()   
+            torch.save(model,paths )
 
             # Initialize optimizer
             optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
             # Print model's state_dict
             print("Model's state_dict:")
+            import pdb; pdb.set_trace()
             for param_tensor in model.state_dict():
                 print(param_tensor, "\t", model.state_dict()[param_tensor].size())
             # Print optimizer's state_dict
@@ -343,15 +335,8 @@ def Model_test(representation_name, integrated_dataframe, parameteter_file):
                             continue
 
                 rep_name_and_go_id = representation_name
-            filename = (
-                path
-                + "/"
-                + "test"
-                + "/"
-                + classifier_name
-                + "binary_classifier"
-                + "_test_model.joblib"
-            )
+            filename =os.path.join(path,"test",classifier_name+"binary_classifier_test_model.joblib")
+            
             classifier.fit(protein_representation_array, model_label)
             joblib.dump(classifier, filename)
             # joblib.dump(model_pipline, filename)
@@ -362,19 +347,8 @@ def Model_test(representation_name, integrated_dataframe, parameteter_file):
         # ls=np.concatenate(model_label_pred_lst)
         label_predictions.insert(0, "protein_id", protein_name)
         # label_predictions["prediction_values"]=[i for i in ls]
+        label_predictions.to_csv(os.path.join(path,"test",classifier_name+"binary_classifier_test_predictions.tsv"),sep="\t",index=False,)
 
-        label_predictions.to_csv(
-            path
-            + "/"
-            + "test"
-            + "/"
-            + classifier_name
-            + "binary_classifier"
-            + "_test"
-            + "_predictions.tsv",
-            sep="\t",
-            index=False,
-        )
 
         binary_evaluate.evaluate(
             kf,

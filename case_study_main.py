@@ -1,32 +1,33 @@
-
-
-
 import yaml
 #from gem.embedding.node2vec import node2vec
-
 import pandas as pd
 import os
 import glob
 import tqdm
-
 from sklearn.utils import shuffle
 import os
 import pickle
 import imghdr
 import sys
-
+from case_study.bin.Preprocess import Binary_DataSetPreprocess
+from case_study.bin.Preprocess import RepresentationFusion
+from case_study.bin.Function_Prediction import BinaryTrainandTestModelsWithHyperParameterOptimization
+from case_study.bin.Function_Prediction import binary_prediction
+from case_study.bin.Function_Prediction import binary_Test_score_calculator
+from case_study.bin.Function_Prediction import ModelParameterClass as Model_parameter
 
 # upload yaml file
 path = os.getcwd()
-sys.path.append(path + "/case_study/bin/")
-stream = open(path + "/case_study.yaml", "r")
+#sys.path.append(path + "/case_study/bin/")
+absolute_path=os.path.join(path,"case_study.yaml")
+stream = open(absolute_path, "r")
 data = yaml.safe_load(stream)
 module_name=data["parameters"]["module_name"]
 
 
 if "case_study" in data["parameters"]["choice_of_module"]:
   
-  os.system("conda env create -f case_study/case_study_env.yml")
+  os.system("conda activate hoper_case_study_env ")
   os.system("pip install imbalanced-learn")
   os.system("pip install scikit-learn==1.0.2")
   os.system("pip install tqdm")
@@ -36,17 +37,13 @@ if "case_study" in data["parameters"]["choice_of_module"]:
   os.system("pip install torchmetrics==0.4.1")
   os.system("pip install torch")
 
-  from case_study.bin.Preprocess import Binary_DataSetPreprocess
-  from case_study.bin.Preprocess import RepresentationFusion
-  from case_study.bin.Function_Prediction import BinaryTrainandTestModelsWithHyperParameterOptimization
-  from case_study.bin.Function_Prediction import binary_prediction
-  from case_study.bin.Function_Prediction import binary_Test_score_calculator
-  from case_study.bin.Function_Prediction import ModelParameterClass as Model_parameter
+
   datapreprocessed_lst = []
 # check if results file exist
-  
-  if "case_study_results" not in os.listdir(path + "/case_study/"):
-    os.makedirs(path+ "/case_study/" + "/case_study_results", exist_ok=True)
+  case_study_dir=os.path.join(path, "case_study")
+  if "case_study_results" not in os.listdir(case_study_dir):
+    case_study_results_dir=os.path.join(path, "case_study/case_study_results")
+    os.makedirs(case_study_results_dir, exist_ok=True)
   #breakpoint()
   parameter_class_obj=Model_parameter.ModelParameterClass(data["parameters"]["choice_of_task_name"],
     data["parameters"]["fuse_representations"],data["parameters"]["prepare_datasets"],
@@ -141,7 +138,7 @@ if "case_study" in data["parameters"]["choice_of_module"]:
         data_preproceed_df = pickle.load(data_preproceed_pickle)
         best_param = BinaryTrainandTestModelsWithHyperParameterOptimization.select_best_model_with_hyperparameter_tuning(
                 parameter_class_obj.model_training_test["representation_names"],
-                data_preproceed_df[0],
+                data_preproceed_df,
                 scoring_func,
                 parameter_class_obj.model_training_test["classifier_name"],
         )

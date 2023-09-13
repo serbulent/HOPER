@@ -40,7 +40,7 @@ import copy
 
 def make_prediction(representation_name,data_preproceed,tested_model,classifier_name):
 
-
+    
     protein_representation = data_preproceed.drop(["Entry"], axis=1)
     proteins=list(data_preproceed['Entry'])
     vectors=list(protein_representation['Vector'])
@@ -50,9 +50,9 @@ def make_prediction(representation_name,data_preproceed,tested_model,classifier_
     representation_vector = [ast.literal_eval(label) for label in protein_representation['Vector']]  
     protein_representation_array = np.array(representation_vector, dtype=float)    
     f_max_cv = []  
-    path=os.getcwd()+"/case_study/case_study_results"
+    path=os.path.join(os.getcwd(),"case_study/case_study_results")
     if 'prediction'  not in os.listdir(path):
-        os.makedirs(path+"/prediction",exist_ok=True)         
+        os.makedirs(os.path.join(path,"prediction"),exist_ok=True)         
     
     index=0
     
@@ -82,7 +82,7 @@ def make_prediction(representation_name,data_preproceed,tested_model,classifier_
      
         if (classifier_name[i]== 'Fully_Connected_Neural_Network'):
             
-           
+            import pdb; pdb.set_trace()
             input_size= len(protein_representation_array[0])
             class_num=1
             model_class=binary_pytorch_network.model_call(input_size,class_num)
@@ -111,4 +111,4 @@ def make_prediction(representation_name,data_preproceed,tested_model,classifier_
         #import pdb
         #pdb.set_trace()
         label_predictions.insert(0, "protein_id", protein_name)                  
-        label_predictions.to_csv(path+'/prediction/'+representation_name+'_'+"prediction_" +"binary_classifier"+ '_' + classifier_name[i]+".csv", index=False)        
+        label_predictions.to_csv(os.path.join(path,'prediction',representation_name+'_'+"prediction_" +"binary_classifier"+ '_' + classifier_name[i]+".csv"), index=False)        

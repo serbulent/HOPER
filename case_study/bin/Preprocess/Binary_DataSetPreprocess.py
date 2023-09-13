@@ -4,8 +4,8 @@ import datetime
 import tqdm
 import pandas as pd
 from pathlib import Path
+path = os.path.join(os.getcwd(), "case_study") 
 
-path = os.getcwd()+ "/case_study/"
 def integrate_go_lables_and_representations_for_binary(
     label_dataframe, representation_dataframe, dataset_names
 ):
@@ -47,16 +47,9 @@ def integrate_go_lables_and_representations_for_binary(
             integrated_dataframe.filter(regex="Unname"), axis=1, inplace=True
         )
     
-    breakpoint()
-    with open(
-            path
-            + "/"
-            + "case_study_results"
-            + "/"
-            + dataset_names
-            + "_"
-            + "binary_data"
-            + ".pickle",
+    #breakpoint()
+    path_binary_data = os.path.join(os.getcwd(), "case_study/case_study_results",dataset_names+"_binary_data.pickle") 
+    with open(path_binary_data,
             "wb",
         ) as handle:
             pickle.dump(integrated_dataframe, handle)
