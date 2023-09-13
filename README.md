@@ -85,10 +85,12 @@ parameters:
 ```
 
 * Run HOPER to produce SimpleAE example
+  
 '''
     module_name: SimpleAe #Protein sequence based protein representation 
     representation_path: ./case_study/case_study_results/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
 '''
+
 * Run HOPER to produce MultiModalAE example
 
 * Run HOPER to produce TransferAE example
