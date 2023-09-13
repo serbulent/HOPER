@@ -64,26 +64,31 @@ python Hoper_representation_generetor_main.py
 
 ```
 parameters:
-    choice_of_module: [text] # Module selection PPI,Preprocessing,case_study
+    choice_of_module: [text] # Module selection PPI,Preprocessing,SimpleAe
     #********************PPI Module********************************
     module_name: PPI
     # Define representation model(s) used to calculate PPI representation vectors
     choice_of_representation_name:  [Node2vec,HOPE]
+    # Protein-protein interaction data path
     interaction_data_path:  [./ppi_representations/data/example.edgelist]
+    # Protein id for interaction data
     protein_id_list:  [./ppi_representations/data/proteins_id.csv]
-    node2vec_module:
+    node2vec_module: # PPI representation parameter selection for more information please read [readme.md](https://github.com/serbulent/HOPER/blob/main/ppi_representations/readme.md)
         parameter_selection:
             d:  [10]  
             p: [0.25]
             q:  [0.25]
-    HOPE_module:
+    HOPE_module:  # PPI representation parameter selection for more information please read [readme.md](https://github.com/serbulent/HOPER/blob/main/ppi_representations/readme.md)
         parameter_selection:
             d:  [5]
             beta:  [0.00390625]
 ```
 
 * Run HOPER to produce SimpleAE example
-
+'''
+    module_name: SimpleAe #Protein sequence based protein representation 
+    representation_path: ./case_study/case_study_results/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
+'''
 * Run HOPER to produce MultiModalAE example
 
 * Run HOPER to produce TransferAE example
