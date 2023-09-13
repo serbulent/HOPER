@@ -57,7 +57,8 @@ At least one option should be selected. If no options are provided, an error mes
 Step by step operation:
   1. Clone repository
   2. Install dependencies(given below)
-  3. Run the script
+  3. Download and unzip result files to result_files folder from https://drive.google.com/file/d/1Y6WIfkM9IQakqvDJJHsIKrfY2Td3C7r8/view?usp=drive_link
+  4. Run the script
 
 Examples:
 
