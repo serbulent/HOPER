@@ -20,11 +20,11 @@ parameters:
     choice_of_process:  [generate,visualize]
     generate_module:
         choice_of_representation_type:  [all]
-        uniprot_files_path:  [/media/DATA2/amine_from_data/uniprot_human/]
-        pubmed_files_path:  [/media/DATA2/amine_from_data/pubmed_yeni_abstractlar/human_pubmed_abstract/]
+        uniprot_files_path:  [text_representations/representation_generation/data/uniprot/]
+        pubmed_files_path:  [text_representations/representation_generation/data/pubmed/]
     visualize_module:
         choice_of_visualization_type:  [a]
-        result_files_path:  [/media/DATA/serbulent/DATA/Thesis/TheRepresentation/ProtText/results/]
+        result_files_path:  [text_representations/result_visualization/result_files/results/]
     #********************Preprocessing Module********************************
     module_name: Preprocessing
     uniprot_dir: /media/DATA2/sinem/hoper_config/HOPER/Reproduction/text_representations/preprocess/data/uniprot_sprot.xml.gz          
