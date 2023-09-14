@@ -1,34 +1,17 @@
-# textrep
-
 This repository contains Python scripts for analyzing prediction results and creating figures and significance tables for ontology-based function prediction.
 
-## Definition of Scripts
-
-### create_figures.py
-
-#### Functions
-
-- `create_index_from_model_name(index_names)`: Creates an index list from model names.
-- `create_pred_table(measure)`: Reads prediction results, orders them alphabetically, and creates a prediction table.
-- `get_go_pred_table_for_aspect(aspect, go_pred_table)`: Slices the prediction table by aspect and orders subgroups.
-- `prepare_figure_data_for_aspect(aspect)`: Calculates mean measures for different aspects and returns F1 weighted scores.
-- `set_colors_and_marks_for_representation_groups(ax)`: Sets colors and marks for representation groups in a plot.
-- `create_figures()`: Creates dataframes for figures and generates the figures.
-
-### create_significance.py
-
-#### Functions
-
-- `calculate_q_vals(go_pred_score_table)`: Calculates q-values using the Benjamini/Hochberg method.
-- `check_for_normality(go_pred_signinificance_score_df)`: Checks if data is drawn from a normal distribution.
-- `nan_to_zero(x)`: Replaces NaN values with zero.
-- `create_significance_tables()`: Creates significance tables for different aspects.
-
-### visualize_results.py
-
-#### Functions
-
-- `main()`: The main function that parses command-line arguments and runs the analysis.
+# Dependencies
+ 1.	Python 3.7.3
+ 2.	pandas 1.1.4
+ 3.	scipy
+ 4.	seaborn
+ 5.	matplotlib
+ 6.	numpy
+ 7.	glob
+ 8.	os
+ 9.	statsmodels
+ 10.	math
+ 11.	ast
 
 ## Data
 
@@ -81,19 +64,6 @@ python visualize_results -a -rfp /path/to/result/files
 ```
 
 Make sure to replace `/path/to/result/files` with the actual path to your result files.
-
-# Dependencies
- 1.	Python 3.7.3
- 2.	pandas 1.1.4
- 3.	scipy
- 4.	seaborn
- 5.	matplotlib
- 6.	numpy
- 7.	glob
- 8.	os
- 9.	statsmodels
- 10.	math
- 11.	ast
 
 ## Definition of Output
 
