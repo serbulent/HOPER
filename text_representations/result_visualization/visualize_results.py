@@ -1,3 +1,4 @@
+#This is the main function that parses command-line arguments and runs the analysis.
 import argparse
 import create_figures as cf
 import create_significance as cs
