@@ -14,6 +14,7 @@ from scipy.stats import shapiro
 
 result_path = ""
 
+#calculate_q_vals(go_pred_score_table): Calculates q-values using the Benjamini/Hochberg method.
 def calculate_q_vals(go_pred_score_table):
     
     tTest_pvalue_list = []
@@ -34,6 +35,7 @@ def calculate_q_vals(go_pred_score_table):
     qval_df.set_index(go_pred_score_table.columns, inplace=True)
     return qval_df
 
+#check_for_normality(go_pred_signinificance_score_df): Checks if data is drawn from a normal distribution.
 def check_for_normality(go_pred_signinificance_score_df):
     for col in go_pred_signinificance_score_df:
         stat, p = shapiro(go_pred_signinificance_score_df[col])
@@ -43,12 +45,14 @@ def check_for_normality(go_pred_signinificance_score_df):
             print('Data does not drawn from a Normal distribution (reject H0) for ' + col)
             print('Statistics=%.3f, p=%.3f' % (stat, p))
 
+#nan_to_zero(x): Replaces NaN values with zero.
 def nan_to_zero(x):
     if math.isnan(x):
         return 0
     else:
         return x
 
+#create_significance_tables(): Creates significance tables for different aspects.
 def create_significance_tables():
     go_pred_signinificance_score_mf = pd.DataFrame()
     go_pred_signinificance_score_bp = pd.DataFrame()
