@@ -60,7 +60,11 @@ python Hoper_representation_generetor_main.py
 [readme.md](https://github.com/serbulent/HOPER/blob/main/text_representations/representation_generation/README.md)
 
 ```
- module_name: text
+ parameters:
+    choice_of_module: [text] # Module selection PPI,Preprocessing,case_study
+    #*************************************MODULES********************************************************************
+    #********************Text Representation Module********************************
+    module_name: text
     choice_of_process:  [generate,visualize]
     generate_module:
         choice_of_representation_type:  [all]
