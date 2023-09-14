@@ -49,7 +49,7 @@ The script allows users to specify different options to create specific types of
 
 Step by step operation:
   1. Clone repository
-  2. Install dependencies(given below)
+  2. Install dependencies(given above)
   3. Download biosentvec and biowordvec models to models folder
   4. Download and unzip uniprot and pubmed files to data folder
   5. Run the script
