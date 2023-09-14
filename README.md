@@ -79,22 +79,21 @@ python Hoper_representation_generetor_main.py
 [readme.md](https://github.com/serbulent/HOPER/blob/main/ppi_representations/readme.md)
 
 ```
+
 parameters:
-    choice_of_module: [text] # Module selection PPI,Preprocessing,SimpleAe
+    choice_of_module: [fuse_representations] # Module selection PPI,Preprocessing,case_study
+    #*************************************MODULES********************************************************************
     #********************PPI Module********************************
     module_name: PPI
-    # Define representation model(s) used to calculate PPI representation vectors
     choice_of_representation_name:  [Node2vec,HOPE]
-    # Protein-protein interaction data path
-    interaction_data_path:  [./ppi_representations/data/example.edgelist]
-    # Protein id for interaction data
-    protein_id_list:  [./ppi_representations/data/proteins_id.csv]
-    node2vec_module: # PPI representation parameter selection for more information please read [readme.md](https://github.com/serbulent/HOPER/blob/main/ppi_representations/readme.md)
+    interaction_data_path:  [./data/hoper_PPI/PPI_example_data/example.edgelist]
+    protein_id_list:  [./data/hoper_PPI/PPI_example_data/proteins_id.csv]
+    node2vec_module:
         parameter_selection:
             d:  [10]  
             p: [0.25]
             q:  [0.25]
-    HOPE_module:  # PPI representation parameter selection for more information please read [readme.md](https://github.com/serbulent/HOPER/blob/main/ppi_representations/readme.md)
+    HOPE_module:
         parameter_selection:
             d:  [5]
             beta:  [0.00390625]
