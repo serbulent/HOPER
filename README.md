@@ -59,6 +59,18 @@ python Hoper_representation_generetor_main.py
 * Run HOPER to produce text representation example for more information please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/text_representations/representation_generation/README.md)
 
+```
+ module_name: text
+    choice_of_process:  [generate,visualize]
+    generate_module:
+        choice_of_representation_type:  [all]
+        uniprot_files_path:  [text_representations/representation_generation/data/uniprot/]
+        pubmed_files_path:  [text_representations/representation_generation/data/pubmed/]
+    visualize_module:
+        choice_of_visualization_type:  [a]
+        result_files_path:  [text_representations/result_visualization/result_files/results/]
+```
+
 * Run HOPER to produce PPI representation example for more information please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/ppi_representations/readme.md)
 
