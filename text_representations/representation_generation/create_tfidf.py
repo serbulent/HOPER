@@ -85,6 +85,13 @@ def create_reps(tp):
     pca_vectors.to_csv('text_representations/representation_generation/tfidf_representations/' + tp + '_tfidf_vectors_pca2048_multi_col.csv', index = False)
     '''
 def main():
+    '''
+    create_reps(tp): This function takes a parameter tp which represents the type of data ("uniprot", "pubmed", or "uniprotpubmed"). It reads files from the specified paths (ufiles_path and pfiles_path), 
+    concatenates their contents based on the data type, and applies the TF-IDF vectorization technique using the TfidfVectorizer from scikit-learn. It creates a pandas DataFrame (df1) where 
+    each row represents a file, and each column represents a feature (word). The DataFrame is then saved as a CSV file. It also performs Principal Component Analysis (PCA) on the DataFrame 
+    using different numbers of components (256, 512, 1024, 2048), and saves the resulting PCA-transformed vectors as separate CSV files.
+    '''
+        
     create_reps("uniprot")
     create_reps("pubmed")
     create_reps("uniprotpubmed")
