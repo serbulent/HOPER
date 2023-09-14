@@ -4,47 +4,15 @@ This repository contains Python scripts to generate text representations using d
 
 Dataset is temporarily limited to 20 entries to make testing easier. PCA analysis for tfidf vectors also disabled because the limit is less than the PCA components.
 
-## Definition of Scripts
-
-### create_tfidf.py
-
-#### Functions
-
-`create_reps(tp)`: This function takes a parameter tp which represents the type of data ("uniprot", "pubmed", or "uniprotpubmed"). It reads files from the specified paths (ufiles_path and pfiles_path), concatenates their contents based on the data type, and applies the TF-IDF vectorization technique using the TfidfVectorizer from scikit-learn. It creates a pandas DataFrame (df1) where each row represents a file, and each column represents a feature (word). The DataFrame is then saved as a CSV file. It also performs Principal Component Analysis (PCA) on the DataFrame using different numbers of components (256, 512, 1024, 2048), and saves the resulting PCA-transformed vectors as separate CSV files.
-
-
-### create_biosentvec.py
-
-#### Functions
-
-`convert_dataframe_to_multi_col(representation_dataframe)`: This function takes a representation DataFrame as input (representation_dataframe), which has two columns: 'Entry' and 'Vector'. It splits the 'Vector' column into separate columns and merges them with the 'Entry' column to create a new DataFrame with multiple columns for each dimension of the vector. The resulting DataFrame with multiple columns is returned.
-
-`preprocess_sentence(text)`: This function takes a text string (text) as input and performs preprocessing on it. It replaces specific characters, converts the text to lowercase, tokenizes the text using NLTK's word_tokenize function, removes stopwords and punctuation, and returns the preprocessed text as a string.
-
-`create_reps(tp)`: This function takes a parameter tp which represents the type of data ("uniprot", "pubmed", or "uniprotpubmed"). It loads a pre-trained sentence embedding model using the sent2vec library. It then iterates over files in the specified paths (ufiles_path and pfiles_path), reads the content of each file, preprocesses the content into a sentence, and obtains the sentence embedding using the loaded model. The entry name and sentence embedding are stored in a DataFrame (df). The DataFrame is then converted to a multi-column representation using the convert_dataframe_to_multi_col function. Finally, the resulting DataFrame is saved as a CSV file.
-
-
-### create_biowordvec.py
-
-#### Functions
-
-`convert_dataframe_to_multi_col(representation_dataframe)`: This function takes a representation DataFrame as input (representation_dataframe), which has two columns: 'Entry' and 'Vector'. It splits the 'Vector' column into separate columns and merges them with the 'Entry' column to create a new DataFrame with multiple columns for each dimension of the vector. The resulting DataFrame with multiple columns is returned.
-
-`preprocess_sentence(text)`: This function takes a text string (text) as input and performs preprocessing on it. It replaces specific characters, converts the text to lowercase, tokenizes the text using NLTK's word_tokenize function, removes stopwords and punctuation, and returns the preprocessed text as a string.
-
-`create_reps(tp)`: This function takes a parameter tp which represents the type of data ("uniprot", "pubmed", or "uniprotpubmed"). It loads a pre-trained word embedding model using the fasttext library. It then iterates over files in the specified paths (ufiles_path and pfiles_path), reads the content of each file, preprocesses the content into a sentence, and obtains the sentence embedding using the loaded model. The entry name and sentence embedding are stored in a DataFrame (df). The DataFrame is then converted to a multi-column representation using the convert_dataframe_to_multi_col function. Finally, the resulting DataFrame is saved as a CSV file.
-
-### createtextrep.py
-
-#### Functions
-
-This script provides a convenient way to create different types of text representations by specifying the desired representation techniques and the paths to the input files via command-line arguments.
-
-Creating TFIDF representations: If the tfidf or all flags are set, the script sets the file paths for the create_tfidf module and calls its main() function to create TFIDF representations.
-
-Creating biosentvec representations: If the biosentvec or all flags are set, the script sets the file paths for the create_biosentvec module and calls its main() function to create biosentvec representations.
-
-Creating biowordvec representations: If the biowordvec or all flags are set, the script sets the file paths for the create_biowordvec module and calls its main() function to create biowordvec representations.
+# Dependencies
+ 1.	Python 3.7.3
+ 2.	pandas 1.1.4
+ 3.	sklearn
+ 4.	os
+ 5.	fasttext
+ 6.	string
+ 7.	nltk
+ 8.	sent2vec
 
 ## Data
 
@@ -111,16 +79,6 @@ python createtextrep.py --bwv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed
 ```
 python createtextrep.py --a -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
 ```
-
-# Dependencies
- 1.	Python 3.7.3
- 2.	pandas 1.1.4
- 3.	sklearn
- 4.	os
- 5.	fasttext
- 6.	string
- 7.	nltk
- 8.	sent2vec
 
 ## Definition of Output
 
