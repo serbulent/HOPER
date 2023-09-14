@@ -67,12 +67,12 @@ python Hoper_representation_generetor_main.py
     module_name: text
     choice_of_process:  [generate,visualize]
     generate_module:
-        choice_of_representation_type:  [all]
-        uniprot_files_path:  [text_representations/representation_generation/data/uniprot/]
-        pubmed_files_path:  [text_representations/representation_generation/data/pubmed/]
+        choice_of_representation_type:  [all] #Representation types to generate. [tfidf,biosentvec,biowordvec,all]
+        uniprot_files_path:  [text_representations/representation_generation/data/uniprot/] #path of the uniprot text files used for generation of text representations
+        pubmed_files_path:  [text_representations/representation_generation/data/pubmed/] #path of the pubmed text files used for generation of text representations
     visualize_module:
-        choice_of_visualization_type:  [a]
-        result_files_path:  [text_representations/result_visualization/result_files/results/]
+        choice_of_visualization_type:  [a] #Visualization type of the results [figures, significance, all]
+        result_files_path:  [text_representations/result_visualization/result_files/results/] #path of the result files to visualize
 ```
 
 * Run HOPER to produce PPI representation example for more information please read
