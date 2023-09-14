@@ -2,13 +2,13 @@
 
 #The zip file downloaded from the intact database was opened.
 import pandas as pd
-from zipfile import ZipFile
+"""from zipfile import ZipFile
 with ZipFile('/content/drive/MyDrive/intact.zip', 'r') as zipObj:
    # Extract all the contents of zip file in current directory
    zipObj.extractall()
-
+"""
 #The intact.txt file was read
-intact_df=pd.read_csv("/content/intact.txt", sep='\t')
+intact_df=pd.read_csv("./ppi_representations/data/hoper_PPI/intact.txt", sep='\t')
 
 #First two columns of interaction filtered
 intact_df_filter=intact_df.filter(['#ID(s) interactor A' , 'ID(s) interactor B'])
@@ -26,9 +26,9 @@ intact_df_raw_sorted=intact_df_reset_index.sort_values(by=['#ID(s) interactor A'
 intact_df_raw_sorted_reset=intact_df_raw_sorted.reset_index()
 intact_df_raw_sorted_reset_filter=intact_df_raw_sorted_reset.filter(['#ID(s) interactor A' , 'ID(s) interactor B'])
 
-intact_df_raw_sorted_reset_filter.to_excel("intact_raw_data_preprocessing_.xlsx")
-protein_df=pd.read_excel("/content/drive/MyDrive/human_proteins.xlsx")
-intact_data=pd.read_excel("/content/drive/MyDrive/intact_raw_data_preprocessing.xlsx")
+intact_df_raw_sorted_reset_filter.to_excel("./ppi_representations/data/hoper_PPI/intact_raw_data_preprocessing_.xlsx")
+protein_df=pd.read_excel("./ppi_representations/data/hoper_PPI/human_proteins.xlsx")
+#intact_data=pd.read_excel("/content/drive/MyDrive/intact_raw_data_preprocessing.xlsx")
 intact_data_frame=intact_data.filter(['#ID(s) interactor A','ID(s) interactor B'])
 
 #Data filtered to include human proteins()
@@ -49,8 +49,8 @@ intact_data_frame_B=human_protein_df_B.filter(['#ID(s) interactor A','ID(s) inte
 intact_data_frame_filter_sorted=intact_data_frame_B.sort_values(by=['#ID(s) interactor A'])
 intact_data_frame_filter_sorted=intact_data_frame_filter_sorted.reset_index()
 intact_data_frame_filter_sorted=intact_data_frame_filter_sorted.filter(['#ID(s) interactor A','ID(s) interactor B'])
-intact_data_frame_filter_sorted.to_excel("intact_data_frame_filter_sorted.xlsx")
-intact_data_read=pd.read_excel("intact_data_frame_filter_sorted.xlsx")
+intact_data_frame_filter_sorted.to_excel("./ppi_representations/data/hoper_PPI/intact_data_frame_filter_sorted.xlsx")
+#intact_data_read=pd.read_excel("intact_data_frame_filter_sorted.xlsx")
 
 
 
