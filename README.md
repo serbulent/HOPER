@@ -113,6 +113,13 @@ parameters:
 * Run HOPER to produce TransferAE example
 
 *Reproducible run of paper
+
+```
+python case_study_main.py
+```
+* Run case_study_main.py for making immun escape prediction for more information please read
+[readme.md] (https://github.com/serbulent/HOPER/blob/main/case_study/readme.md)
+
 ```
 parameters:
     choice_of_module: [case_study] 
