@@ -1,11 +1,11 @@
 parameters:
-    choice_of_module: [text] # Module selection PPI,Preprocessing,case_study
+    choice_of_module: [SimpleAe] # Module selection PPI,Preprocessing,case_study
     #*************************************MODULES********************************************************************
     #********************PPI Module********************************
     module_name: PPI
     choice_of_representation_name:  [Node2vec,HOPE]
-    interaction_data_path:  [/media/DATA2/sinem/hoper_config/HOPER/Reproduction/ppi_representations/data/example.edgelist]
-    protein_id_list:  [/media/DATA2/sinem/hoper_config/HOPER/Reproduction/ppi_representations/data/proteins_id.csv]
+    interaction_data_path:  [./Reproduction/ppi_representations/data/example.edgelist]
+    protein_id_list:  [./Reproduction/ppi_representations/data/proteins_id.csv]
     node2vec_module:
         parameter_selection:
             d:  [10]  
@@ -27,7 +27,9 @@ parameters:
         result_files_path:  [text_representations/result_visualization/result_files/results/]
     #********************Preprocessing Module********************************
     module_name: Preprocessing
-    uniprot_dir: /media/DATA2/sinem/hoper_config/HOPER/Reproduction/text_representations/preprocess/data/uniprot_sprot.xml.gz          
-    
+    uniprot_dir: ./text_representations/preprocess/data/uniprot_sprot.xml.gz          
+    #*******************SimpleAe*********************************************
+    module_name: SimpleAe
+    representation_path: ./case_study/case_study_results/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
 
     

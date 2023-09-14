@@ -13,7 +13,8 @@ import sys
 # upload yaml file
 path = os.getcwd()
 #sys.path.append(path + "/case_study/bin/")
-stream = open(path + "/Hoper_representation_generetor.yaml", "r")
+ 
+stream = open(os.path.join(path, "Hoper_representation_generetor.yaml"), "r")
 data = yaml.safe_load(stream)
 module_name=data["parameters"]["module_name"]
 
@@ -25,7 +26,7 @@ if "PPI" in data["parameters"]["choice_of_module"] :
   edge_f=data["parameters"]["interaction_data_path"][0]
   protein_id=pd.read_csv(data["parameters"]["protein_id_list"][0])
   node2vec_parameters=data["parameters"]["node2vec_module"]["parameter_selection"]
-  os.system("conda env create -f /ppi_representations/ppi_environment.yml")
+  os.system("conda activate hoper_PPI ")
   if "Node2vec" in data["parameters"]["choice_of_representation_name"]:
     Node2vec.node2vec_repesentation_call(edge_f,protein_id,isDirected,node2vec_parameters["d"],node2vec_parameters["p"],node2vec_parameters["q"])
   if "HOPE" in  data["parameters"]["choice_of_representation_name"]:
@@ -43,5 +44,10 @@ if "text" in data["parameters"]["choice_of_module"] :
     os.system('python text_representations/result_visualization/visualize_results.py -' + data["parameters"]["visualize_module"]["choice_of_visualization_type"][0] + ' -rfp ' + data["parameters"]["visualize_module"]["result_files_path"][0])
 
 if "Preprocessing" in data["parameters"]["choice_of_module"] :
-  os.system("conda env create -f /text_representations/preprocess/preprocess.yml")
+  os.system("conda activate hoper_preprocess.yml")
   os.system('python /text_representations/preprocess/preprocess_main.py')
+
+if "SimpleAe" in data["parameters"]["choice_of_module"] :
+  from multimodal_representations import simple_ae
+  instance=simple_ae.Autoencoder()
+  instance.create_simple_ae(data["parameters"]["module_name"]["representation_file_path"])
