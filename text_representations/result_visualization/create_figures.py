@@ -112,7 +112,8 @@ def prepare_figure_data_for_aspect(aspect):
     pred_mean_df = pred_mean_df.set_index(pd.Series(new_index))
     pred_mean_df_table = pred_mean_df.transpose()
     #print(pred_mean_df_table)
-    pred_mean_df_table.to_csv("text_representations/result_visualization/tables/" + aspect + "_pred_mean_table.csv")
+    path=os.getcwd()
+    pred_mean_df_table.to_csv(os.path.join(path,"text_representations/result_visualization/tables/" + aspect + "_pred_mean_table.csv"))
 
     display_labels = ['INTERPRO2GO','UNIRULE2GO','ENSEMBL-ORTHOLOGY','BLAST','HMMER','K-SEP','APAAC','PFAM','AAC','PROTVEC',\
     'GENE2VEC','LEARNED-VEC','MUT2VEC','TCGA-EMBEDDING','SEQVEC','CPC-PROT','BERT-BFD',\
@@ -144,15 +145,15 @@ def set_colors_and_marks_for_representation_groups(ax):
 
 #create_figures(): Creates dataframes for figures and generates the figures.
 def create_figures():
-
+    path=os.getcwd()
     #Create dataframes for figures
     pred_mean_df_BP, go_pred_tableF1_BP,go_pred_tablePR_Precision_BP = prepare_figure_data_for_aspect("BP")
     pred_mean_df_CC, go_pred_tableF1_CC,go_pred_tablePR_Precision_CC = prepare_figure_data_for_aspect("CC")
     pred_mean_df_MF, go_pred_tableF1_MF, go_pred_tablePR_Precision_MF = prepare_figure_data_for_aspect("MF")
     #print(go_pred_tableF1_MF)
-    pred_mean_df_MF.T.to_csv("text_representations/result_visualization/figures/pred_mean_df_MF.csv")
-    pred_mean_df_BP.T.to_csv("text_representations/result_visualization/figures/pred_mean_df_BP.csv")
-    pred_mean_df_CC.T.to_csv("text_representations/result_visualization/figures/pred_mean_df_CC.csv")
+    pred_mean_df_MF.T.to_csv(os.path.join(path,"text_representations/result_visualization/figures/pred_mean_df_MF.csv"))
+    pred_mean_df_BP.T.to_csv(os.path.join(path,"text_representations/result_visualization/figures/pred_mean_df_BP.csv"))
+    pred_mean_df_CC.T.to_csv(os.path.join(path,"text_representations/result_visualization/figures/pred_mean_df_CC.csv"))
 
 
     tables = {}
@@ -170,7 +171,7 @@ def create_figures():
     ax.set_xlabel("")
     ax.set_ylabel("")
     set_colors_and_marks_for_representation_groups(ax)
-    g.savefig('text_representations/result_visualization/figures/func_pred_MF.png')
+    g.savefig(os.path.join(path,'text_representations/result_visualization/figures/func_pred_MF.png'))
 
 
     g = sns.clustermap(go_pred_tableF1_BP, annot=True, cmap="YlGnBu", row_cluster=False,figsize=(15, 15))
@@ -178,13 +179,13 @@ def create_figures():
     ax.set_xlabel("")
     ax.set_ylabel("")
     set_colors_and_marks_for_representation_groups(ax)
-    g.savefig('text_representations/result_visualization/figures/func_pred_BP.png')
+    g.savefig(os.path.join(path,'text_representations/result_visualization/figures/func_pred_BP.png'))
 
     g = sns.clustermap(go_pred_tableF1_CC, annot=True, cmap="YlGnBu", row_cluster=False,figsize=(15, 15))
     ax = g.ax_heatmap
     ax.set_xlabel("")
     ax.set_ylabel("")
     set_colors_and_marks_for_representation_groups(ax)
-    g.savefig('text_representations/result_visualization/figures/func_pred_CC.png')
+    g.savefig(os.path.join(path,'text_representations/result_visualization/figures/func_pred_CC.png'))
 
 
