@@ -54,6 +54,7 @@ def nan_to_zero(x):
 
 #create_significance_tables(): Creates significance tables for different aspects.
 def create_significance_tables():
+    path=os.getcwd()
     go_pred_signinificance_score_mf = pd.DataFrame()
     go_pred_signinificance_score_bp = pd.DataFrame()
     go_pred_signinificance_score_cc = pd.DataFrame()
@@ -92,6 +93,6 @@ def create_significance_tables():
     cc_qval_df = calculate_q_vals(go_pred_signinificance_score_cc)
 
 
-    mf_qval_df.to_csv("text_representations/result_visualization/significance/mf_qval_df.csv")
-    bp_qval_df.to_csv("text_representations/result_visualization/significance/bp_qval_df.csv")
-    cc_qval_df.to_csv("text_representations/result_visualization/significance/cc_qval_df.csv")
+    mf_qval_df.to_csv(os.path.join(path,"text_representations/result_visualization/significance/mf_qval_df.csv"))
+    bp_qval_df.to_csv(os.path.join(path,"text_representations/result_visualization/significance/bp_qval_df.csv"))
+    cc_qval_df.to_csv(os.path.join(path,"text_representations/result_visualization/significance/cc_qval_df.csv"))
