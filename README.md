@@ -66,10 +66,10 @@ python Hoper_representation_generetor_main.py
     generate_module:
         choice_of_representation_type:  [all]
         uniprot_files_path:  [./data/text_representations/uniprot/]
-        pubmed_files_path:  [./text_representations/pubmed/]
+        pubmed_files_path:  [./data/text_representations/pubmed/]
     visualize_module:
         choice_of_visualization_type:  [a]
-        result_files_path:  [./text_representations/result_visualization/result_files/results/]
+        result_files_path:  [./data/text_representations/result_visualization/result_files/results/]
 ```
 
 * Run HOPER to produce PPI representation example for more information please read
