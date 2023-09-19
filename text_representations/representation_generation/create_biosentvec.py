@@ -44,11 +44,12 @@ Finally, the resulting DataFrame is saved as a CSV file.
 '''
 
 def create_reps(tp):
+    path=os.getcwd()
     files = os.listdir(pfiles_path)
     model = sent2vec.Sent2vecModel()
     print("\n\nLoading model...\n")
     try:
-            model.load_model('text_representations/representation_generation/models/BioSentVec_PubMed_MIMICIII-bigram_d700.bin')
+            model.load_model(os.path.join(path,'text_representations/representation_generation/models/BioSentVec_PubMed_MIMICIII-bigram_d700.bin'))
     except Exception as e:
             print(e)
             print('model successfully loaded')
@@ -72,7 +73,7 @@ def create_reps(tp):
         df = df.append({'Entry' : files[i][:-4], 'Vector' : sentence_vector[0]}, ignore_index = True)
 
     df = convert_dataframe_to_multi_col(df)
-    df.to_csv('text_representations/representation_generation/biosentvec_representations/' + tp + '_biosentvec_vectors_multi_col.csv', index = False)
+    df.to_csv(os.path.join(path,'text_representations/representation_generation/biosentvec_representations/' + tp + '_biosentvec_vectors_multi_col.csv', index = False))
 
 def main():
     create_reps("uniprot")
