@@ -1,3 +1,10 @@
+'''
+This script provides a convenient way to create different types of text representations by specifying the desired representation techniques and the paths to the input files via command-line arguments.
+Creating TFIDF representations: If the tfidf or all flags are set, the script sets the file paths for the create_tfidf module and calls its main() function to create TFIDF representations.
+Creating biosentvec representations: If the biosentvec or all flags are set, the script sets the file paths for the create_biosentvec module and calls its main() function to create biosentvec representations.
+Creating biowordvec representations: If the biowordvec or all flags are set, the script sets the file paths for the create_biowordvec module and calls its main() function to create biowordvec representations.
+'''
+
 import argparse
 import create_tfidf as tf
 import create_biosentvec as bs

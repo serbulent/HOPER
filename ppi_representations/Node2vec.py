@@ -56,8 +56,9 @@ def node2vec_repesentation_call(edge_f,protein_id,isDirected,d,p,q):
             ent_vec = {'Entry':protein_id_list,'Vector':emb_list}
             
             ent_vec_data_frame = pd.DataFrame(ent_vec)
-            path=os.getcwd() 
-            output = open(path+ '/'+"ppi_representations"+'/'+"data"+ '/Node2vec_'+'d_'+str(i) + '_' +'p_'+str(j) +  '_' +'q_'+str(k) +'.pkl', 'wb')
+            path=os.getcwd()
+            
+            output = open(os.path.join(path,"ppi_representations/data",Node2vec_'+'d_'+str(i) + '_' +'p_'+str(j) +  '_' +'q_'+str(k) +'.pkl'), 'wb')
             pickle.dump(ent_vec_data_frame, output)
             output.close()   
             

@@ -1,4 +1,4 @@
-name: case_study_env
+name: hoper_case_study_env
 channels:
   - defaults
 dependencies:
@@ -118,4 +118,4 @@ dependencies:
       - wrapt==1.15.0
       - yarl==1.9.2
       - zipp==3.15.0
-prefix: /home/sinem/anaconda3/envs/case_study_env
+prefix: ./hoper_case_study_env

@@ -1,52 +1,33 @@
-# textrep
+# representation_generation
 
 This repository contains Python scripts to generate text representations using different techniques. It provides options to create TF-IDF representations, BioSentVec representations, and BioWordVec representations for input data.  It takes input data from UniProt and PubMed sources and generates vector representations for each entry. 
 
-## Definition of Scripts
+Dataset is temporarily limited to 20 entries to make testing easier. PCA analysis for tfidf vectors also disabled because the limit is less than the PCA components.
 
-### create_tfidf.py
-
-#### Functions
-
-`create_reps(tp)`: This function takes a parameter tp which represents the type of data ("uniprot", "pubmed", or "uniprotpubmed"). It reads files from the specified paths (ufiles_path and pfiles_path), concatenates their contents based on the data type, and applies the TF-IDF vectorization technique using the TfidfVectorizer from scikit-learn. It creates a pandas DataFrame (df1) where each row represents a file, and each column represents a feature (word). The DataFrame is then saved as a CSV file. It also performs Principal Component Analysis (PCA) on the DataFrame using different numbers of components (256, 512, 1024, 2048), and saves the resulting PCA-transformed vectors as separate CSV files.
-
-
-### create_biosentvec.py
-
-#### Functions
-
-`convert_dataframe_to_multi_col(representation_dataframe)`: This function takes a representation DataFrame as input (representation_dataframe), which has two columns: 'Entry' and 'Vector'. It splits the 'Vector' column into separate columns and merges them with the 'Entry' column to create a new DataFrame with multiple columns for each dimension of the vector. The resulting DataFrame with multiple columns is returned.
-
-`preprocess_sentence(text)`: This function takes a text string (text) as input and performs preprocessing on it. It replaces specific characters, converts the text to lowercase, tokenizes the text using NLTK's word_tokenize function, removes stopwords and punctuation, and returns the preprocessed text as a string.
-
-`create_reps(tp)`: This function takes a parameter tp which represents the type of data ("uniprot", "pubmed", or "uniprotpubmed"). It loads a pre-trained sentence embedding model using the sent2vec library. It then iterates over files in the specified paths (ufiles_path and pfiles_path), reads the content of each file, preprocesses the content into a sentence, and obtains the sentence embedding using the loaded model. The entry name and sentence embedding are stored in a DataFrame (df). The DataFrame is then converted to a multi-column representation using the convert_dataframe_to_multi_col function. Finally, the resulting DataFrame is saved as a CSV file.
-
-
-### create_biowordvec.py
-
-#### Functions
-
-`convert_dataframe_to_multi_col(representation_dataframe)`: This function takes a representation DataFrame as input (representation_dataframe), which has two columns: 'Entry' and 'Vector'. It splits the 'Vector' column into separate columns and merges them with the 'Entry' column to create a new DataFrame with multiple columns for each dimension of the vector. The resulting DataFrame with multiple columns is returned.
-
-`preprocess_sentence(text)`: This function takes a text string (text) as input and performs preprocessing on it. It replaces specific characters, converts the text to lowercase, tokenizes the text using NLTK's word_tokenize function, removes stopwords and punctuation, and returns the preprocessed text as a string.
-
-`create_reps(tp)`: This function takes a parameter tp which represents the type of data ("uniprot", "pubmed", or "uniprotpubmed"). It loads a pre-trained word embedding model using the fasttext library. It then iterates over files in the specified paths (ufiles_path and pfiles_path), reads the content of each file, preprocesses the content into a sentence, and obtains the sentence embedding using the loaded model. The entry name and sentence embedding are stored in a DataFrame (df). The DataFrame is then converted to a multi-column representation using the convert_dataframe_to_multi_col function. Finally, the resulting DataFrame is saved as a CSV file.
-
-### createtextrep.py
-
-#### Functions
-
-This script provides a convenient way to create different types of text representations by specifying the desired representation techniques and the paths to the input files via command-line arguments.
-
-Creating TFIDF representations: If the tfidf or all flags are set, the script sets the file paths for the create_tfidf module and calls its main() function to create TFIDF representations.
-
-Creating biosentvec representations: If the biosentvec or all flags are set, the script sets the file paths for the create_biosentvec module and calls its main() function to create biosentvec representations.
-
-Creating biowordvec representations: If the biowordvec or all flags are set, the script sets the file paths for the create_biowordvec module and calls its main() function to create biowordvec representations.
+# Dependencies
+ 1.	Python 3.7.3
+ 2.	pandas 1.1.4
+ 3.	sklearn
+ 4.	os
+ 5.	fasttext
+ 6.	string
+ 7.	nltk
+ 8.	sent2vec
 
 ## Data
 
-Uniprot and Pubmed files must be in text format and named with the uniprot ids.
+Uniprot and Pubmed files must be in text format and named with the uniprot ids. Download and unzip the files to the data folder from the urls given below.
+
+https://drive.google.com/file/d/1jZJiL6R9c4hsxh_k5pCBsX6LG1zzbITX/view?usp=drive_link
+https://drive.google.com/file/d/1BwU2DXCXdtHGxtY1TlQxTuNbc7xVBzDp/view?usp=drive_link
+
+## Models
+
+biosentvec and biowordvec models must be downloaded to models folder from the urls below.
+
+https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
+https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
+
 
 ### Options
 
@@ -68,9 +49,9 @@ The script allows users to specify different options to create specific types of
 
 Step by step operation:
   1. Clone repository
-  2. Install dependencies(given below)
-  3. Define the path to save output files in the script
-  4. Define path for biosentvec and biowordvec models
+  2. Install dependencies(given above)
+  3. Download biosentvec and biowordvec models to models folder
+  4. Download and unzip uniprot and pubmed files to data folder
   5. Run the script
 
 Examples:
@@ -98,16 +79,6 @@ python createtextrep.py --bwv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed
 ```
 python createtextrep.py --a -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
 ```
-
-# Dependencies
- 1.	Python 3.7.3
- 2.	pandas 1.1.4
- 3.	sklearn
- 4.	os
- 5.	fasttext
- 6.	string
- 7.	nltk
- 8.	sent2vec
 
 ## Definition of Output
 

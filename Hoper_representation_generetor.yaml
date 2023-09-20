@@ -1,11 +1,11 @@
 parameters:
-    choice_of_module: [text] # Module selection PPI,Preprocessing,case_study
+    choice_of_module: [fuse_representations] # Module selection PPI,Preprocessing,case_study
     #*************************************MODULES********************************************************************
     #********************PPI Module********************************
     module_name: PPI
     choice_of_representation_name:  [Node2vec,HOPE]
-    interaction_data_path:  [/media/DATA2/sinem/hoper_config/HOPER/Reproduction/ppi_representations/data/example.edgelist]
-    protein_id_list:  [/media/DATA2/sinem/hoper_config/HOPER/Reproduction/ppi_representations/data/proteins_id.csv]
+    interaction_data_path:  [./data/hoper_PPI/PPI_example_data/example.edgelist]
+    protein_id_list:  [./data/hoper_PPI/PPI_example_data/proteins_id.csv]
     node2vec_module:
         parameter_selection:
             d:  [10]  
@@ -15,19 +15,26 @@ parameters:
         parameter_selection:
             d:  [5]
             beta:  [0.00390625]
-    #********************Text Module********************************
+    #********************Text Representation Module********************************
     module_name: text
     choice_of_process:  [generate,visualize]
     generate_module:
         choice_of_representation_type:  [all]
-        uniprot_files_path:  [/media/DATA2/amine_from_data/uniprot_human/]
-        pubmed_files_path:  [/media/DATA2/amine_from_data/pubmed_yeni_abstractlar/human_pubmed_abstract/]
+        uniprot_files_path:  [./data/text_representations/uniprot/]
+        pubmed_files_path:  [./text_representations/pubmed/]
     visualize_module:
         choice_of_visualization_type:  [a]
-        result_files_path:  [/media/DATA/serbulent/DATA/Thesis/TheRepresentation/ProtText/results/]
+        result_files_path:  [./text_representations/result_visualization/result_files/results/]
     #********************Preprocessing Module********************************
     module_name: Preprocessing
-    uniprot_dir: /media/DATA2/sinem/hoper_config/HOPER/Reproduction/text_representations/preprocess/data/uniprot_sprot.xml.gz          
-    
+    uniprot_dir: ./text_representations/preprocess/data/uniprot_sprot.xml.gz 
+    #********************Fuse Representation*********************************
+    module_name: fuse_representations
+    representation_files: [./case_study/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./case_study/multi_modal_rep_ae_multi_col_256.csv]
+    min_fold_number:  2
+    representation_names:  [modal_rep_ae,node2vec]         
+    #*******************SimpleAe*********************************************
+    module_name: SimpleAe
+    representation_path: ./case_study/case_study_results/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
 
     

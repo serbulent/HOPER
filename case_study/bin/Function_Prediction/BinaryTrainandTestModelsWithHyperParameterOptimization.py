@@ -13,9 +13,6 @@ trains models and search for best model and hyperparameters. Then module test mo
 
 
 """
-
-
-
 import ast
 import os
 import pandas as pd
@@ -51,7 +48,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import make_scorer
 from sklearn import metrics
-import sys
+
 path = os.getcwd()
 sys.path.append(path + "/case_study/bin/")
 from Function_Prediction import binary_pytorch_network
@@ -98,38 +95,16 @@ def neural_network_eval(
     path,
     parameter,
 ):
-    breakpoint()
+    #breakpoint()
     representation_name_concated = "_".join(representation_name)
-    paths = (
-        path
-        + "/"
-        + "training"
-        + "/"
-        + representation_name_concated
-        + "_"
-        + classifier_name
-        + "_"
-        + "binary_classifier"
-        + ".pt"
-    )
+    paths =os.path.join(path,"training",representation_name_concated+"_"+classifier_name+"_binary_classifier.pt")
     torch.save(model.state_dict(), paths)
 
     representation_name_concated = "_".join(representation_name)
     best_parameter_dataframe = pd.DataFrame(parameter)
-    best_parameter_dataframe.to_csv(
-        path
-        + "training"
-        + "/"
-        + "Neural_network"
-        + "_"
-        + representation_name_concated
-        + "_"
-        + "binary_classifier"
-        + "_best_parameter"
-        + ".csv",
-        index=False,
-    )
-
+    training_path=os.path.join(path,"training","Neural_network_"+ representation_name_concated+"_binary_classifier_best_parameter.csv")
+    best_parameter_dataframe.to_csv(training_path,index=False)
+     
     binary_evaluate.evaluate(
         kf,
         model_label_pred_lst,
@@ -145,19 +120,10 @@ def neural_network_eval(
     label_predictions = pd.DataFrame(
         np.concatenate(model_label_pred_lst), columns=["Label"]
     )
-
+    label_prediction_path=os.path.join(path,eval_type,representation_name_concated+"_binary_classifier_"+classifier_name+eval_type+"_predictions.csv")
     label_predictions.insert(0, "protein_id", protein_name)
     label_predictions.to_csv(
-        path
-        + eval_type
-        + "/"
-        + representation_name_concated
-        + "_"
-        + "binary_classifier"
-        + "_"
-        + classifier_name
-        + eval_type
-        + "_predictions.csv",
+        label_prediction_path,
         index=False,
     )
 
@@ -209,10 +175,12 @@ def select_best_model_with_hyperparameter_tuning(
     model_count = 0
     representation_name_concated = ""
     file_name = "_"
-    path = os.getcwd() + "/case_study/case_study_results/"
+    path = os.path.join(os.getcwd(),"case_study/case_study_results")
+    path_train=os.path.join(path,"training")
+    path_test=os.path.join(path,"test")
     if "training" not in os.listdir(path):
-        os.makedirs(path + "/training", exist_ok=True)
-        os.makedirs(path + "/test", exist_ok=True)
+        os.makedirs(path_train, exist_ok=True)
+        os.makedirs(path_test, exist_ok=True)
     file_name = file_name.join(models)
     best_param_list = []
     for classifier in models:
@@ -285,6 +253,7 @@ def select_best_model_with_hyperparameter_tuning(
             
             kf = KFold(n_splits=5, shuffle=True, random_state=random_state)
             model_count = model_count + 1
+            breakpoint()
             # classifier_name_lst.append("Neural_Network")
             classifier_name = "Fully_Connected_Neural_Network"
             (
@@ -385,16 +354,9 @@ def select_best_model_with_hyperparameter_tuning(
                 }
             )
             model_tunning.best_estimator_
-            filename = (
-                path
-                + "/"
-                + "test"
-                + "/"
-                + classifier_name
-                + "_"
-                + "binary_classifier"
-                + "_test_model.joblib"
-            )
+            
+            filename =os.path.join(path,"test",classifier_name+"_binary_classifier_test_model.joblib")
+              
             joblib.dump(model_tunning.best_estimator_, filename)
             f_max_cv = []
             model_label_pred = cross_val_predict(
@@ -450,34 +412,10 @@ def select_best_model_with_hyperparameter_tuning(
                 np.concatenate(model_label_pred_lst), columns=["Label"]
             )
             label_predictions.insert(0, "protein_id", protein_name)
-            label_predictions.to_csv(
-                path
-                + "/"
-                + "test"
-                + "/"
-                + representation_name_concated
-                + "_"
-                + classifier_name
-                + "_"
-                + "binary_classifier"
-                + "_test"
-                + "_predictions.csv",
-                index=False,
-            )
+            label_predictions.to_csv(os.path.join(path,"test",representation_name_concated+"_binary_classifier_test_predictions.csv"),index=False,)
+
             class_name = "_".join(classifier_name_lst)
-            best_parameter_df.to_csv(
-                path
-                + "/"
-                + "test"
-                + "/"
-                + representation_name_concated
-                + "_"
-                + class_name
-                + "_"
-                + "binary_classifier"
-                + "_best_parameter"
-                + ".csv",
-                index=False,
-            )
+            best_parameter_df.to_csv(os.path.join(path,"test",representation_name_concated+"_"+class_name+"_binary_classifier_best_parameter.csv"),index=False,)
+
 
     return best_param_list

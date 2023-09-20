@@ -10,8 +10,6 @@ from gem.embedding.hope import HOPE
 import os
 # File that contains the edges. Format: source target
 # Optionally, you can add weights as third column: source target weight
-#edge_f="/media/DATA2/isik/HOPER/Reproduction/ppi_representations/GEM/examples/data/deneme.edgelist"
-#protein_id=pd.read_csv("/media/DATA2/isik/HOPER/Reproduction/ppi_representations/proteins_id_deneme.csv")
 # Specify whether the edges are not directed
 #isDirected =False
 #d = [10,2]
@@ -50,7 +48,8 @@ def hope_repesentation_call(edge_f,protein_id,isDirected,d,beta):
             ent_vec = {'Entry':protein_id_list,'Vector':emb_list}
             ent_vec_data_frame = pd.DataFrame(ent_vec)
             path=os.getcwd()
-            output = open(path+ '/'+"ppi_representations"+'/'+"data"+'/HOPE_'+'d_'+str(x) + '_' +'beta_'+str(y) +'.pkl', 'wb')
+              
+            output = open(os.path.join(path,"ppi_representations/data",HOPE_'+'d_'+str(x) + '_' +'beta_'+str(y) +'.pkl'), 'wb')
             pickle.dump(ent_vec_data_frame, output)
             output.close()
     

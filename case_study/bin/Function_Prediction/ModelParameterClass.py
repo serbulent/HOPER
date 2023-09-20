@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-path = os.getcwd()+ "/case_study"
+path = os.path.join(os.getcwd(), "case_study") 
 from Preprocess import RepresentationFusion
 class ModelParameterClass:
   def __init__(self,choice_of_task_name,fuse_representations,prepare_datasets,model_training_test,prediction):
@@ -14,7 +14,7 @@ class ModelParameterClass:
     representation_file_list=[]
     #path = os.path.dirname(os.getcwd())
     for rep_file in self.fuse_representations["representation_files"]:
-      rep_file_name = rep_file.split("/")[-1]
+      directory, rep_file_name = os.path.split(rep_file)
       print("loading " + rep_file_name + "...")
       representation_file_list.append(
                     pd.read_csv(rep_file)
@@ -40,12 +40,10 @@ class ModelParameterClass:
                 )
             )
     #breakpoint()
+    fuse_representation_path=os.path.join(path,"case_study_results","_".join(
+                [str(representation) for representation in self.fuse_representations["representation_names"]])+"_binary_fused_representations_dataframe_multi_col.csv")
     pd.DataFrame(representation_dataframe).to_csv(
-                path
-                + "/case_study_results/"
-                + "_".join(
-                [str(representation) for representation in self.fuse_representations["representation_names"]])
-                + "_binary_fused_representations_dataframe_multi_col.csv",
+                fuse_representation_path,
                 index=False,
             )
     return representation_dataframe

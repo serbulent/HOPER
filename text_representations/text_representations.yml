@@ -1,4 +1,4 @@
-name: textrep
+name: HOPER_textrepresentations
 channels:
   - conda-forge
   - defaults

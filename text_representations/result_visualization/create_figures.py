@@ -19,6 +19,8 @@ group_color_dict = {'TFIDF-UNIPROT-256':'orange','TFIDF-UNIPROT-512':'orange','T
                     'UNIPROT-BERT-AVG':'red', 'UNIPROT-BERT-POOL':'red','UNIPROT-BIOSENTVEC':'green', 'UNIPROT-BIOWORDVEC':'red', 'UNIPROT-PUBMED-BERT-AVG':'red', 'UNIPROT-PUBMED-BERT-POOL':'green',\
                     'UNIPROT-PUBMED-BIOSENTVEC':'green','UNIPROT-PUBMED-BIOWORDVEC':'red'}
 
+#create_index_from_model_name(index_names): Creates an index list from model names.
+
 def create_index_from_model_name(index_names):
     index_list = []
     for index_name in index_names:
@@ -27,7 +29,7 @@ def create_index_from_model_name(index_names):
         index_list.append(new_name)
     return index_list
 
-#Read prediction results and order them alphabetically. Hence they are ordered by aspect.
+#create_pred_table(measure): Reads prediction results, orders them alphabetically, and creates a prediction table.
 def create_pred_table(measure):
        
     go_pred_table = pd.DataFrame()
@@ -46,7 +48,7 @@ def create_pred_table(measure):
     #print(go_pred_table)
     return go_pred_table
 
-# Slice dataframe by aspect and order subgroups
+# get_go_pred_table_for_aspect(aspect, go_pred_table): Slices the prediction table by aspect and orders subgroups.
 def get_go_pred_table_for_aspect(aspect,go_pred_table):
     
     if aspect == "BP":
@@ -76,7 +78,7 @@ def get_go_pred_table_for_aspect(aspect,go_pred_table):
         return go_pred_tableMF
 
 
-#Calculate mean measures for different aspects also return F1 weigted scores
+#prepare_figure_data_for_aspect(aspect): Calculates mean measures for different aspects and returns F1 weighted scores.
 def prepare_figure_data_for_aspect(aspect):
     go_pred_tableF1 = create_pred_table("F1_Weighted")
     go_pred_tableACC = create_pred_table("Accuracy")
@@ -110,7 +112,8 @@ def prepare_figure_data_for_aspect(aspect):
     pred_mean_df = pred_mean_df.set_index(pd.Series(new_index))
     pred_mean_df_table = pred_mean_df.transpose()
     #print(pred_mean_df_table)
-    pred_mean_df_table.to_csv("tables/" + aspect + "_pred_mean_table.csv")
+    path=os.getcwd()
+    pred_mean_df_table.to_csv(os.path.join(path,"text_representations/result_visualization/tables/" + aspect + "_pred_mean_table.csv"))
 
     display_labels = ['INTERPRO2GO','UNIRULE2GO','ENSEMBL-ORTHOLOGY','BLAST','HMMER','K-SEP','APAAC','PFAM','AAC','PROTVEC',\
     'GENE2VEC','LEARNED-VEC','MUT2VEC','TCGA-EMBEDDING','SEQVEC','CPC-PROT','BERT-BFD',\
@@ -129,7 +132,7 @@ def prepare_figure_data_for_aspect(aspect):
     #print(go_pred_tablePR_aspect)
     return pred_mean_df,go_pred_tableF1_aspect,go_pred_tablePR_aspect
 	
-	
+#set_colors_and_marks_for_representation_groups(ax): Sets colors and marks for representation groups in a plot.	
 def set_colors_and_marks_for_representation_groups(ax):
     for label in ax.get_xticklabels():
         label.set_color(group_color_dict[label.get_text()])
@@ -140,16 +143,17 @@ def set_colors_and_marks_for_representation_groups(ax):
     fontproperties = {'weight' : 'bold'}
     ax.set_xticklabels(ax.get_xticklabels(), fontproperties)
 
+#create_figures(): Creates dataframes for figures and generates the figures.
 def create_figures():
-
+    path=os.getcwd()
     #Create dataframes for figures
     pred_mean_df_BP, go_pred_tableF1_BP,go_pred_tablePR_Precision_BP = prepare_figure_data_for_aspect("BP")
     pred_mean_df_CC, go_pred_tableF1_CC,go_pred_tablePR_Precision_CC = prepare_figure_data_for_aspect("CC")
     pred_mean_df_MF, go_pred_tableF1_MF, go_pred_tablePR_Precision_MF = prepare_figure_data_for_aspect("MF")
     #print(go_pred_tableF1_MF)
-    pred_mean_df_MF.T.to_csv("figures/pred_mean_df_MF.csv")
-    pred_mean_df_BP.T.to_csv("figures/pred_mean_df_BP.csv")
-    pred_mean_df_CC.T.to_csv("figures/pred_mean_df_CC.csv")
+    pred_mean_df_MF.T.to_csv(os.path.join(path,"text_representations/result_visualization/figures/pred_mean_df_MF.csv"))
+    pred_mean_df_BP.T.to_csv(os.path.join(path,"text_representations/result_visualization/figures/pred_mean_df_BP.csv"))
+    pred_mean_df_CC.T.to_csv(os.path.join(path,"text_representations/result_visualization/figures/pred_mean_df_CC.csv"))
 
 
     tables = {}
@@ -167,7 +171,7 @@ def create_figures():
     ax.set_xlabel("")
     ax.set_ylabel("")
     set_colors_and_marks_for_representation_groups(ax)
-    g.savefig('figures/func_pred_MF.png')
+    g.savefig(os.path.join(path,'text_representations/result_visualization/figures/func_pred_MF.png'))
 
 
     g = sns.clustermap(go_pred_tableF1_BP, annot=True, cmap="YlGnBu", row_cluster=False,figsize=(15, 15))
@@ -175,13 +179,13 @@ def create_figures():
     ax.set_xlabel("")
     ax.set_ylabel("")
     set_colors_and_marks_for_representation_groups(ax)
-    g.savefig('figures/func_pred_BP.png')
+    g.savefig(os.path.join(path,'text_representations/result_visualization/figures/func_pred_BP.png'))
 
     g = sns.clustermap(go_pred_tableF1_CC, annot=True, cmap="YlGnBu", row_cluster=False,figsize=(15, 15))
     ax = g.ax_heatmap
     ax.set_xlabel("")
     ax.set_ylabel("")
     set_colors_and_marks_for_representation_groups(ax)
-    g.savefig('figures/func_pred_CC.png')
+    g.savefig(os.path.join(path,'text_representations/result_visualization/figures/func_pred_CC.png'))
 
 
