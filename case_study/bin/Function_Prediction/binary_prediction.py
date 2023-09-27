@@ -82,14 +82,16 @@ def make_prediction(representation_name,data_preproceed,tested_model,classifier_
      
         if (classifier_name[i]== 'Fully_Connected_Neural_Network'):
             
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             input_size= len(protein_representation_array[0])
             class_num=1
-            model_class=binary_pytorch_network.model_call(input_size,class_num)
+            
+            model_class=binary_pytorch_network.Net(input_size,class_num)
+            #import pdb; pdb.set_trace()
             model_class.load_state_dict(copy.deepcopy(torch.load(tested_model[i])))
             model_class.eval()
             x = torch.tensor(representation_vector)
-            x=x.double()
+            x=x.float()#.double()
             model_label_pred_lst=model_class(x) 
             model_label_pred_lst[model_label_pred_lst >= 0.] = 1    
             model_label_pred_lst[model_label_pred_lst < 0.] = 0
