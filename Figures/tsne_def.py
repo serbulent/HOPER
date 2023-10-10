@@ -7,6 +7,8 @@ from sklearn.preprocessing import StandardScaler
 from bioinfokit.visuz import cluster
 from sklearn.manifold import TSNE
 from sklearn import decomposition
+import random
+
 random_state=42
 def aspect_num_cat_terms(go_category_dataframe,multi_col_representation_processdata,aspect,num_cat,termsif):
   go_category_dataframe_aspect=go_category_dataframe[go_category_dataframe.Aspect==aspect]
@@ -39,11 +41,11 @@ def aspect_num_cat_terms(go_category_dataframe,multi_col_representation_processd
 aspect=['MF']
 num_cat=['Low','Middle','High']
 termsif=['Shallow','Normal','Specific']
-"""
+
 for i in termsif:
   for j in num_cat:
     for k in aspect:
       random.seed(random_state)
       np.random.seed(random_state)
-      aspect_num_cat_terms(go_category_dataframe,multi_col_representation_processdata,k,j,i)"""
+      aspect_num_cat_terms(go_category_dataframe,multi_col_representation_processdata,k,j,i)
 

@@ -11,28 +11,29 @@ from tqdm.notebook import tqdm
 import pdb
 import sys
 yaml_file_path = os.getcwd()
-sys.path.append(yaml_file_path + "/text_representations/preprocess/")
+
+sys.path.append(os.path.join(yaml_file_path, "text_representations/preprocess"))
 #os.chdir(yaml_file_path + "/text_representations/preprocess/")
-os.makedirs(yaml_file_path + "/text_representations/preprocess/data/pubmed_new_abstracts/", exist_ok=True)
-error=open(yaml_file_path + "/text_representations/preprocess/data/pubmed_new_abstracts/error_abstract_human_2.txt", "w")
+os.makedirs(os.path.join(yaml_file_path, "text_representations/preprocess/data/pubmed_new_abstracts"), exist_ok=True)
+error=open(os.path.join(yaml_file_path, "text_representations/preprocess/data/pubmed_new_abstracts","error_abstract_human_2.txt"), "w")
 #path = os.path.dirname(os.getcwd()) +  "/text_representations/preprocess/"
 #if "preprocess_data" not in os.listdir(path):
 #        os.makedirs(path + "/training", exist_ok=True)
 #        os.makedirs(path + "/test", exist_ok=True)
 yaml_file_path=os.getcwd()                                                  #upload yaml file
-stream = open(yaml_file_path+'/Hoper.yaml', 'r')
+stream = open(os.path.join(yaml_file_path,'Hoper_representation_generetor.yaml'), 'r')
 
 data = yaml.safe_load(stream)
 
 def extract_relevant_info_from_uniprot(uniprot_record):
-    files=yaml_file_path + "/text_representations/preprocess/data/human_pubmed_ids/"
-    os.makedirs(yaml_file_path + "/text_representations/preprocess/data/human_pubmed_ids/", exist_ok=True)
+    files=os.path.join(yaml_file_path, "text_representations/preprocess/data/human_pubmed_ids")
+    os.makedirs(os.path.join(yaml_file_path, "text_representations/preprocess/data/human_pubmed_ids"), exist_ok=True)
     # print(record)
     try:
        
-         if os.path.isfile(yaml_file_path + "/text_representations/preprocess/data/human_pubmed_ids/" + uniprot_record.id + '.txt')==False:
+         if os.path.isfile(os.path.join(yaml_file_path, "text_representations/preprocess/data/human_pubmed_ids" ,uniprot_record.id + '.txt'))==False:
             
-            newfile = open(yaml_file_path + "/text_representations/preprocess/data/human_pubmed_ids/" + uniprot_record.id + '.txt','w')
+            newfile = open(os.path.join(yaml_file_path, "text_representations/preprocess/data/human_pubmed_ids" ,uniprot_record.id + '.txt'),'w')
             #print(record.id)
             len_of_ids=len(uniprot_record.annotations["references"])
             

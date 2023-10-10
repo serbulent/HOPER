@@ -18,7 +18,9 @@ def extract_relevant_info_from_uniprot(record,new_file_dir,error_file):
   #breakpoint()
     
   try:                         
-            new_file = open( new_file_dir + record.id + '.txt','w')     #getting the uniprot id of each protein with the record.id and using it in the file name
+            new_file = open( os.path.join(new_file_dir, record.id+ '.txt'),'w')
+            
+                #getting the uniprot id of each protein with the record.id and using it in the file name
 
             if ("comment_function" in record.annotations.keys()):
                 functions = record.annotations['comment_function']      #assigning the information of function subsection to the function variable
@@ -70,19 +72,22 @@ def extract_relevant_info_from_uniprot(record,new_file_dir,error_file):
 def main():
   yaml_file_path=os.getcwd()
   #upload yaml file
-  stream = open(yaml_file_path+'/Hoper.yaml', 'r') 
+  
+  stream = open(os.path.join(yaml_file_path, 'Hoper_representation_generetor.yaml'), 'r') 
   data = yaml.safe_load(stream)
 
   #breakpoint()
-  os.makedirs(yaml_file_path + "/text_representations/preprocess/data/", exist_ok=True)
   
-  os.makedirs(yaml_file_path + "/text_representations/preprocess/data/subsections/", exist_ok=True)
+  os.makedirs(os.path.join(yaml_file_path, "text_representations/preprocess/data"), exist_ok=True)
   
-  os.makedirs(yaml_file_path + "/text_representations/preprocess/data/error_file/", exist_ok=True)
+  os.makedirs(os.path.join(yaml_file_path, "text_representations/preprocess/data/uniprot_subsections"), exist_ok=True)
+  
+  os.makedirs(os.path.join(yaml_file_path, "text_representations/preprocess/data/error_file"), exist_ok=True)
   
   uniprot_dir=data["parameters"]["uniprot_dir"]                              #downloading Uniprot database
-  new_file_dir=yaml_file_path + "/text_representations/preprocess/data/subsections/"                  #creating directory to save output files         
-  error_file = open( yaml_file_path + "/text_representations/preprocess/data/error_file/" + '.txt','w')      #printing the exceptions
+  
+  new_file_dir=os.path.join(yaml_file_path, 'text_representations/preprocess/data/uniprot_subsections')                  #creating directory to save output files        
+  error_file = open( os.path.join(yaml_file_path, 'text_representations/preprocess/data/error_file',"exceptions.txt") ,'w')      #printing the exceptions
 
 
   with gzip.open(uniprot_dir, 'rb') as handle:    

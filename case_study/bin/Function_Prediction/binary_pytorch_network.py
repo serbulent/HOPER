@@ -114,7 +114,7 @@ def NN(
         y_test = y_test.double()
         val_loss_lst = []
 
-        for epoch in range(25000):
+        for epoch in range(2):#25000
 
             # training
             running_loss = 0.0
@@ -190,21 +190,21 @@ def NN(
 
     test_loss = [sum(x) for x in zip(*val_loss_lst_s)]
     training_loss = [sum(x) for x in zip(*running_loss_lst_s)]
-    plt.figure(figsize=(10, 5))
+    """plt.figure(figsize=(10, 5))
     plt.title("Training and Validation Loss")
     plt.plot(test_loss, label="val")
     plt.plot(training_loss, label="train")
     plt.xlabel("iterations")
     plt.ylabel("Loss")
     plt.legend()
-    plt.show()
+    plt.show()"""
 
     parameter = {
         "classifier_name": classifier_name,
         "criterion": [criterion],
         "optimizer": str(optimizer),
     }
-    breakpoint()
+    #breakpoint()
     return (
         f_max_cv_train,
         f_max_cv_test,

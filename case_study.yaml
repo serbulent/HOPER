@@ -2,26 +2,24 @@ parameters:
     choice_of_module: [case_study] 
     #********************case_study Module********************************
     module_name: case_study
-    choice_of_task_name:  [fuse_representations] #prepare_datasets,fuse_representations,model_training_test,prediction
+    choice_of_task_name:  [prediction] #prepare_datasets,fuse_representations,model_training_test,prediction
     fuse_representations:
-        representation_files: [./data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv]
+        representation_files: [./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv]
         min_fold_number:  2
         representation_names:  [modal_rep_ae,node2vec]        
     prepare_datasets:  
         positive_sample_data:  ["./data/hoper_case_study_example_data/prepare_datasets/positive.csv"]
         negative_sample_data:  ["./data/hoper_case_study_example_data/prepare_datasets/neg_data.csv"]
-        prepared_representation_file:  [./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv] 
-        representation_names:  [modal_rep_ae] 
-    
+        prepared_representation_file:  [./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv] 
+        representation_names:  [modal_rep_ae]     
     model_training_test:
         representation_names:  [modal_rep_ae]
         scoring_function:  ["f_max"]  #"f1_micro",f1_macro","f1_weighted"
         prepared_path:  ["./case_study/case_study_results/modal_rep_ae_node2vec_binary_data.pickle"]
-        classifier_name:  ["Fully_Connected_Neural_Network"] 
-   
+        classifier_name:  ["Fully_Connected_Neural_Network"]    
     prediction:
         representation_names:  [modal_rep_ae]
         prepared_path:  ["./data/hoper_case_study_example_data/prediction_example_data/rep_dif_ae.csv"]
         classifier_name:  ['Fully_Connected_Neural_Network']         
-        model_directory:  ["./case_study/case_study_results/training/m_o_d_a_l___r_e_p___a_e___n_o_d_e_2_v_e_c_Fully_Connected_Neural_Network_binary_classifier.pt"] 
+        model_directory:  ["./case_study/case_study_results/training/m_o_d_a_l___r_e_p___a_e_Fully_Connected_Neural_Network_binary_classifier.pt"] 
             

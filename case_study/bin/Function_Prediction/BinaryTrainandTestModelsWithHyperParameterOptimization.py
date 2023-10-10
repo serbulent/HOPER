@@ -97,13 +97,16 @@ def neural_network_eval(
 ):
     #breakpoint()
     representation_name_concated = "_".join(representation_name)
-    paths =os.path.join(path,"training",representation_name_concated+"_"+classifier_name+"_binary_classifier.pt")
-    torch.save(model.state_dict(), paths)
-
-    representation_name_concated = "_".join(representation_name)
-    best_parameter_dataframe = pd.DataFrame(parameter)
-    training_path=os.path.join(path,"training","Neural_network_"+ representation_name_concated+"_binary_classifier_best_parameter.csv")
-    best_parameter_dataframe.to_csv(training_path,index=False)
+    #breakpoint()
+    if eval_type=="training":
+      paths =os.path.join(path,"training",representation_name_concated+"_"+classifier_name+"_binary_classifier.pt")
+      breakpoint()
+      torch.save(model.state_dict(), paths)
+      
+      representation_name_concated = "_".join(representation_name)
+      best_parameter_dataframe = pd.DataFrame(parameter)
+      training_path=os.path.join(path,"training","Neural_network_"+ representation_name_concated+"_binary_classifier_best_parameter.csv")
+      best_parameter_dataframe.to_csv(training_path,index=False)
      
     binary_evaluate.evaluate(
         kf,

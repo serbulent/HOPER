@@ -293,9 +293,9 @@ def Model_test(representation_name, integrated_dataframe, parameteter_file):
                             protein_name.append(protein)
                             continue
 
-            paths =os.path.join(path,"test",representation_name+"_"+classifier_name+"_"+"binary_classifier.pt")
-            breakpoint()   
-            torch.save(model,paths )
+            #paths =os.path.join(path,"test",representation_name+"_"+classifier_name+"_"+"binary_classifier.pt")
+            #breakpoint()   
+            #torch.save(model,paths )
 
             # Initialize optimizer
             optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
