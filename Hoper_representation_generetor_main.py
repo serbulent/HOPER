@@ -54,6 +54,5 @@ if "fuse_representations" in data["parameters"]["choice_of_module"]:
 
 if "SimpleAe" in data["parameters"]["choice_of_module"] :
   from multimodal_representations import simple_ae
-  instance=simple_ae.Autoencoder()
-  instance.create_simple_ae(data["parameters"]["module_name"]["representation_file_path"])
+  simple_ae.create_simple_ae(data["parameters"]["module_name"]["representation_file_path"])
 
