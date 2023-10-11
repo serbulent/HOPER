@@ -1,4 +1,4 @@
-name: /media/DATA/serbulent/conda_envs/HoloProtRep-AE
+name: HoloProtRep-AE
 channels:
   - defaults
 dependencies:
@@ -136,4 +136,4 @@ dependencies:
     - typing-extensions==3.7.4.3
     - urllib3==1.26.2
     - wasabi==0.8.0
-prefix: /media/DATA/serbulent/conda_envs/HoloProtRep-AE
+prefix: HoloProtRep-AE
