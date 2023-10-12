@@ -73,7 +73,7 @@ def create_reps(tp):
         df = df.append({'Entry' : files[i][:-4], 'Vector' : sentence_vector[0]}, ignore_index = True)
 
     df = convert_dataframe_to_multi_col(df)
-    df.to_csv(os.path.join(path,'text_representations/representation_generation/biosentvec_representations/' + tp + '_biosentvec_vectors_multi_col.csv', index = False))
+    df.to_csv(os.path.join(path,'text_representations/representation_generation/biosentvec_representations/' + tp + '_biosentvec_vectors_multi_col.csv'), index = False)
 
 def main():
     create_reps("uniprot")
