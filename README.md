@@ -95,8 +95,10 @@ parameters:
     representation_path: ./case_study/case_study_results/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
 
 ```
+
 * Run HOPER to produce Preprocessing
-  ```
+  
+```
   choice_of_module: [Preprocessing] # Module selection PPI,Preprocessing,SimpleAe
  #********************Preprocessing Module********************************
     module_name: Preprocessing
