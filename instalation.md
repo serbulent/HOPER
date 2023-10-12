@@ -1,6 +1,6 @@
-## HOPER Instalation Steps For Models
+# HOPER Instalation Steps For Models
 
-# PPI Model Instalation Instructions
+## PPI Model Instalation Instructions
 * To install packages to use for Node2vec and HOPE in your home directory, use:
 
   * GEM version 213189b; use for old version:
