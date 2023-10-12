@@ -96,11 +96,12 @@ parameters:
 
 ```
 * Run HOPER to produce Preprocessing
+  ```
   choice_of_module: [Preprocessing] # Module selection PPI,Preprocessing,SimpleAe
  #********************Preprocessing Module********************************
     module_name: Preprocessing
     uniprot_dir: ./uniprot_sprot.xml.gz 
-
+```
   
 * Run HOPER to produce MultiModalAE example
 
