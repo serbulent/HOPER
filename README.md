@@ -64,7 +64,7 @@ python Hoper_representation_generetor_main.py
 ```
 
 parameters:
-    choice_of_module: [fuse_representations] # Module selection PPI,Preprocessing,case_study
+    choice_of_module: [PPI] # Module selection PPI,Preprocessing,case_study
     #*************************************MODULES********************************************************************
     #********************PPI Module********************************
     module_name: PPI
@@ -93,7 +93,13 @@ parameters:
     representation_path: ./case_study/case_study_results/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
 
 ```
+* Run HOPER to produce Preprocessing
+  choice_of_module: [Preprocessing] # Module selection PPI,Preprocessing,SimpleAe
+ #********************Preprocessing Module********************************
+    module_name: Preprocessing
+    uniprot_dir: ./uniprot_sprot.xml.gz 
 
+  
 * Run HOPER to produce MultiModalAE example
 
 * Run HOPER to produce TransferAE example
