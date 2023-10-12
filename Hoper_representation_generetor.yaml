@@ -27,7 +27,7 @@ parameters:
         result_files_path:  [./text_representations/result_visualization/result_files/results/]
     #********************Preprocessing Module********************************
     module_name: Preprocessing
-    uniprot_dir: ./text_representations/preprocess/data/uniprot_sprot.xml.gz 
+    uniprot_dir: ./uniprot_sprot.xml.gz 
     #********************Fuse Representation*********************************
     module_name: fuse_representations
     representation_files: [./case_study/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./case_study/multi_modal_rep_ae_multi_col_256.csv]
