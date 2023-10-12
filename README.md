@@ -53,8 +53,9 @@ python Hoper_representation_generetor_main.py
     choice_of_process:  [generate,visualize]
     generate_module:
         choice_of_representation_type:  [all]
-        uniprot_files_path:  [./data/text_representations/uniprot/]
-        pubmed_files_path:  [./data/text_representations/pubmed/]
+        uniprot_files_path:  [./text_representations/representation_generation/data/uniprot/]
+        pubmed_files_path:  [./text_representations/representation_generation/data/pubmed/]
+        model_download: y
     visualize_module:
         choice_of_visualization_type:  [a]
         result_files_path:  [./data/text_representations/result_visualization/result_files/results/]
