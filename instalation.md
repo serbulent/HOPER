@@ -19,18 +19,4 @@
   - ls -alh node2vec
 
 * Make node2vec executable and add to system PATH or move it to the location you run.
-# Text Representation Models Instalation Instructions
 
-Download biosentvec and biowordvec models to models folder
-Download and unzip uniprot and pubmed files to data folder
-Run the script
-Examples:
-
-To create TF-IDF representations:
-python createtextrep.py --tfidf -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
-To create biosentvec representations:
-python createtextrep.py --bsv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
-To create biowordvec representations:
-python createtextrep.py --bwv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
-To create all three representations:
-python createtextrep.py --a -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
