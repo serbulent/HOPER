@@ -22,7 +22,8 @@
 
 ## text Model Installation Instructions
 
-* To use text representation generator, copy uniprot and pubmed text files to HOPER/text_representations/representation_generation/data/
+* To use text representation generator, copy uniprot and pubmed text files to HOPER/text_representations/representation_generation/data/ in separate folders named as uniprot and pubmed.
+  
 * biosentvec and biowordvec models must be downloaded to HOPER/text_representations/representation_generation/models from the urls given below. Alternatively model_download parameter must be set as "y" to download models automatically if biosentvec or biowordvec representations selected to be generated.
 
 https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
