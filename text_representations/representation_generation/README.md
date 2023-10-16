@@ -23,7 +23,7 @@ https://drive.google.com/file/d/1BwU2DXCXdtHGxtY1TlQxTuNbc7xVBzDp/view?usp=drive
 
 ## Models
 
-biosentvec and biowordvec models must be downloaded to models folder from the urls below.
+biosentvec and biowordvec models must be downloaded to "models" folder from the urls below. Alternatively model_download parameter must be set as "y" to download models automatically if biosentvec or biowordvec representations selected to be generated.
 
 https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
 https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
@@ -45,6 +45,8 @@ The script allows users to specify different options to create specific types of
 
 `-a` or `--all`: Creates all types of representations (TFIDF, biosentvec, and biowordvec).
 
+`-mdw` or `--model_download`: download biosentvec and biowordvec model automatically.
+
 ### How to Run
 
 Step by step operation:
@@ -59,25 +61,25 @@ Examples:
 1. To create TF-IDF representations:
 
 ```
-python createtextrep.py --tfidf -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
+python createtextrep.py --tfidf -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files -mdw y
 ```
 
 2. To create biosentvec representations:
 
 ```
-python createtextrep.py --bsv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
+python createtextrep.py --bsv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files -mdw y
 ```
 
 2. To create biowordvec representations:
 
 ```
-python createtextrep.py --bwv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
+python createtextrep.py --bwv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files -mdw y
 ```
 
 3. To create all three representations:
 
 ```
-python createtextrep.py --a -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files
+python createtextrep.py --a -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files -mdw y
 ```
 
 ## Definition of Output

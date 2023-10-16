@@ -39,7 +39,7 @@ if "text" in data["parameters"]["choice_of_module"] :
   os.system("pip install fasttext")
   os.system("conda activate text_representations.yml")
   if "generate" in data["parameters"]["choice_of_process"]:
-    os.system('python text_representations/representation_generation/createtextrep.py --' + data["parameters"]["generate_module"]["choice_of_representation_type"][0] + ' -upfp ' + data["parameters"]["generate_module"]["uniprot_files_path"][0] + ' -pmfp ' + data["parameters"]["generate_module"]["pubmed_files_path"][0])
+    os.system('python text_representations/representation_generation/createtextrep.py --' + data["parameters"]["generate_module"]["choice_of_representation_type"][0] + ' -upfp ' + data["parameters"]["generate_module"]["uniprot_files_path"][0] + ' -pmfp ' + data["parameters"]["generate_module"]["pubmed_files_path"][0] + ' -mdw ' + data["parameters"]["generate_module"]["model_download"])
   if "visualize" in  data["parameters"]["choice_of_process"]:
     os.system('python text_representations/result_visualization/visualize_results.py -' + data["parameters"]["visualize_module"]["choice_of_visualization_type"][0] + ' -rfp ' + data["parameters"]["visualize_module"]["result_files_path"][0])
 
@@ -54,5 +54,5 @@ if "fuse_representations" in data["parameters"]["choice_of_module"]:
 
 if "SimpleAe" in data["parameters"]["choice_of_module"] :
   from multimodal_representations import simple_ae
-  simple_ae.create_simple_ae(data["parameters"]["module_name"]["representation_file_path"])
+  simple_ae.create_simple_ae(data["parameters"]["representation_path"])
 

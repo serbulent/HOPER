@@ -6,6 +6,7 @@ Creating biowordvec representations: If the biowordvec or all flags are set, the
 '''
 
 import argparse
+import os
 import create_tfidf as tf
 import create_biosentvec as bs
 import create_biowordvec as bw
@@ -16,7 +17,9 @@ parser.add_argument("-bsv", "--biosentvec", action='store_true',  help="Create b
 parser.add_argument("-bwv", "--biowordvec", action='store_true',  help="Create biowordvec representations")
 parser.add_argument("-upfp", "--uniprotfilespath", required=True,  help="Path for the uniprot files")
 parser.add_argument("-pmfp", "--pubmedfilespath", required=True,  help="Path for the pubmed files")
+parser.add_argument("-mdw", "--model_download", help="Download biosentvec and biowordvec pre-trained models automatically")
 parser.add_argument("-a", "--all", action='store_true',  help="Create TFIDF, biosentvec and biowordvec representations")
+
 
 try:
     args = parser.parse_args()
@@ -38,12 +41,20 @@ if args.tfidf or args.all:
     tf.main()
       
 if args.biosentvec or args.all:
+    if args.model_download == "y":
+        print("\n\nDownloading biosentvec model...\n")
+        os.system("wget -P " + os.path.join(os.getcwd(),'text_representations/representation_generation/models') + " https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin")
+    
     print("\n\nCreating biosentvec representations...\n")
     bs.ufiles_path = args.uniprotfilespath
     bs.pfiles_path = args.pubmedfilespath
     bs.main()
 
 if args.biowordvec or args.all:
+    if args.model_download == "y":
+        print("\n\nDownloading biowordvec model...\n")
+        os.system("wget -P " + os.path.join(os.getcwd(),'text_representations/representation_generation/models') + " https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin")
+    
     print("\n\nCreating biowordvec representations...\n")   
     bw.ufiles_path = args.uniprotfilespath
     bw.pfiles_path = args.pubmedfilespath

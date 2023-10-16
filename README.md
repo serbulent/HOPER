@@ -20,33 +20,21 @@ that interacting proteins are likely to act in the same biological process. Also
 
 # Installation
 
-* To install packages to use for Node2vec and HOPE in your home directory, use:
 
-  * GEM version 213189b; use for old version:
-  
-    git clone [https://github.com/palash1992/GEM.git]
-    
-    git checkout  [213189b]
-
-* To make Node2vec executable; Clone repository git clone https://github.com/snap-stanford/snap and Compiles SNAP. The code for compiles is as below:
-  
-  - cd snap/
-  - rm -rf examples/Release
-  - make all
-  - cd examples/node2vec
-  - chmod +x node2vec
-  - ls -alh node2vec
-
-* Make node2vec executable and add to system PATH or move it to the location you run.
-
-- Example of case study configuration file see documentation [readme.md](https://github.com/serbulent/HOPER/blob/main/Reproduction/case_study/readme.md)
-
-* Clone the repo 
+* Clone HOPER repository
 
     git clone https://github.com/serbulent/HOPER.git
+  
+* Run python creat_env.py
 
+* In order for the models to work, data, models files and uniprot_sprot.xml.gz files for uniprot preprocessing must be downloaded.Downloaded files are placed in the **HOPER** folder.
 
-
+    -Data files instalation: https://drive.google.com/drive/folders/1tZ6Q60tQVaabEqUoBIu3CBiDa92Od3Nn?usp=drive_link
+  
+    -Models files instalation: https://drive.google.com/drive/folders/1s5L2tlLjBurVGfE7GfXLhdjFYnQEEXqs?usp=drive_link
+  
+    -Uniprot preprocessing data instalation: https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link
+  
 # How to run HOPER
 
 Run module main function after editing  the configuration file Hoper.yaml as below examples as;
@@ -65,8 +53,9 @@ python Hoper_representation_generetor_main.py
     choice_of_process:  [generate,visualize]
     generate_module:
         choice_of_representation_type:  [all]
-        uniprot_files_path:  [./data/text_representations/uniprot/]
-        pubmed_files_path:  [./data/text_representations/pubmed/]
+        uniprot_files_path:  [./text_representations/representation_generation/data/uniprot/]
+        pubmed_files_path:  [./text_representations/representation_generation/data/pubmed/]
+        model_download: y
     visualize_module:
         choice_of_visualization_type:  [a]
         result_files_path:  [./data/text_representations/result_visualization/result_files/results/]
@@ -78,7 +67,7 @@ python Hoper_representation_generetor_main.py
 ```
 
 parameters:
-    choice_of_module: [fuse_representations] # Module selection PPI,Preprocessing,case_study
+    choice_of_module: [PPI] # Module selection PPI,Preprocessing,case_study
     #*************************************MODULES********************************************************************
     #********************PPI Module********************************
     module_name: PPI
@@ -108,6 +97,15 @@ parameters:
 
 ```
 
+* Run HOPER to produce Preprocessing
+  
+```
+  choice_of_module: [Preprocessing] # Module selection PPI,Preprocessing,SimpleAe
+ #********************Preprocessing Module********************************
+    module_name: Preprocessing
+    uniprot_dir: ./uniprot_sprot.xml.gz 
+```
+  
 * Run HOPER to produce MultiModalAE example
 
 * Run HOPER to produce TransferAE example
