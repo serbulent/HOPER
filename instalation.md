@@ -20,7 +20,7 @@
 
 * Make node2vec executable and add to system PATH or move it to the location you run.
 
-## text Model Instalation Instructions
+## text Model Installation Instructions
 
 * To use text representation generator, copy uniprot and pubmed text files to HOPER/text_representations/representation_generation/data/
 * biosentvec and biowordvec models must be downloaded to HOPER/text_representations/representation_generation/models from the urls given below. Alternatively model_download parameter must be set as "y" to download models automatically if biosentvec or biowordvec representations selected to be generated.
