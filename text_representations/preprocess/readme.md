@@ -12,3 +12,5 @@ Step by step operation:
 # Dependencies
 1.	Python 3.7.3
 2.	Biopython 1.77 or greater
+
+# Output files will be created in the text_representations/preprocess/
