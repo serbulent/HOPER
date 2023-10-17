@@ -73,8 +73,11 @@ Related dependencies are available in the **ppi_environment.yml** file. Related 
 </td></tr> </table>
 
 
-#### How to run Methods
-
+#### How to run methods 
+* Our users who have installed Hoper do not need to perform the following operations.
+  
+* If you have not installed Hoper, you must perform the steps below to run PPI.
+  
 * Dependencies are imported first.
 
 * Create edgelist (input data)  Please refer  **edgelist_code.py**
