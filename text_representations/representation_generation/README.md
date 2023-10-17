@@ -13,6 +13,7 @@ Dataset is temporarily limited to 20 entries to make testing easier. PCA analysi
  6.	string
  7.	nltk
  8.	sent2vec
+    
 
 ## Data
 
@@ -48,6 +49,10 @@ The script allows users to specify different options to create specific types of
 `-mdw` or `--model_download`: download biosentvec and biowordvec model automatically.
 
 ### How to Run
+
+Our users who have installed Hoper do not need to perform the following operations. 
+
+If you have not installed Hoper, you must perform the steps below to run text representation generation.
 
 Step by step operation:
   1. Clone repository
