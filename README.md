@@ -36,7 +36,7 @@ that interacting proteins are likely to act in the same biological process. Also
   
     -Uniprot preprocessing data instalation: https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link
 
-## PPI Model Instalation Instructions
+# PPI Model Instalation Instructions
 * To install packages to use for Node2vec and HOPE in your home directory, use:
 
   * GEM version 213189b; use for old version:
@@ -56,7 +56,7 @@ that interacting proteins are likely to act in the same biological process. Also
 
 * Make node2vec executable and add to system PATH or move it to the location you run.
 
-## text Model Installation Instructions
+# Text Model Installation Instructions
 
 * To use text representation generator, copy uniprot and pubmed text files to HOPER/text_representations/representation_generation/data/ in separate folders named as uniprot and pubmed.
   
