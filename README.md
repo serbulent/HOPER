@@ -43,7 +43,14 @@ Run module main function after editing  the configuration file Hoper.yaml as bel
 python Hoper_representation_generetor_main.py 
 ```
 
-
+* Run HOPER to produce Text Representation Preprocessing [readme.md](https://github.com/serbulent/HOPER/tree/main/text_representations/preprocess)
+  
+```
+  choice_of_module: [Preprocessing] # Module selection PPI,Preprocessing,SimpleAe
+ #********************Preprocessing Module********************************
+    module_name: Preprocessing
+    uniprot_dir: ./uniprot_sprot.xml.gz 
+```
 * Run HOPER to produce text representation example for more information please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/text_representations/representation_generation/README.md)
 
@@ -97,14 +104,6 @@ parameters:
 
 ```
 
-* Run HOPER to produce Preprocessing
-  
-```
-  choice_of_module: [Preprocessing] # Module selection PPI,Preprocessing,SimpleAe
- #********************Preprocessing Module********************************
-    module_name: Preprocessing
-    uniprot_dir: ./uniprot_sprot.xml.gz 
-```
   
 * Run HOPER to produce MultiModalAE example
 
@@ -116,7 +115,7 @@ parameters:
 python case_study_main.py
 ```
 * Run case_study_main.py for making immun escape prediction for more information please read
-[readme.md] (https://github.com/serbulent/HOPER/blob/main/case_study/readme.md)
+[readme.md](https://github.com/serbulent/HOPER/blob/main/case_study/readme.md)
 
 ```
 parameters:
