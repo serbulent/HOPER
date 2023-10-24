@@ -8,7 +8,17 @@ import os
 import pickle
 import imghdr
 import sys
-
+import os 
+import subprocess
+# Get the path of the conda executable from the system
+conda_path = subprocess.getoutput("which conda")
+# If the conda path is found
+if conda_path:
+    # Derive the base Anaconda path from the found conda path
+    anaconda_base_path = os.path.dirname(os.path.dirname(conda_path))
+    
+    # Construct the path to conda.sh
+    conda_sh_path = os.path.join(anaconda_base_path, 'etc', 'profile.d', 'conda.sh')
 
 # upload yaml file
 path = os.getcwd()
@@ -37,23 +47,33 @@ if "text" in data["parameters"]["choice_of_module"] :
   os.system("pip install -U nltk")
   os.system("python -m nltk.downloader stopwords")
   os.system("pip install fasttext")
-  os.system("conda activate text_representations.yml")
+  command = f'bash -c "source {conda_sh_path} && conda activate HOPER_textrepresentations "'
+  os.system(command)
+  #os.system("conda activate text_representations.yml")
   if "generate" in data["parameters"]["choice_of_process"]:
-    os.system('python text_representations/representation_generation/createtextrep.py --' + data["parameters"]["generate_module"]["choice_of_representation_type"][0] + ' -upfp ' + data["parameters"]["generate_module"]["uniprot_files_path"][0] + ' -pmfp ' + data["parameters"]["generate_module"]["pubmed_files_path"][0])
+    os.system('python text_representations/representation_generation/createtextrep.py --' + data["parameters"]["generate_module"]["choice_of_representation_type"][0] + ' -upfp ' + data["parameters"]["generate_module"]["uniprot_files_path"][0] + ' -pmfp ' + data["parameters"]["generate_module"]["pubmed_files_path"][0] + ' -mdw ' + data["parameters"]["generate_module"]["model_download"])
   if "visualize" in  data["parameters"]["choice_of_process"]:
     os.system('python text_representations/result_visualization/visualize_results.py -' + data["parameters"]["visualize_module"]["choice_of_visualization_type"][0] + ' -rfp ' + data["parameters"]["visualize_module"]["result_files_path"][0])
 
 if "Preprocessing" in data["parameters"]["choice_of_module"] :
-  os.system("conda activate hoper_preprocess.yml")
+  command = f'bash -c "source {conda_sh_path} && conda activate hoper_preprocess "'
+  os.system(command)
+  #os.system("conda activate hoper_preprocess.yml")
   os.system('python /text_representations/preprocess/preprocess_main.py')
 
 if "fuse_representations" in data["parameters"]["choice_of_module"]:
   from utils import fuse_representation
-  representation_dataframe=fuse_representation.make_fuse_representation(data["parameters"]["representation_files"],data["parameters"]["min_fold_number"],data["parameters"]["representation_names"])
+  command = f'bash -c "source {conda_sh_path} && conda activate hoper_case_study_env "'   
+  fuse_representation.make_fuse_representation(data["parameters"]["representation_files"],data["parameters"]["min_fold_number"],data["parameters"]["representation_names"])
+  os.system(command)
+  #os.system("conda activate case_study/hoper_case_study_env.yml")  
+  #fuse_representation.make_fuse_representation(data["parameters"]["representation_files"],data["parameters"]["min_fold_number"],data["parameters"]["representation_names"])
 
 
 if "SimpleAe" in data["parameters"]["choice_of_module"] :
+  
+  #os.system("conda activate multimodal_representations/simple_ae_env.yml")
   from multimodal_representations import simple_ae
-  instance=simple_ae.Autoencoder()
-  instance.create_simple_ae(data["parameters"]["module_name"]["representation_file_path"])
-
+  command = f'bash -c "source {conda_sh_path} && conda activate multimodal_representations && python ./multimodal_representations/simple_ae.py"'
+  os.system(command)
+  
