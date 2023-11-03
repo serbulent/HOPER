@@ -100,7 +100,7 @@ def neural_network_eval(
     #breakpoint()
     if eval_type=="training":
       paths =os.path.join(path,"training",representation_name_concated+"_"+classifier_name+"_binary_classifier.pt")
-      breakpoint()
+      #breakpoint()
       torch.save(model.state_dict(), paths)
       
       representation_name_concated = "_".join(representation_name)
@@ -256,7 +256,7 @@ def select_best_model_with_hyperparameter_tuning(
             
             kf = KFold(n_splits=5, shuffle=True, random_state=random_state)
             model_count = model_count + 1
-            breakpoint()
+            #breakpoint()
             # classifier_name_lst.append("Neural_Network")
             classifier_name = "Fully_Connected_Neural_Network"
             (
