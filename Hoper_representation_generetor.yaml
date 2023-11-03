@@ -1,15 +1,15 @@
 parameters:
-    choice_of_module: [SimpleAe] # Module selection PPI,Preprocessing,case_study
+    choice_of_module: [PPI] # Module selection PPI,Preprocessing,case_study
     #*************************************MODULES********************************************************************
     #********************PPI Module********************************
     module_name: PPI
-    choice_of_representation_name:  [Node2vec,HOPE]
+    choice_of_representation_name:  [HOPE]#,HOPE,Node2vec
     interaction_data_path:  [./data/hoper_PPI/PPI_example_data/example.edgelist]
     protein_id_list:  [./data/hoper_PPI/PPI_example_data/proteins_id.csv]
     node2vec_module:
         parameter_selection:
             d:  [10]  
-            p: [0.25]
+            p:  [0.25]
             q:  [0.25]
     HOPE_module:
         parameter_selection:
@@ -17,7 +17,7 @@ parameters:
             beta:  [0.00390625]
     #********************Text Representation Module********************************
     module_name: text
-    choice_of_process:  [generate,visualize]
+    choice_of_process:  [generate,visualize]#,visualize,generate
     generate_module:
         choice_of_representation_type:  [biosentvec]
         uniprot_files_path:  [./text_representations/representation_generation/data/uniprot/]
@@ -31,7 +31,7 @@ parameters:
     uniprot_dir: ./uniprot_sprot.xml.gz 
     #********************Fuse Representation*********************************
     module_name: fuse_representations
-    representation_files: [./case_study/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./case_study/multi_modal_rep_ae_multi_col_256.csv]
+    representation_files: [./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv]
     min_fold_number:  2
     representation_names:  [modal_rep_ae,node2vec]         
     #*******************SimpleAe*********************************************

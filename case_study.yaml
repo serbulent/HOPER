@@ -2,7 +2,7 @@ parameters:
     choice_of_module: [case_study] 
     #********************case_study Module********************************
     module_name: case_study
-    choice_of_task_name:  [prediction] #prepare_datasets,fuse_representations,model_training_test,prediction
+    choice_of_task_name:  [prepare_datasets,model_training_test,prediction] #prepare_datasets,fuse_representations,model_training_test,prediction
     fuse_representations:
         representation_files: [./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv]
         min_fold_number:  2
