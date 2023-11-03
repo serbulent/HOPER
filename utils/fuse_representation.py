@@ -42,3 +42,16 @@ def make_fuse_representation(representation_files,min_fold_num,representation_na
                 index=False,
             )
   return representation_dataframe
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) != 4:
+        print("Usage: python script.py param1 param2 param3")
+    else:
+        param1 = sys.argv[1]
+        param2 = sys.argv[2]
+        param3 = sys.argv[3]
+        representation_df=make_fuse_representation(param1,param2,param3)
+  
+        
+   
