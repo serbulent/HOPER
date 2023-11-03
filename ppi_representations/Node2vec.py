@@ -13,16 +13,21 @@ import os
 
 # File that contains the edges. Format: source target
 # Optionally, you can add weights as third column: source target weight
-#edge_f="/media/DATA2/isik/HOPER/Reproduction/ppi_representations/GEM/examples/data/deneme.edgelist"
-#protein_id=pd.read_csv("/media/DATA2/isik/HOPER/Reproduction/ppi_representations/proteins_id_deneme.csv")
+#edge_f="/media/DATA2/sinem/25-10-2023/HOPER/data/hoper_PPI/PPI_example_data/example.edgelist"
+#protein_id=pd.read_csv("/media/DATA2/sinem/25-10-2023/HOPER/data/hoper_PPI/PPI_example_data/proteins_id.csv")
 # Specify whether the edges are not directed
-#isDirected =False
-#d = [2,20]
-#p = [0.25,1]
-#q = [0.25]
+"""isDirected =False
+d = [2,20]
+p = [0.25,1]
+q = [0.25]"""
 
-def node2vec_repesentation_call(edge_f,protein_id,isDirected,d,p,q):
+def node2vec_repesentation_call(edge_f,protein_ids,isDirected,d_lst,p_lst,q_lst):
 # Load graph
+    import ast
+    d = ast.literal_eval(d_lst)
+    p = ast.literal_eval(p_lst)
+    q = ast.literal_eval(q_lst)
+    protein_id=pd.read_csv(protein_ids)
     G = graph_util.loadGraphFromEdgeListTxt(edge_f, directed =isDirected )
     G = G.to_directed()
     for i in d:
@@ -58,10 +63,33 @@ def node2vec_repesentation_call(edge_f,protein_id,isDirected,d,p,q):
             ent_vec_data_frame = pd.DataFrame(ent_vec)
             path=os.getcwd()
             
-            output = open(os.path.join(path,"ppi_representations/data",Node2vec_'+'d_'+str(i) + '_' +'p_'+str(j) +  '_' +'q_'+str(k) +'.pkl'), 'wb')
-            pickle.dump(ent_vec_data_frame, output)
-            output.close()   
-            
+            path_data = os.path.join(path, "data") 
+            if os.path.exists(path_data):
+              output = open(os.path.join(path_data,'Node2vec_'+'d_'+str(i) + '_' +'p_'+str(j) +  '_' +'q_'+str(k) +'.pkl'), 'wb')
+              pickle.dump(ent_vec_data_frame, output)
+              output.close()   
+            else:
+              os.mkdir(path_data)
+              output = open(os.path.join(path_data,'Node2vec_'+'d_'+str(i) + '_' +'p_'+str(j) +  '_' +'q_'+str(k) +'.pkl'), 'wb')
+              pickle.dump(ent_vec_data_frame, output)
+              output.close()   
 #node2vec_repesentation_call(edge_f,protein_id,isDirected,d,p,q)           
 
-
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) != 7:
+        print(len(sys.argv))
+        print("Usage: python script.py param1 param2 param3 param4 param5 param6")
+        print(sys.argv[1])
+        print(sys.argv[2])
+        print(sys.argv[3])
+        print(sys.argv[4])
+    else:
+        param1 = sys.argv[1]
+        param2 = sys.argv[2]
+        param3 = sys.argv[3]
+        param4 = sys.argv[4]
+        param5 = sys.argv[5]
+        param6 = sys.argv[6]
+        node2vec_repesentation_call(param1,param2,param3,param4,param5,param6)
+  
