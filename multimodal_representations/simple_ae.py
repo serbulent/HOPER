@@ -238,5 +238,12 @@ def create_simple_ae(fused_rep_path):
 
 
 if __name__ == "__main__":
-    fused_rep_path = "/media/DATA2/sinem/hoper_lst/HOPER/case_study/case_study_results/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv"
-    create_simple_ae(fused_rep_path)
+    import sys
+    if len(sys.argv) != 2:
+        print("Usage: python script.py param1")
+    else:
+        param1 = sys.argv[1]
+        
+        create_simple_ae(param1)
+   # fused_rep_path = "/media/DATA2/sinem/hoper_lst/HOPER/case_study/case_study_results/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv"
+    
