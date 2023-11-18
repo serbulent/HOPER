@@ -15,5 +15,5 @@ choice_of_module: [SimpleAe] # Module selection
 ```
 3. Run Simple autoencoder for multimodal representations
 ```	
-	python Hoper_representation_generetor_main.py
+     python Hoper_representation_generetor_main.py
 ```
