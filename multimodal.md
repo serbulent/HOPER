@@ -9,9 +9,9 @@ cd HOPER
 unzip data.zip
 ```
 1. create the necessary environment with:
-
-      python create_env.py 
-
+```
+python create_env.py 
+```
 2. Make manipulations on Hoper_representation_generetor.yaml file for generating multimodal representations. Change the "choice_of_module" parameter to SimpleAe and provide the representation_path parameter as your representation path.
 
 ```
