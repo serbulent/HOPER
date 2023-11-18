@@ -1,4 +1,4 @@
-# Run HOPER to produce SimpleAE example
+# SimpleAE example
 
 1. create the necessary environment with:
 
