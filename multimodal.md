@@ -1,4 +1,4 @@
-* Run HOPER to produce SimpleAE example
+# Run HOPER to produce SimpleAE example
 
 1. create the necessary environment with:
 
@@ -6,9 +6,10 @@
 
 2. Make manipulations on Hoper_representation_generetor.yaml file for generating multimodal representations. Change the "choice_of_module" parameter to SimpleAe and provide the representation_path parameter as your representation path.
 
+```
 choice_of_module: [SimpleAe] # Module selection 
 
-```#*******************SimpleAe*********************************************
+#*******************SimpleAe*********************************************
     module_name: SimpleAe
     representation_path: ./data/hoper_sequence_representations/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
 ```
