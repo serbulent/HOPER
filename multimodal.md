@@ -13,5 +13,6 @@ choice_of_module: [SimpleAe] # Module selection
     representation_path: ./data/hoper_sequence_representations/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
 ```
 3. Run Simple autoencoder for multimodal representations
-	
+```	
 	python Hoper_representation_generetor_main.py
+```
