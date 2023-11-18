@@ -1,5 +1,12 @@
 # SimpleAE example
-
+1.For the models to work,intact.zip and uniprot_sprot.xml.gz files for uniprot preprocessing must be downloaded from the links below. 
+- [Data files](https://drive.google.com/file/d/1R7jRfnBWmO6i6S1vqQd6zZt2-kcK6Eom/view?usp=drive_link)
+- [Uniprot preprocessing data](https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link)
+-  [IntAct database](https://drive.google.com/file/d/1dblRYA3A-MH08iJDJm7L8MBoDMPOiS_g/view?usp=drive_link)
+2. unzip data.zip under **Hoper** directory:
+   '''
+   unzip HOPER/data.zip
+   '''
 1. create the necessary environment with:
 
       python create_env.py 
