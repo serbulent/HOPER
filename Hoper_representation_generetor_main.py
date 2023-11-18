@@ -1,15 +1,18 @@
-import yaml
-import pandas as pd
 import os
-import glob
-import tqdm
-from sklearn.utils import shuffle
-import os
-import pickle
-import imghdr
+#import glob
+#import tqdm
+#from sklearn.utils import shuffle
+
+#import pickle
+#mport imghdr
 import sys
-import os 
+
 import subprocess
+command = (f'pip install pyyaml')
+os.system(command)
+import yaml
+#import pandas as pd
+
 # Get the path of the conda executable from the system
 conda_path = subprocess.getoutput("which conda")
 # If the conda path is found
@@ -103,8 +106,8 @@ if "fuse_representations" in data["parameters"]["choice_of_module"]:
 
 if "SimpleAe" in data["parameters"]["choice_of_module"] :
 
-  from multimodal_representations import simple_ae
-  command = f'bash -c "source {conda_sh_path} && conda activate multimodal_representations && conda info --envs && python ./multimodal_representations/simple_ae.py {data["parameters"]["representation_path"]} "'
+  #from multimodal_representations import simple_ae
+  command = f'bash -c "source {conda_sh_path} && conda activate HoloProtRep-AE && conda info --envs && python ./multimodal_representations/simple_ae.py {data["parameters"]["representation_path"]} "'
   os.system(command)
     
   

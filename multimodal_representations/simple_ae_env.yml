@@ -29,7 +29,7 @@ dependencies:
   - ipython=7.19.0
   - ipython_genutils=0.2.0
   - ipywidgets=7.6.3
-  - jedi=0.18.0
+  - jedi=0.17.2
   - jinja2=2.11.2
   - jpeg=9b
   - jsonschema=3.2.0
@@ -41,7 +41,7 @@ dependencies:
   - jupyterlab_widgets=1.0.0
   - libedit=3.1.20191231
   - libffi=3.2.1
-  - libgcc-ng=9.1.0
+  - libgcc-ng=9.3.0
   - libpng=1.6.37
   - libsodium=1.0.18
   - libstdcxx-ng=9.1.0
@@ -75,7 +75,6 @@ dependencies:
   - pyqt=5.9.2
   - pyrsistent=0.17.3
   - python=3.7.0
-
   - nvidia::cudatoolkit  
   - python-dateutil=2.8.1
   - pyzmq=20.0.0
