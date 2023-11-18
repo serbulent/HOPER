@@ -32,8 +32,6 @@ that interacting proteins are likely to act in the same biological process. Also
 
     -Data files instalation: https://drive.google.com/drive/folders/1tZ6Q60tQVaabEqUoBIu3CBiDa92Od3Nn?usp=drive_link
   
-    -Models files instalation: https://drive.google.com/drive/folders/1s5L2tlLjBurVGfE7GfXLhdjFYnQEEXqs?usp=drive_link
-  
     -Uniprot preprocessing data instalation: https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link
 
 ## PPI Model Instalation Instructions
