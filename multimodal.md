@@ -4,9 +4,9 @@
 - [Uniprot preprocessing data](https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link)
 -  [IntAct database](https://drive.google.com/file/d/1dblRYA3A-MH08iJDJm7L8MBoDMPOiS_g/view?usp=drive_link)
 2. unzip data.zip under **Hoper** directory:
-   '''
-   unzip HOPER/data.zip
-   '''
+  ```
+unzip HOPER/data.zip
+```
 1. create the necessary environment with:
 
       python create_env.py 
