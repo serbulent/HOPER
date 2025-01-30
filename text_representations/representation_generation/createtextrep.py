@@ -10,9 +10,11 @@ import os
 import create_tfidf as tf
 import create_biosentvec as bs
 import create_biowordvec as bw
+import create_biobert as bb
 
 parser = argparse.ArgumentParser(description='Create text representations')
 parser.add_argument("-tfidf","--tfidf", action='store_true', help="Create TFIDF representations")
+parser.add_argument("-biobert","--biobert", action='store_true', help="Create bioBERT representations")
 parser.add_argument("-bsv", "--biosentvec", action='store_true',  help="Create biosentvec representations")
 parser.add_argument("-bwv", "--biowordvec", action='store_true',  help="Create biowordvec representations")
 parser.add_argument("-upfp", "--uniprotfilespath", required=True,  help="Path for the uniprot files")
@@ -39,6 +41,12 @@ if args.tfidf or args.all:
     tf.ufiles_path = args.uniprotfilespath
     tf.pfiles_path = args.pubmedfilespath
     tf.main()
+    
+if args.biobert or args.all:
+    print("\n\n Creating biobert representations...\n")
+    bb.ufiles_path = args.uniprotfilespath
+    bb.pfiles_path = args.pubmedfilespath
+    bb.main()
       
 if args.biosentvec or args.all:
     if args.model_download == "y":
