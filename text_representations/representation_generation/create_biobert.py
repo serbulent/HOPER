@@ -1,17 +1,19 @@
 import pandas as pd
 import os
 from tqdm import tqdm
-import nlu
 import numpy as np
 from transformers import AutoTokenizer, AutoModel
 import torch
 import gc
 
-
 ufiles_path = ''
 pfiles_path = ''
 
-path = "/media/DATA/home/muammer/HOPER/"
+'''
+convert_dataframe_to_multi_col(representation_dataframe): This function takes a representation DataFrame as input (representation_dataframe), which has two columns: 'Entry' and 'Vector'. 
+It splits the 'Vector' column into separate columns and merges them with the 'Entry' column to create a new DataFrame with multiple columns for each dimension of the vector. 
+The resulting DataFrame with multiple columns is returned.
+'''
 
 def convert_dataframe_to_multi_col(representation_dataframe):
     entry = pd.DataFrame(representation_dataframe['Entry'])
@@ -23,7 +25,6 @@ def create_reps(tp):
     files = os.listdir(pfiles_path)
     file_list = []
 
-    # BioBERT model ve tokenizer'ı yükleme
     model_name = "dmis-lab/biobert-base-cased-v1.1"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModel.from_pretrained(model_name)
@@ -68,5 +69,5 @@ def create_reps(tp):
    
 def main():
     create_reps("uniprot")
-    #create_reps("pubmed")
-    #create_reps("uniprotpubmed")
+    create_reps("pubmed")
+    create_reps("uniprotpubmed")
