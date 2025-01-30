@@ -15,10 +15,10 @@ It splits the 'Vector' column into separate columns and merges them with the 'En
 The resulting DataFrame with multiple columns is returned.
 '''
 
-def convert_dataframe_to_multi_col(representation_dataframe):
-    entry = pd.DataFrame(representation_dataframe['Entry'])
-    vector = pd.DataFrame(representation_dataframe['Vector'])
-    multi_col_representation_vector = pd.merge(left=entry,right=vector,left_index=True, right_index=True)
+def convert_dataframe_to_multi_col(representation_dataframe, id_column):
+    entry = pd.DataFrame(representation_dataframe[id_column])
+    vector = pd.DataFrame(list(representation_dataframe['Vector']))
+    multi_col_representation_vector = pd.merge(left=entry, right=vector, left_index=True, right_index=True)
     return multi_col_representation_vector
 
 def create_reps(tp):
@@ -55,7 +55,7 @@ def create_reps(tp):
         gc.collect()
 
     df = pd.DataFrame(data, columns=['Entry', 'Vector']) 
-    df = convert_dataframe_to_multi_col(df)
+    df = convert_dataframe_to_multi_col(df, id_column='Entry')
     df.to_csv(os.path.join(path,'text_representations/representation_generation/biobert_representations/' + tp + '_biobert_embeddings_multi_col.csv'), index = False)
    
 def main():
