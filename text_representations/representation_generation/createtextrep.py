@@ -11,12 +11,14 @@ import create_tfidf as tf
 import create_biosentvec as bs
 import create_biowordvec as bw
 import create_biobert as bb
+import create_openai as oai
 
 parser = argparse.ArgumentParser(description='Create text representations')
 parser.add_argument("-tfidf","--tfidf", action='store_true', help="Create TFIDF representations")
 parser.add_argument("-biobert","--biobert", action='store_true', help="Create bioBERT representations")
 parser.add_argument("-bsv", "--biosentvec", action='store_true',  help="Create biosentvec representations")
 parser.add_argument("-bwv", "--biowordvec", action='store_true',  help="Create biowordvec representations")
+parser.add_argument("-openai","--openai", action='store_true', help="Create OpenAI representations")
 parser.add_argument("-upfp", "--uniprotfilespath", required=True,  help="Path for the uniprot files")
 parser.add_argument("-pmfp", "--pubmedfilespath", required=True,  help="Path for the pubmed files")
 parser.add_argument("-mdw", "--model_download", help="Download biosentvec and biowordvec pre-trained models automatically")
@@ -47,6 +49,12 @@ if args.biobert or args.all:
     bb.ufiles_path = args.uniprotfilespath
     bb.pfiles_path = args.pubmedfilespath
     bb.main()
+    
+if args.openai or args.all:
+    print("\n\n Creating OpenAI representations...\n")
+    oai.ufiles_path = args.uniprotfilespath
+    oai.pfiles_path = args.pubmedfilespath
+    oai.main()
       
 if args.biosentvec or args.all:
     if args.model_download == "y":
