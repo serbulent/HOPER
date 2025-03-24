@@ -5,7 +5,9 @@ from nltk.corpus import stopwords
 from string import punctuation
 from tqdm import tqdm
 from openai import OpenAI
+import nltk
 
+nltk.download('punkt_tab')
 ufiles_path = ''
 pfiles_path = ''
 stop_words = set(stopwords.words('english'))
@@ -48,7 +50,7 @@ def create_reps(tp):
     files = os.listdir(pfiles_path)
     print("\n\nLoading model...\n")
     client = OpenAI(
-        api_key="your OpenAI api key"
+        api_key="your api key"
     )
 
     data = []
@@ -82,7 +84,7 @@ def create_reps(tp):
 
     df = pd.DataFrame(data, columns=['Entry', 'Vector']) 
     df = convert_dataframe_to_multi_col(df)
-    df.to_csv(os.path.join(path,'text_representations/representation_generation/openai_representations/' + tp + '_openai_large_vectors_multi_col.csv'), index = False)
+    df.to_csv(os.path.join(path,'openai_representations/' + tp + '_openai_large_vectors_multi_col.csv'), index = False)
 
 def main():
     create_reps("uniprot")

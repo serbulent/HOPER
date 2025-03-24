@@ -30,6 +30,8 @@ def create_reps(tp):
     model = AutoModel.from_pretrained(model_name)
 
     data = []
+    path=os.getcwd()
+    
     print('Generating ' + tp + ' embeddings...')
     for i in tqdm(range(len(files))):
         file_content = ""
@@ -56,7 +58,7 @@ def create_reps(tp):
 
     df = pd.DataFrame(data, columns=['Entry', 'Vector']) 
     df = convert_dataframe_to_multi_col(df, id_column='Entry')
-    df.to_csv(os.path.join(path,'text_representations/representation_generation/biobert_representations/' + tp + '_biobert_embeddings_multi_col.csv'), index = False)
+    df.to_csv(os.path.join(path,'biobert_representations/' + tp + '_biobert_embeddings_multi_col.csv'), index = False)
    
 def main():
     create_reps("uniprot")

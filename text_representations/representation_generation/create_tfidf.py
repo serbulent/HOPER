@@ -32,15 +32,16 @@ def create_reps(tp):
 
     vectorizer = TfidfVectorizer(use_idf=True)
     fitted_vectorizer = vectorizer.fit(file_list)
-    feature_names = fitted_vectorizer.get_feature_names()
+    feature_names = fitted_vectorizer.get_feature_names_out()
 
+    feature_names = feature_names.tolist()
     cols = feature_names
     cols.append('Entry')
     df1 = pd.DataFrame(columns=cols)
     del feature_names[-1]
     print('Creating ' + tp + ' vectors...')
-    for i in tqdm(range(20)):
-    #for i in tqdm(range(len(files))):
+    #for i in tqdm(range(20)):
+    for i in tqdm(range(len(files))):
         file_content = []
         if tp == 'uniprot':
             contentu = open(ufiles_path + files[i])
@@ -58,11 +59,11 @@ def create_reps(tp):
         denselist = dense.tolist()
         df = pd.DataFrame(denselist, columns=feature_names)
         df['Entry'] = files[i][:-4]
-        df1 = df1.append(df, ignore_index=True)
+        df1 = pd.concat([df1, df], ignore_index=True)
 
     path=os.getcwd()
     entry = df1.Entry
-    df1.to_csv(os.path.join(path,'text_representations/representation_generation/tfidf_representations/' + tp + '_tfidf_vectors.csv'), index = False)
+    df1.to_csv(os.path.join(path,'tfidf_representations/' + tp + '_tfidf_vectors.csv'), index = False)
     
     '''
     df1.drop('Entry', inplace=True, axis=1)

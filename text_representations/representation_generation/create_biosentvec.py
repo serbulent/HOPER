@@ -49,15 +49,15 @@ def create_reps(tp):
     model = sent2vec.Sent2vecModel()
     print("\n\nLoading model...\n")
     try:
-            model.load_model(os.path.join(path,'text_representations/representation_generation/models/BioSentVec_PubMed_MIMICIII-bigram_d700.bin'))
+            model.load_model(os.path.join(path,'models/BioSentVec_PubMed_MIMICIII-bigram_d700.bin'))
     except Exception as e:
             print(e)
             print('model successfully loaded')
 
     df = pd.DataFrame(columns=['Entry', 'Vector'])
     print("\n\nCreating " + tp + "biosentvec vectors...\n")
-    for i in tqdm(range(20)):
-    #for i in tqdm(range(len(files))):
+    #for i in tqdm(range(20)):
+    for i in tqdm(range(len(files))):
         if tp == 'uniprot':
             contentu = open(ufiles_path + files[i])
             sentence = preprocess_sentence(contentu.read())
@@ -70,10 +70,12 @@ def create_reps(tp):
             sentence = preprocess_sentence(contentu.read() + contentp.read())
         
         sentence_vector = model.embed_sentence(sentence)
-        df = df.append({'Entry' : files[i][:-4], 'Vector' : sentence_vector[0]}, ignore_index = True)
+        df1 = pd.DataFrame({'Entry': [files[i][:-4]], 'Vector': [sentence_vector[0]]})
+        df = pd.concat([df, df1], ignore_index=True)
+        #df = df.append({'Entry' : files[i][:-4], 'Vector' : sentence_vector[0]}, ignore_index = True)
 
     df = convert_dataframe_to_multi_col(df)
-    df.to_csv(os.path.join(path,'text_representations/representation_generation/biosentvec_representations/' + tp + '_biosentvec_vectors_multi_col.csv'), index = False)
+    df.to_csv(os.path.join(path,'biosentvec_representations/' + tp + '_biosentvec_vectors_multi_col.csv'), index = False)
 
 def main():
     create_reps("uniprot")
