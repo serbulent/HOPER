@@ -70,6 +70,7 @@ def convert_dataframe_to_multi_col(representation_dataframe, id_column):
     Returns:
         pd.DataFrame: DataFrame where each dimension of the vector is a separate column.
     """
+    
     entry = pd.DataFrame(representation_dataframe[id_column])
     vector = pd.DataFrame(list(representation_dataframe['Vector']))
     multi_col_representation_vector = pd.merge(left=entry, right=vector, left_index=True, right_index=True)
@@ -100,7 +101,9 @@ def _embed_dataframe(df, tokenizer, model, device, batch_size):
     for i in tqdm(range(0, num_sequences, batch_size), desc="Processing batches"):
         batch_df = df.iloc[i:i+batch_size]
         # Filter out sequences that are too long
-        valid_rows = batch_df[batch_df['Sequence'].apply(lambda s: len(s) < 2048)]
+        valid_rows = batch_df[batch_df['Sequence'].apply(lambda s: isinstance(s, str) and len(s) < 2048)]
+
+        #valid_rows = batch_df[batch_df['Sequence'].apply(lambda s: len(s) < 2048)]
         if valid_rows.empty:
             for idx, row in batch_df.iterrows():
                 print(f"Skipping sequence with ID {row['ID']} due to excessive length.")
@@ -146,6 +149,7 @@ def embed_sequence(sequence):
         For single sequence embedding, a simple mean pooling is applied.
         In batch processing (FASTA inputs), mean pooling with an attention mask is used to handle padded tokens.
     """
+    
     tokenizer, model, device = initialize_t5_model_and_tokenizer()
     embedding = generate_embedding_for_sequence(sequence, tokenizer, model, device)
     return embedding
@@ -179,3 +183,18 @@ def embed_fasta(file_path, output_file=None, batch_size=32):
         embeddings_multi_col_df.to_csv(output_file, index=False)
     
     return embeddings_multi_col_df
+
+def main():
+    
+    import os
+    tokenizer, model, device = initialize_t5_model_and_tokenizer()
+    file_path="/media/DATA2/testuser2/human_sequences.csv"
+    file_name=file_path.split("/")[-1].split(".")[0]+"_Prott5xl"+".csv"
+    df=pd.read_csv(file_path)
+    current_directory = os.getcwd()
+    print("Working directory:", current_directory)
+    new_directory = os.path.join(current_directory, file_name)
+    embeddings_multi_col_df = _embed_dataframe(df, tokenizer, model, device,32)
+    embeddings_multi_col_df.to_csv(new_directory)
+if __name__ == "__main__":
+    main()
