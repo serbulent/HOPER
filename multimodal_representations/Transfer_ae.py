@@ -4,7 +4,7 @@ import random
 import copy
 import time
 from datetime import datetime
-
+import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 from torch.optim import AdamW
@@ -20,11 +20,12 @@ class Autoencoder(nn.Module):
     which are then concatenated and passed through a bottleneck layer (encoder4).
     The decoder reconstructs each modality from the bottleneck representation.
     """
+    
     def __init__(self, 
-                 text_dim: int = 1024,
+                 text_dim: int = 3072,
                  text_dim1: int = 768,
                  text_dim2: int = 512,
-                 ppi_dim: int = 1000,
+                 ppi_dim: int = 500,
                  ppi_dim1: int = 1000,
                  ppi_dim2: int = 1000,
                  seq_dim: int = 1024,
@@ -102,12 +103,10 @@ class Autoencoder_Seq(nn.Module):
     def __init__(self, pretrained_model):
         super(Autoencoder_Seq, self).__init__()
         self.pretrained_model = pretrained_model
-        
-        # Dimensions for each modality
-        self.text_dim = 1024
+        self.text_dim = 3072
         self.text_dim1 = 768
         self.text_dim2 = 512
-        self.ppi_dim = 1000
+        self.ppi_dim = 500
         self.ppi_dim1 = 1000
         self.ppi_dim2 = 1000
         self.seq_dim = 1024
@@ -279,7 +278,7 @@ def train_model_for_seq(model, train_loader, validation_loader, criterion, optim
                 epoch_loss += loss.item()
             epoch_loss /= len(data_loader)
 
-            if phase == 'val' and epoch_loss < best_loss:
+            if phase == 'val' :#and epoch_loss < best_loss
                 best_loss = epoch_loss
                 best_model_wts = copy.deepcopy(model.state_dict())
                 val_loss_history.append(epoch_loss)
@@ -505,6 +504,12 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--save_model_path", type=str, default="transfer_ae_weights.pth", help="Path to save trained model (only train)")
 
     return parser.parse_args()
+def plot_losses(train_hist, val_hist):
+    plt.figure()
+    plt.plot(train_hist, label='Train')
+    plt.plot(val_hist, label='Val')
+    plt.xlabel('Epoch'); plt.ylabel('Loss'); plt.legend()
+    plt.savefig('/media/DATA2/sinem/isik_makale_1003/low_elenmis_yeni_datasetler/CC/CC_transfer/CC_loss_curve_Transfer_ae.png')
 
 # Seed Fix
 def set_seed(seed):
@@ -581,7 +586,7 @@ if __name__ == "__main__":
     
     # Train sequence autoencoder
         trained_model, train_loss_history, val_loss_history, loss_vals = train_model_for_seq(seq_model, train_loader, validation_loader, criterion, optimizer, args.epochs,sequence_tensors, text_tensors, ppi_tensors, device)
-    
+        plot_losses(train_loss_history, val_loss_history)
     # Save trained model
         torch.save(trained_model.state_dict(), args.save_model_path)
         print(f"Trained model saved to {args.save_model_path}")
