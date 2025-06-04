@@ -83,7 +83,7 @@ Related dependencies are available in the **ppi_environment.yml** file. Related 
 * Create edgelist (input data)  Please refer  **edgelist_code.py**
 
 * If you are going to use the IntAct database, Preprocessing is required for the IntAct database.The relevant code for 
- this  https://github.com/serbulent/HOPER/blob/main/Reproduction/ppi_representations/intact_data_preprocess.py  
+ this  https://github.com/serbulent/HOPER/blob/main/ppi_representations/data_preprocess.py  
 
 * To install packages to use for Node2vec and HOPE in your home directory, use:
 
