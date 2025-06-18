@@ -1,28 +1,32 @@
-import torch
-import torch.nn as nn
-from torch.nn import init
-from torch.autograd import Variable
-import torch.utils.data as Data
-from torch.utils.data import TensorDataset, DataLoader
-from torch.optim import *
-import numpy as np
-import pickle
-import argparse
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
-import tqdm
-import time
-import copy
-import os
-import random
-import matplotlib.pyplot as plt
-# ----------------------------
-# 1. Autoencoder Tanımı
+# Example usage:
+"""
+# Train the autoencoder
+python simple_ae.py train \\
+  --fused_rep_path data/fused_train.csv \\
+  --model_save_path models/autoencoder_best.pth \\
+  --scaler_save_path models/scaler.pkl \\
+  --output_csv outputs/simple_ae.csv \\
+  --epochs 400 \\
+  --batch_size 128 \\
+  --learning_rate 0.001 \\
+  --validation_split 0.2 \\
+  --seed 42 \\
+  --loss_plot_path outputs/loss_curve.png
+
+# Run inference with pretrained model
+python simple_ae.py inference \\
+  --fused_rep_path data/fused_test.csv \\
+  --model_load_path models/autoencoder_best.pth \\
+  --scaler_load_path models/scaler.pkl \\
+  --output_csv outputs/simple_ae_inference.csv
+"""
+#----------------------------
+# 1. Autoencoder Definition
 # ----------------------------
 class Autoencoder(nn.Module):
     def __init__(self, representation_dim):
         super(Autoencoder, self).__init__()
-        self.input_dim = representation_dim  # Örneğin 2098
+        self.input_dim = representation_dim  # For example, 2098
         self.layer1_dim = 1536
         self.layer2_dim = 1024
         self.layer3_dim = 768
@@ -30,7 +34,7 @@ class Autoencoder(nn.Module):
 
         activation_function = nn.Tanh()
 
-        # Encoder katmanları
+        # Encoder layers
         self.encoder = nn.Sequential(
             nn.Linear(self.input_dim, self.layer1_dim),
             activation_function,
@@ -45,7 +49,7 @@ class Autoencoder(nn.Module):
             activation_function
         )
 
-        # Decoder katmanları
+        # Decoder layers
         self.decoder = nn.Sequential(
             nn.Linear(self.layer4_dim, self.layer3_dim),
             activation_function,
@@ -63,20 +67,20 @@ class Autoencoder(nn.Module):
         decoded = self.decoder(encoded_mid)
         return decoded, encoded_mid
 
-def plot_losses(train_hist, val_hist):
+def plot_losses(train_hist, val_hist,save_path):
     plt.figure()
     plt.plot(train_hist, label='Train')
     plt.plot(val_hist, label='Val')
     plt.xlabel('Epoch'); plt.ylabel('Loss'); plt.legend()
-    plt.savefig("/media/DATA2/testuser2/deneme_aybar_hoca/HOPER/multimodal_representations/cc_simple_ae/CC_simple_ae_representations_loss_curve_.png")
+    plt.savefig(save_path)
 
 # ----------------------------
-# 2. Yardımcı Fonksiyonlar
+# 2. Helper Functions
 # ----------------------------
 def convert_dataframe_to_multi_col(representation_dataframe):
     """
-    Tek sütunlu 'Vector' dizisini (list of floats) satır bazlı multi-column DataFrame'e çevirir.
-    'Entry' sütunu ve vektör elemanlarını yan yana getirir.
+    Converts a single-column 'Vector' (list of floats) into a row-based multi-column DataFrame.
+    Aligns 'Entry' column next to vector elements.
     """
     entry = pd.DataFrame(representation_dataframe['Entry'])
     vector = pd.DataFrame(list(representation_dataframe['Vector']))
@@ -88,18 +92,15 @@ def convert_dataframe_to_multi_col(representation_dataframe):
     )
     return multi_col_representation_vector
 
-
 def convert_to_two_col(multi_col_representation_df):
     """
-    Multi-column DataFrame'i (Entry + ayrı ayrı sütunlar) alır,
-    her satırdaki vektör elemanlarını tek bir liste haline getirip
-    DataFrame'i iki sütunlu hale getirir: ['Entry', 'Vector'].
+    Converts a multi-column DataFrame (Entry + separate columns)
+    into a two-column format: ['Entry', 'Vector'], where Vector is a list of floats.
     """
     vals = multi_col_representation_df.iloc[:, 1:]
     original_values_as_df = pd.DataFrame(columns=['Entry', 'Vector'])
 
     for index, row in tqdm.tqdm(vals.iterrows(), total=len(vals)):
-        # Her satırdaki vektör elemanlarını float listesine çevir
         list_of_floats = [float(item) for item in list(row)]
         original_values_as_df.loc[index] = [
             multi_col_representation_df.iloc[index]['Entry'],
@@ -108,27 +109,24 @@ def convert_to_two_col(multi_col_representation_df):
 
     return original_values_as_df
 
-
 def get_activation(name, activation_dict):
     """
-    Modelin encoder_mid katman çıkışını hook ile yakalayabilmek için.
+    Hook function to capture the output of encoder_mid layer during forward pass.
     """
     def hook(model, input, output):
         activation_dict[name] = output.detach()
     return hook
 
-
 # ----------------------------
-# 3. Eğitim Fonksiyonu
+# 3. Training Function
 # ----------------------------
 def train_model(model, train_loader, validation_loader, criterion,
                 optimizer, num_epochs, fused_tensors, device):
     """
-    Modeli eğitir ve en iyi doğrulama kaybı (val_loss) elde edilen ağırlıkları döner.
-    Ayrıca eğitim ve doğrulama kayıp geçmişini döner.
+    Trains the model and returns the weights corresponding to the best validation loss.
+    Also returns the training and validation loss histories.
     """
     since = time.time()
-
     train_loss_history = []
     val_loss_history = []
 
@@ -153,7 +151,6 @@ def train_model(model, train_loader, validation_loader, criterion,
             running_loss = 0.0
 
             for batch_indices in loader:
-                # batch_indices, fused_tensors'teki satırların indekslerini içeriyor
                 fused_batch = fused_tensors[batch_indices].view(-1, fused_tensors_size).to(device)
 
                 optimizer.zero_grad()
@@ -183,45 +180,38 @@ def train_model(model, train_loader, validation_loader, criterion,
     print(f'Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s')
     print(f'Best val loss: {best_loss:.6f}')
 
-    # En iyi ağırlıkları yükle
     model.load_state_dict(best_model_wts)
     return model, train_loss_history, val_loss_history
 
-
 # ----------------------------
-# 4. Eğitim ve Model Kaydetme
+# 4. Training and Saving Model
 # ----------------------------
 def run_training(args):
     """
-    Eğitim işlemini gerçekleştirir:
-    - fused_rep_path'teki CSV'yi okur
-    - StandardScaler ile ölçekler
-    - Dataları train/val olarak ayırır
-    - Modeli eğitir
-    - En iyi ağırlıkları ve scaler objesini kaydeder
-    - simple_ae vektörlerini oluşturup CSV'e kaydeder
+    Executes the training process:
+    - Reads the CSV at fused_rep_path
+    - Scales the data using StandardScaler
+    - Splits data into train/val
+    - Trains the model
+    - Saves best weights and the scaler object
+    - Generates simple_ae vectors and saves to CSV
     """
-    # 4.1. Veri Okuma ve Ölçekleme
     fused_rep = pd.read_csv(args.fused_rep_path,index_col=0)
     if 'Entry' not in fused_rep.columns:
-        raise ValueError("'Entry' sütunu bulunamadı. Lütfen CSV'de 'Entry' adında bir sütun olduğundan emin olun.")
+        raise ValueError("'Entry' column not found. Make sure your CSV contains a column named 'Entry'.")
 
     scaler = StandardScaler()
-    # "Entry" dışındaki tüm sütunları ölçeklendir
     cols_to_scale = [col for col in fused_rep.columns if col != 'Entry']
     fused_rep.loc[:, cols_to_scale] = scaler.fit_transform(fused_rep.loc[:, cols_to_scale])
 
-    # Scaler'ı disk'e kaydet
     scaler_path = args.scaler_save_path if args.scaler_save_path else "scaler.pkl"
     with open(scaler_path, 'wb') as f:
         pickle.dump(scaler, f)
-    print(f"[INFO] Scaler objesi '{scaler_path}' olarak kaydedildi.")
-    #breakpoint()
-    # 4.2. Two-col formatına çevir
+    print(f"[INFO] Scaler object saved to '{scaler_path}'.")
+
     fused_rep_two_col = convert_to_two_col(fused_rep)
     fused_tensors = torch.tensor(list(fused_rep_two_col['Vector'].values), dtype=torch.float32)
 
-    # 4.3. DataLoader Hazırlığı
     batch_size = args.batch_size
     validation_split = args.validation_split
     shuffle_dataset = True
@@ -245,10 +235,9 @@ def run_training(args):
     train_loader = DataLoader(train_indices, batch_size=batch_size, shuffle=True, pin_memory=True)
     validation_loader = DataLoader(val_indices, batch_size=batch_size, shuffle=True, pin_memory=True)
 
-    # 4.4. Model Oluşturma ve Eğitme
     representation_dim = len(fused_rep_two_col['Vector'][0])
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[INFO] Kullanılan cihaz: {device}")
+    print(f"[INFO] Device: {device}")
 
     model = Autoencoder(representation_dim).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
@@ -264,13 +253,12 @@ def run_training(args):
         fused_tensors,
         device
     )
-    plot_losses(train_loss_hist, val_loss_hist)
-    # 4.5. Model Ağırlıklarını Kaydet
+    plot_losses(train_loss_hist, val_loss_hist,args.loss_plot_path)
+
     model_save_path = args.model_save_path if args.model_save_path else "autoencoder_best.pth"
     torch.save(best_model.state_dict(), model_save_path)
-    print(f"[INFO] En iyi model ağırlıkları '{model_save_path}' olarak kaydedildi.")
+    print(f"[INFO] Best model weights saved to '{model_save_path}'.")
 
-    # 4.6. Simple AE Vektörleri Oluşturma (Training Data Üzerinden)
     activation = {}
     best_model.encoder_mid.register_forward_hook(get_activation('encoder_mid', activation))
 
@@ -286,61 +274,53 @@ def run_training(args):
             coding_layer_output = activation['encoder_mid'].tolist()[0]
             simple_ae_rep.loc[index] = [row['Entry'], coding_layer_output]
 
-    # 4.7. Multi-column formatına çevir ve kaydet
     simple_ae_multi_col = convert_dataframe_to_multi_col(simple_ae_rep)
     output_csv = args.output_csv if args.output_csv else "simple_ae.csv"
     simple_ae_multi_col.to_csv(output_csv, index=False)
-    print(f"[INFO] Simple AE multi-column çıktısı '{output_csv}' olarak kaydedildi.")
-
+    print(f"[INFO] Simple AE multi-column output saved to '{output_csv}'.")
 
 # ----------------------------
-# 5. İnference Fonksiyonu
+# 5. Inference Function
 # ----------------------------
 def run_inference(args):
     """
-    İnference işlemini gerçekleştirir:
-    - Daha önce eğitilmiş model ağırlıklarını ve scaler objesini yükler
-    - fused_rep_path'teki veriyi okur ve aynı scaler ile ölçekler
-    - Modeli yükler, encoder_mid katmanına hook ekler
-    - Her satır için encoding (encoded_mid) vektörünü hesaplar
-    - Sonucu multi-column formatında CSV olarak kaydeder
+    Executes inference using a pretrained autoencoder:
+    - Loads model weights and scaler
+    - Reads input data and applies the same scaling
+    - Extracts encoder_mid vectors
+    - Saves output as multi-column CSV
     """
-    # 5.1. Ölçekleyici ve Model Yükleme
     if not os.path.exists(args.model_load_path):
-        raise FileNotFoundError(f"[ERROR] Model ağırlıkları bulunamadı: {args.model_load_path}")
+        raise FileNotFoundError(f"[ERROR] Model weights not found: {args.model_load_path}")
     if not os.path.exists(args.scaler_load_path):
-        raise FileNotFoundError(f"[ERROR] Scaler objesi bulunamadı: {args.scaler_load_path}")
+        raise FileNotFoundError(f"[ERROR] Scaler object not found: {args.scaler_load_path}")
 
     with open(args.scaler_load_path, 'rb') as f:
         scaler: StandardScaler = pickle.load(f)
-    print(f"[INFO] Scaler objesi '{args.scaler_load_path}' yüklendi.")
+    print(f"[INFO] Scaler loaded from '{args.scaler_load_path}'.")
 
-    # 5.2. Veriyi Okuma ve Ölçekleme
     fused_rep = pd.read_csv(args.fused_rep_path,index_col=0)
     if 'Entry' not in fused_rep.columns:
-        raise ValueError("'Entry' sütunu bulunamadı. Lütfen CSV'de 'Entry' adında bir sütun olduğundan emin olun.")
+        raise ValueError("'Entry' column not found. Make sure your CSV contains a column named 'Entry'.")
 
     cols_to_scale = [col for col in fused_rep.columns if col != 'Entry']
     fused_rep.loc[:, cols_to_scale] = scaler.transform(fused_rep.loc[:, cols_to_scale])
 
-    # 5.3. Two-col formatına çevir
     fused_rep_two_col = convert_to_two_col(fused_rep)
     fused_tensors = torch.tensor(list(fused_rep_two_col['Vector'].values), dtype=torch.float32)
 
-    # 5.4. Model Tanımlama ve Yükleme
     representation_dim = len(fused_rep_two_col['Vector'][0])
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[INFO] Kullanılan cihaz: {device}")
+    print(f"[INFO] Device: {device}")
 
     model = Autoencoder(representation_dim).to(device)
     model.load_state_dict(torch.load(args.model_load_path, map_location=device))
     model.eval()
-    print(f"[INFO] Model ağırlıkları '{args.model_load_path}' yüklendi.")
+    print(f"[INFO] Model weights loaded from '{args.model_load_path}'.")
 
     activation = {}
     model.encoder_mid.register_forward_hook(get_activation('encoder_mid', activation))
 
-    # 5.5. Encoding (Inference) ve Çıktı Üretimi
     simple_ae_rep = pd.DataFrame(columns=['Entry', 'Vector'])
     fused_tensors_size = fused_tensors.shape[1]
 
@@ -352,55 +332,55 @@ def run_inference(args):
             coding_layer_output = activation['encoder_mid'].tolist()[0]
             simple_ae_rep.loc[index] = [row['Entry'], coding_layer_output]
 
-    # 5.6. Multi-column formatına çevir ve kaydet
     simple_ae_multi_col = convert_dataframe_to_multi_col(simple_ae_rep)
     output_csv = args.output_csv if args.output_csv else "simple_ae_inference.csv"
     simple_ae_multi_col.to_csv(output_csv, index=False)
-    print(f"[INFO] Inference sonucu multi-column çıktısı '{output_csv}' olarak kaydedildi.")
-
+    print(f"[INFO] Inference output saved to '{output_csv}'.")
 
 # ----------------------------
-# 6. Ana Fonksiyon ve Argparse
+# 6. Main Function and Argparse
 # ----------------------------
 def main():
     parser = argparse.ArgumentParser(
-        description="Autoencoder ile eğitim ve/veya inference işlemleri için script."
+        description="Script for training and/or inference using an Autoencoder."
     )
 
     subparsers = parser.add_subparsers(dest="mode", required=True,
-                                       help="Mode 'train' veya 'inference' seçin.")
+                                       help="Choose mode: 'train' or 'inference'.")
 
-    # 6.1. Train modu argümanları
-    train_parser = subparsers.add_parser("train", help="Modeli eğit ve simple AE çıktılarını oluştur.")
+    # 6.1. Train mode arguments
+    train_parser = subparsers.add_parser("train", help="Train the model and generate simple AE outputs.")
     train_parser.add_argument("--fused_rep_path", type=str, required=True,
-                              help="Fusion edilmiş temsil verilerini içeren CSV dosyasının yolu.")
+                              help="Path to the CSV file containing fused representation data.")
     train_parser.add_argument("--model_save_path", type=str, required=False, default="autoencoder_best.pth",
-                              help="Eğitim sonrası en iyi model ağırlıklarının kaydedileceği dosya.")
+                              help="Path to save the best model weights after training.")
     train_parser.add_argument("--scaler_save_path", type=str, required=False, default="scaler.pkl",
-                              help="Eğitim sırasında scaler objesinin kaydedileceği dosya.")
+                              help="Path to save the scaler object during training.")
     train_parser.add_argument("--output_csv", type=str, required=False, default="simple_ae.csv",
-                              help="Eğitim sonunda oluşturulan multi-column simple AE çıktısının kaydedileceği CSV.")
+                              help="Path to save the multi-column simple AE output CSV.")
     train_parser.add_argument("--epochs", type=int, required=False, default=400,
-                              help="Eğitim epoch sayısı.")
+                              help="Number of training epochs.")
     train_parser.add_argument("--batch_size", type=int, required=False, default=128,
-                              help="Mini-batch boyutu.")
+                              help="Mini-batch size.")
     train_parser.add_argument("--learning_rate", type=float, required=False, default=1e-3,
-                              help="Optimizer için öğrenme hızı (lr).")
+                              help="Learning rate for optimizer.")
     train_parser.add_argument("--validation_split", type=float, required=False, default=0.2,
-                              help="Validation set oranı (0-1 arasında).")
+                              help="Validation set ratio (between 0 and 1).")
     train_parser.add_argument("--seed", type=int, required=False, default=42,
-                              help="Rastgelelik için seed değeri.")
+                              help="Random seed for reproducibility.")
+    train_parser.add_argument("--loss_plot_path", type=str, default="loss_curve.png",
+                        help="Path to save the training/validation loss curve image.")
 
-    # 6.2. Inference modu argümanları
-    infer_parser = subparsers.add_parser("inference", help="Eğitilmiş modeli kullanarak inference yap.")
+    # 6.2. Inference mode arguments
+    infer_parser = subparsers.add_parser("inference", help="Run inference using a trained model.")
     infer_parser.add_argument("--fused_rep_path", type=str, required=True,
-                              help="Inference için fusion edilmiş temsil verilerini içeren CSV dosyasının yolu.")
+                              help="Path to the CSV file containing fused representation data for inference.")
     infer_parser.add_argument("--model_load_path", type=str, required=True,
-                              help="Önceden eğitilmiş model ağırlıklarının bulunduğu .pth dosyasının yolu.")
+                              help="Path to the pre-trained model weights (.pth file).")
     infer_parser.add_argument("--scaler_load_path", type=str, required=True,
-                              help="Önceden kaydedilmiş scaler objesinin bulunduğu .pkl dosyasının yolu.")
+                              help="Path to the previously saved scaler object (.pkl file).")
     infer_parser.add_argument("--output_csv", type=str, required=False, default="simple_ae_inference.csv",
-                              help="Inference sonucu multi-column simple AE çıktısının kaydedileceği CSV.")
+                              help="Path to save the multi-column inference output CSV.")
 
     args = parser.parse_args()
 
@@ -410,7 +390,6 @@ def main():
         run_inference(args)
     else:
         parser.print_help()
-
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,22 @@
+"""
+Usage:
+
+# TRAIN MODE:
+python Transfer_ae.py --mode train \
+  --seq_csv data/seq.csv \
+  --ppi_csv data/ppi.csv \
+  --text_csv data/text.csv \
+  --model_weights pretrained/multimodal_model.pth \
+  --save_model_path trained/transfer_ae_weights.pth \
+  --save_csv_path outputs/fused_rep.csv \
+  --loss_plot_path outputs/loss_curve.png
+
+# TEST MODE (INFERENCE):
+python Transfer_ae.py --mode test \
+  --seq_csv data/seq_test.csv \
+  --model_weights trained/transfer_ae_weights.pth \
+  --save_csv_path outputs/fused_rep_test.csv
+"""
 import argparse
 import os
 import random
@@ -502,14 +521,15 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--text_csv", type=str, help="Path to text CSV file (required for train)")
     parser.add_argument("--epochs", type=int, default=200, help="Number of epochs (only train)")
     parser.add_argument("--save_model_path", type=str, default="transfer_ae_weights.pth", help="Path to save trained model (only train)")
-
+    parser.add_argument("--loss_plot_path", type=str, default="loss_curve.png",
+                        help="Path to save the training/validation loss curve image.")
     return parser.parse_args()
-def plot_losses(train_hist, val_hist):
+def plot_losses(train_hist, val_hist,save_path):
     plt.figure()
     plt.plot(train_hist, label='Train')
     plt.plot(val_hist, label='Val')
     plt.xlabel('Epoch'); plt.ylabel('Loss'); plt.legend()
-    plt.savefig('/media/DATA2/sinem/isik_makale_1003/low_elenmis_yeni_datasetler/CC/CC_transfer/CC_loss_curve_Transfer_ae.png')
+    plt.savefig(save_path)
 
 # Seed Fix
 def set_seed(seed):
@@ -586,7 +606,7 @@ if __name__ == "__main__":
     
     # Train sequence autoencoder
         trained_model, train_loss_history, val_loss_history, loss_vals = train_model_for_seq(seq_model, train_loader, validation_loader, criterion, optimizer, args.epochs,sequence_tensors, text_tensors, ppi_tensors, device)
-        plot_losses(train_loss_history, val_loss_history)
+        plot_losses(train_loss_history, val_loss_history,args.loss_plot_path)
     # Save trained model
         torch.save(trained_model.state_dict(), args.save_model_path)
         print(f"Trained model saved to {args.save_model_path}")
