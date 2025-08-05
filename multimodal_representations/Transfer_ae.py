@@ -1,22 +1,3 @@
-"""
-Usage:
-
-# TRAIN MODE:
-python Transfer_ae.py --mode train \
-  --seq_csv data/seq.csv \
-  --ppi_csv data/ppi.csv \
-  --text_csv data/text.csv \
-  --model_weights pretrained/multimodal_model.pth \
-  --save_model_path trained/transfer_ae_weights.pth \
-  --save_csv_path outputs/fused_rep.csv \
-  --loss_plot_path outputs/loss_curve.png
-
-# TEST MODE (INFERENCE):
-python Transfer_ae.py --mode test \
-  --seq_csv data/seq_test.csv \
-  --model_weights trained/transfer_ae_weights.pth \
-  --save_csv_path outputs/fused_rep_test.csv
-"""
 import argparse
 import os
 import random
@@ -57,7 +38,6 @@ class Autoencoder(nn.Module):
         self.seq_dim = seq_dim
         self.zdim = zdim
         # Devam eden encoder ve decoder tanımlamaları...
-
 
         # Encoders
         self.encoder_text = nn.Sequential(
@@ -380,10 +360,10 @@ def prepare_multimodal_data(seq_csv, text_csv, ppi_csv):
     ppi_rep_multi_col = pd.read_csv(ppi_csv)
 
     # Scale the vectors (exclude the 'Entry' column)
-    scaler = StandardScaler()
+    """scaler = StandardScaler()
     seq_rep_multi_col.loc[:, seq_rep_multi_col.columns != 'Entry'] = scaler.fit_transform(seq_rep_multi_col.loc[:, seq_rep_multi_col.columns != 'Entry'])
     text_rep_multi_col.loc[:, text_rep_multi_col.columns != 'Entry'] = scaler.fit_transform(text_rep_multi_col.loc[:, text_rep_multi_col.columns != 'Entry'])
-    ppi_rep_multi_col.loc[:, ppi_rep_multi_col.columns != 'Entry'] = scaler.fit_transform(ppi_rep_multi_col.loc[:, ppi_rep_multi_col.columns != 'Entry'])
+    ppi_rep_multi_col.loc[:, ppi_rep_multi_col.columns != 'Entry'] = scaler.fit_transform(ppi_rep_multi_col.loc[:, ppi_rep_multi_col.columns != 'Entry'])"""
 
     # Convert to two-column format
     sequence_rep = convert_to_two_col(seq_rep_multi_col)
@@ -552,8 +532,8 @@ def prepare_test_data(seq_csv):
     seq_rep_multi_col = pd.read_csv(seq_csv)
    
     # Scale the vectors (exclude the 'Entry' column)
-    scaler = StandardScaler()
-    seq_rep_multi_col.loc[:, seq_rep_multi_col.columns != 'Entry'] = scaler.fit_transform(seq_rep_multi_col.loc[:, seq_rep_multi_col.columns != 'Entry'])
+    """scaler = StandardScaler()
+    seq_rep_multi_col.loc[:, seq_rep_multi_col.columns != 'Entry'] = scaler.fit_transform(seq_rep_multi_col.loc[:, seq_rep_multi_col.columns != 'Entry'])"""
     sequence_rep = convert_to_two_col(seq_rep_multi_col)
     sequence_rep.columns = ["Entry", "sequence"]
     entries = sequence_rep["Entry"].tolist()
@@ -615,15 +595,60 @@ if __name__ == "__main__":
         fused_rep_df.to_csv(args.save_csv_path, index=False)
         print(f"Fused representations saved to {args.save_csv_path}")
 
-    elif args.mode == "test":
+"""    elif args.mode == "test":
         #from transfer_ae_components import prepare_test_data, Autoencoder_Seq, extract_fused_representation
         
         sequence_tensors,entries = prepare_test_data(seq_csv)
-        
+    
         model = Autoencoder_Seq(Autoencoder())
         model.load_state_dict(torch.load(args.model_weights, map_location=device))
         model = model.to(device)
 
         fused_rep_df = extract_fused_representation(model, sequence_tensors, entries, device)
         fused_rep_df.to_csv(args.save_csv_path, index=False)
+        print(f"Fused representations saved to {args.save_csv_path}")"""
+    elif args.mode == "test":
+        #from transfer_ae_components import prepare_test_data, Autoencoder_Seq, extract_fused_representation
+        file_path = "/media/DATA2/sinem/isik_makale_1003/prott5_sequence_scaling_factors.txt"
+        sequence_tensors,entries = prepare_test_data(seq_csv)
+        with open(file_path, 'r') as f:
+            lines = f.readlines()
+
+
+        matrix = []
+        for line in lines:
+    
+            values = line.strip().split()
+            matrix.append([float(val) for val in values])
+
+
+        matrix_np = np.array(matrix)
+
+        path_sift="/media/DATA2/sinem/isik_makale_1003/shift_factors.txt"
+        
+        with open(path_sift, 'r') as f:
+            lines = f.readlines()
+
+
+        matrix = []
+        for line in lines:
+    
+            values = line.strip().split()
+            matrix.append([float(val) for val in values])
+
+
+        sift_factor = np.array(matrix)
+        
+        sequence_tensors=sequence_tensors + sift_factor.T 
+        sequence_tensors = sequence_tensors * matrix_np.T 
+        sequence_tensors=sequence_tensors.float() 
+        #import pdb; pdb.set_trace()       
+        model = Autoencoder_Seq(Autoencoder())
+        model.load_state_dict(torch.load(args.model_weights, map_location=device))
+        model = model.to(device)
+        
+        fused_rep_df = extract_fused_representation(model, sequence_tensors, entries, device)
+        #import pdb; pdb.set_trace()
+        fused_rep_df.to_csv(args.save_csv_path, index=False)
         print(f"Fused representations saved to {args.save_csv_path}")
+
