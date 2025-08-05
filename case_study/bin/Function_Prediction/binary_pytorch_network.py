@@ -27,22 +27,22 @@ class Net(nn.Module):
         self.fc2 = nn.Linear(128, 128)
         self.fc3 = nn.Linear(128, 64)
         self.fc4 = nn.Linear(64, 32)
-        self.fc5 = nn.Linear(32, 16)
-        self.fc6 = nn.Linear(16, 8)
-        self.fc7 = nn.Linear(8, 8)
-        self.fc8 = nn.Linear(8, 8)
-        self.fc9 = nn.Linear(8, class_number)
+        #self.fc5 = nn.Linear(32, 16)
+        #self.fc6 = nn.Linear(16, 8)
+        #self.fc7 = nn.Linear(8, 8)
+        #self.fc8 = nn.Linear(8, 8)
+        self.fc5 = nn.Linear(32, class_number)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
         x = F.relu(self.fc4(x))
-        x = F.relu(self.fc5(x))
-        x = F.relu(self.fc6(x))
-        x = F.relu(self.fc7(x))
-        x = F.relu(self.fc8(x))
-        x = self.fc9(x)
+        #x = F.relu(self.fc5(x))
+        #x = F.relu(self.fc6(x))
+        #x = F.relu(self.fc7(x))
+        #x = F.relu(self.fc8(x))
+        x = self.fc5(x)
         return x
 
 
@@ -114,7 +114,7 @@ def NN(
         y_test = y_test.double()
         val_loss_lst = []
 
-        for epoch in range(2):#25000
+        for epoch in range(500):#25000
 
             # training
             running_loss = 0.0
@@ -204,7 +204,7 @@ def NN(
         "criterion": [criterion],
         "optimizer": str(optimizer),
     }
-    #breakpoint()
+    breakpoint()
     return (
         f_max_cv_train,
         f_max_cv_test,
