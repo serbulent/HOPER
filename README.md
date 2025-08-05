@@ -30,7 +30,7 @@ that interacting proteins are likely to act in the same biological process. Also
 
 * In order for the models to work, data, models files and uniprot_sprot.xml.gz files for uniprot preprocessing must be downloaded.Downloaded files are placed in the **HOPER** folder.
 
-    -Data files instalation: https://drive.google.com/drive/folders/1tZ6Q60tQVaabEqUoBIu3CBiDa92Od3Nn?usp=drive_link
+    -Data files instalation: https://drive.google.com/drive/folders/1E0DGhqvykd4OZSyJkzEHrwpkedrcU23D?usp=drive_link
   
     -Uniprot preprocessing data instalation: https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link
 
@@ -178,3 +178,4 @@ parameters:
         classifier_name:  ['Fully_Connected_Neural_Network']         
         model_directory:  ["./case_study/case_study_results/training/m_o_d_a_l___r_e_p___a_e___n_o_d_e_2_v_e_c_Fully_Connected_Neural_Network_binary_classifier.pt"] 
 ```
+
