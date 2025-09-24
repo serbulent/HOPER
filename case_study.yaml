@@ -8,18 +8,18 @@ parameters:
         min_fold_number:  2
         representation_names:  [modal_rep_ae,node2vec]        
     prepare_datasets:  
-        positive_sample_data:  ["./data/hoper_case_study_example_data/prepare_datasets/positive.csv"]
-        negative_sample_data:  ["./data/hoper_case_study_example_data/prepare_datasets/neg_data.csv"]
-        prepared_representation_file:  [./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv] 
-        representation_names:  [modal_rep_ae]     
+        positive_sample_data:  ["/media/DATA2/sinem/HOPER/hoper_case_study_example_data/prepare_datasets/positive.csv"]
+        negative_sample_data:  ["/media/DATA2/sinem/HOPER/hoper_case_study_example_data/prepare_datasets/neg_data.csv"]
+        prepared_representation_file:  ["/media/DATA2/sinem/isik_makale_1003/low_elenmis_yeni_datasetler/all_transfer_ae/test_fused_output_transfer_ae_2col_eklenmis.csv"] 
+        representation_names:  [Transfer_ae_unfiltered]     
     model_training_test:
-        representation_names:  [modal_rep_ae]
+        representation_names:  [Transfer_ae_unfiltered]
         scoring_function:  ["f_max"]  #"f1_micro",f1_macro","f1_weighted"
-        prepared_path:  ["./case_study/case_study_results/modal_rep_ae_node2vec_binary_data.pickle"]
+        prepared_path:  ["/media/DATA2/sinem/HOPER/case_study/case_study_results/Transfer_ae_unfiltered_binary_data.pickle"]
         classifier_name:  ["Fully_Connected_Neural_Network"]    
     prediction:
-        representation_names:  [modal_rep_ae]
-        prepared_path:  ["./data/hoper_case_study_example_data/prediction_example_data/rep_dif_ae.csv"]
+        representation_names:  [Transfer_ae_unfiltered]
+        prepared_path:  ["/media/DATA2/sinem/HOPER/hoper_case_study_example_data/prediction_example_data/rep_dif_ae.csv"]
         classifier_name:  ['Fully_Connected_Neural_Network']         
-        model_directory:  ["./case_study/case_study_results/training/m_o_d_a_l___r_e_p___a_e_Fully_Connected_Neural_Network_binary_classifier.pt"] 
+        model_directory:  ["/media/DATA2/sinem/HOPER/case_study/case_study_results/training/e_Transfer_ae_unfiltered_Fully_Connected_Neural_Network_binary_classifier.pt"] 
             
