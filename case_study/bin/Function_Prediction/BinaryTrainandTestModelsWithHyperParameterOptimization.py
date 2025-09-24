@@ -160,6 +160,7 @@ def select_best_model_with_hyperparameter_tuning(
     # label_list = [ast.literal_eval(label) for label in integrated_dataframe['Label']]
     protein_representation = integrated_dataframe.drop(["Label", "Entry"], axis=1)
     proteins = list(integrated_dataframe["Entry"])
+    #breakpoint()
     vectors = list(protein_representation["Vector"])
     protein_and_representation_dictionary = dict(zip(proteins, vectors))
     row = protein_representation.shape[0]

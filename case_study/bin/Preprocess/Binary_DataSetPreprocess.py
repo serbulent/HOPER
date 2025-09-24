@@ -29,13 +29,15 @@ def integrate_go_lables_and_representations_for_binary(
         integrated_dataframe : Pandas Dataframe
                 Integrated label dataframe. The dataframe has multiple number of  columns 'Label','Entry' and 'Vector'.
                 'Label' column includes GO Terms and 'Entry' column includes UniProt ID and the following columns includes features of the protein represention vector."""
-    
+    import ast
     integrated_dataframe = pd.DataFrame(columns=["Entry", "Vector"])    
+    #breakpoint() 
     integrated_dataframe_list = []
     representation_cols = representation_dataframe.iloc[:, 1 : (len(representation_dataframe.columns))]
     representation_dataset = pd.DataFrame(columns=["Entry", "Vector"])
     for index, row in tqdm.tqdm(representation_cols.iterrows(), total=len(representation_cols)):
-        list_of_floats = [float(item) for item in list(row)]
+        
+        list_of_floats = [float(item) for item in list(ast.literal_eval(row[0]))]
         representation_dataset.loc[index] = [representation_dataframe.iloc[index]["Entry"]] + [
             list_of_floats
         ]
