@@ -1,0 +1,25 @@
+parameters:
+    choice_of_module: [case_study] 
+    #********************case_study Module********************************
+    module_name: case_study
+    choice_of_task_name:  [prepare_datasets,model_training_test,prediction] #prepare_datasets,fuse_representations,model_training_test,prediction
+    fuse_representations:
+        representation_files: [./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv]
+        min_fold_number:  2
+        representation_names:  [modal_rep_ae,node2vec]        
+    prepare_datasets:  
+        positive_sample_data:  ["/media/DATA2/kemal/HOPER/hoper_case_study_example_data/prepare_datasets/positive.csv"]
+        negative_sample_data:  ["/media/DATA2/kemal/HOPER/hoper_case_study_example_data/prepare_datasets/neg_data.csv"]
+        prepared_representation_file:  ["/media/DATA2/sinem/isik_makale_1003/low_elenmis_yeni_datasetler/all_transfer_ae/test_fused_output_transfer_ae_2col_eklenmis.csv"] 
+        representation_names:  [Transfer_ae_unfiltered]     
+    model_training_test:
+        representation_names:  [Transfer_ae_unfiltered]
+        scoring_function:  ["f_max"]  #"f1_micro",f1_macro","f1_weighted"
+        prepared_path:  []
+        classifier_name:  ["Fully_Connected_Neural_Network"]    
+    prediction:
+        representation_names:  [Transfer_ae_unfiltered]
+        prepared_path:  ["/media/DATA2/sinem/HOPER/prediction_data.csv"]
+        classifier_name:  ['Fully_Connected_Neural_Network']         
+        model_directory:  ["/media/DATA2/kemal/HOPER/case_study/case_study_results/training/Transfer_ae_unfiltered_Fully_Connected_Neural_Network_binary_classifier.pt"] 
+            
