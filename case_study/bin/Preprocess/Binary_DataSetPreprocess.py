@@ -30,14 +30,22 @@ def integrate_go_lables_and_representations_for_binary(
                 Integrated label dataframe. The dataframe has multiple number of  columns 'Label','Entry' and 'Vector'.
                 'Label' column includes GO Terms and 'Entry' column includes UniProt ID and the following columns includes features of the protein represention vector."""
     import ast
+    #breakpoint()
     integrated_dataframe = pd.DataFrame(columns=["Entry", "Vector"])    
-    #breakpoint() 
+    
     integrated_dataframe_list = []
+    #breakpoint()
     representation_cols = representation_dataframe.iloc[:, 1 : (len(representation_dataframe.columns))]
     representation_dataset = pd.DataFrame(columns=["Entry", "Vector"])
     for index, row in tqdm.tqdm(representation_cols.iterrows(), total=len(representation_cols)):
-        
-        list_of_floats = [float(item) for item in list(ast.literal_eval(row[0]))]
+        #breakpoint()
+        if len(row)==1:
+            if isinstance(row[0], str):
+    
+                parsed = ast.literal_eval(row[0]) 
+            list_of_floats = [float(item) for item in list(parsed)]
+        else:
+            list_of_floats = [float(item) for item in list(row)]
         representation_dataset.loc[index] = [representation_dataframe.iloc[index]["Entry"]] + [
             list_of_floats
         ]
@@ -55,5 +63,5 @@ def integrate_go_lables_and_representations_for_binary(
             "wb",
         ) as handle:
             pickle.dump(integrated_dataframe, handle)
-            
+    #breakpoint()         
     return integrated_dataframe
