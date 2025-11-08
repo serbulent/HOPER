@@ -80,11 +80,13 @@ if "case_study" in data["parameters"]["choice_of_module"]:
             )
         )
    
-   
+     
+  
   elif("prepare_datasets" in parameter_class_obj.choice_of_task_name):
     prepared_representation_file_path =parameter_class_obj.prepare_datasets["prepared_representation_file"][0]
-    representation_dataframe = pd.read_csv(prepared_representation_file_path)
-    representation_dataframe=representation_dataframe.drop(["Unnamed: 0"],axis=1)
+    #breakpoint()
+    representation_dataframe = pd.read_csv(prepared_representation_file_path,usecols=lambda c: c != "Unnamed: 0")
+    #representation_dataframe=representation_dataframe.drop(["Unnamed: 0"],axis=1)
     representation_names_list = parameter_class_obj.prepare_datasets[
             "representation_names"
     ]
@@ -95,17 +97,17 @@ if "case_study" in data["parameters"]["choice_of_module"]:
                 "representation_names"
             ][0]
     positive_sample_dataframe = pd.read_csv(
-    parameter_class_obj.prepare_datasets["positive_sample_data"][0]
+    parameter_class_obj.prepare_datasets["positive_sample_data"][0],usecols=lambda c: c != "Unnamed: 0"
         )
     negative_sample_dataframe = pd.read_csv(
-            parameter_class_obj.prepare_datasets["negative_sample_data"][0]
+            parameter_class_obj.prepare_datasets["negative_sample_data"][0],usecols=lambda c: c != "Unnamed: 0"
         )
     negative_sample_dataframe["Label"] = [0] * len(negative_sample_dataframe)
     positive_sample_dataframe["Label"] = [1] * len(positive_sample_dataframe)
     sample_dataframe = negative_sample_dataframe.append(
     positive_sample_dataframe, ignore_index=True
         )
-    breakpoint() 
+ 
     datapreprocessed_lst.append(
             Binary_DataSetPreprocess.integrate_go_lables_and_representations_for_binary(
                 shuffle(sample_dataframe), representation_dataframe, representation_names
@@ -115,12 +117,12 @@ if "case_study" in data["parameters"]["choice_of_module"]:
     print(datapreprocessed_lst)
     
   if "model_training_test" in parameter_class_obj.choice_of_task_name:
-    #breakpoint()
+ 
     scoring_func =  parameter_class_obj.model_training_test["scoring_function"]
     
     if "prepare_datasets" in parameter_class_obj.choice_of_task_name:
       for data_preproceed in datapreprocessed_lst:
-        breakpoint()    
+        #breakpoint()
         best_param = BinaryTrainandTestModelsWithHyperParameterOptimization.select_best_model_with_hyperparameter_tuning(
                 representation_names,
                 data_preproceed,
