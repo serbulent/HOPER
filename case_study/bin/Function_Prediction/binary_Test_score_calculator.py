@@ -197,7 +197,7 @@ def Model_test(representation_name, integrated_dataframe, parameteter_file):
         classifier_name_lst.append(parameters[i]["classifier_name"])
     # classifier_len=len( classifier_name_lst )
     file_name = "_"
-    file_name = file_name.join(classifier_name_lst)
+    file_name = lassifier_name_lst
 
     for i in range(len(parameters)):
         label_lst = []
@@ -302,7 +302,7 @@ def Model_test(representation_name, integrated_dataframe, parameteter_file):
 
             # Print model's state_dict
             print("Model's state_dict:")
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             for param_tensor in model.state_dict():
                 print(param_tensor, "\t", model.state_dict()[param_tensor].size())
             # Print optimizer's state_dict

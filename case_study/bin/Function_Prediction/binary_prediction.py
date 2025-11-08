@@ -87,7 +87,7 @@ def make_prediction(representation_name,data_preproceed,tested_model,classifier_
             class_num=1
             
             model_class=binary_pytorch_network.Net(input_size,class_num)
-            import pdb; pdb.set_trace()
+
             model_class.load_state_dict(copy.deepcopy(torch.load(tested_model[i])))
             model_class.eval()
             x = torch.tensor(representation_vector)

@@ -52,8 +52,7 @@ def evaluate_annotation_f_max(real_annots, pred_annots):
 
     tn, tp = intersection(real_annots, pred_annots)
     fp = list(pred_annots).count(1) - tp
-    fn = list(real_annots).count(0) - tn
-
+    fn = list(real_annots).count(1) - tp  
     recall = tp / (1.0 + (tp + fn))
     precision = tp / (1.0 + (tp + fp))
 

@@ -1,5 +1,5 @@
 """
-- Module implements simple neural network with  7 hidden layer. 
+- Module implements simple neural network with  4 hidden layer. 
 -Module make predictions for model training and test. Module  draws training and validation loss for better understanding of model behavior
 """
 import torch
@@ -46,13 +46,6 @@ class Net(nn.Module):
         return x
 
 
-def model_call(input_size, class_number):
-    model = Net(input_size, class_number)
-    model = model.double()
-    criterion = nn.BCEWithLogitsLoss()
-    optimizer = optim.SGD(model.parameters(), lr=1e-1)
-    model.to(device)
-    return model
 
 
 def NN(
@@ -87,7 +80,7 @@ def NN(
     for fold_train_index, fold_test_index in kf.split(
         protein_representation, model_label
     ):
-
+        #breakpoint()
         running_loss_lst = []
         class_number = 1
         x_df = pd.DataFrame(
@@ -113,9 +106,9 @@ def NN(
         y_test = torch.tensor(model_label[fold_test_index]).to(device)
         y_test = y_test.double()
         val_loss_lst = []
-
+        
         for epoch in range(500):#25000
-
+            model.train()
             # training
             running_loss = 0.0
             
@@ -124,8 +117,8 @@ def NN(
             optimizer.zero_grad()
             batch_loss.backward()
             optimizer.step()
-            running_loss += batch_loss.item()  # epoch loss
-            epoch_loss = running_loss / len(x)
+            running_loss = batch_loss.item()  # epoch loss
+            epoch_loss = running_loss #/ len(x)
             if epoch % 20 == 0:
                 print("Loss: {:.3f}".format(batch_loss.item()))
             running_loss_lst.append(epoch_loss)
@@ -136,14 +129,47 @@ def NN(
                 out_probs = model(x_test)
                 loss_val = criterion(out_probs, y_test.unsqueeze(1))
                 val_loss += loss_val.item()
-                epoch_loss = running_loss / len(x_test)
-                val_loss_lst.append(epoch_loss)
-
+                #epoch_loss = running_loss / len(x_test)
+                #val_loss_lst.append(epoch_loss)
+                val_loss_lst.append(loss_val.item())
         running_loss_lst_s.append(running_loss_lst)
-        output[output >= 0.0] = 1  # training
-        output[output < 0.0] = 0
-
-        fmax_train = 0.0
+        #print(f"[INFO] Fold iterasyon sayısı (epochs): {len(running_loss_lst)}")
+        val_loss_lst_s.append(val_loss_lst)
+        
+        #output[output >= 0.0] = 1  # training
+        #output[output < 0.0] = 0
+        with torch.no_grad():
+            model.eval()
+            logits = model(x)                               # (N,1) logit
+            probs  = torch.sigmoid(logits).squeeze(1).cpu().numpy()  # (N,)
+            y_true = y.squeeze().cpu().numpy().astype(int)
+            #breakpoint()
+            fmax_train=0.0 
+            tmax_train = 0.5
+            for t in range(1, 101):
+                threshold = t / 100.0
+                preds = (probs >= threshold).astype(int)                  # EŞİK BURADA KULLANILIYOR
+                fscore = F_max_scoring.evaluate_annotation_f_max(y_true, preds)
+                #breakpoint()
+                if fscore > fmax_train:
+                    fmax_train, tmax_train =fscore, threshold
+            preds_train = (probs >= tmax_train).astype(int) 
+            #breakpoint()
+            logits_test = model(x_test)
+            probs_test  = torch.sigmoid(logits_test).squeeze(1).cpu().numpy()  # (N,)
+            y_true_test = y_test.squeeze().cpu().numpy()
+            preds_test = (probs_test >= tmax_train).astype(int)
+            y_true_test = y_test.squeeze().cpu().numpy().astype(int)
+            
+            fscore_test = F_max_scoring.evaluate_annotation_f_max(y_true_test, preds_test)
+            f_max_cv_test.append(fscore_test)
+            f_max_cv_train.append(fmax_train)
+        
+            model_label_pred_lst.append(preds_train)
+            label_lst.append(model_label[fold_train_index])
+            model_label_pred_test_lst.append(preds_test)
+            label_lst_test.append(y_true_test)
+        """fmax_train = 0.0
         tmax_train = 0.0
         for k in range(1, 101):
             threshold = k / 100.0
@@ -152,11 +178,9 @@ def NN(
             )
             if fmax_train < fscore:
                 fmax_train = fscore
-                tmax_train = threshold
-        f_max_cv_train.append(fmax_train)
-        val_loss_lst_s.append(val_loss_lst)
-        model_label_pred_lst.append(output.detach().numpy())
-        label_lst.append(model_label[fold_train_index])
+                tmax_train = threshold"""
+        
+        
 
         for vec in protein_representation_array[fold_train_index]:
             for protein, vector in protein_and_representation_dictionary.items():
@@ -164,47 +188,36 @@ def NN(
                     protein_name_tr.append(protein)
                     continue
 
-        out_probs[out_probs >= 0.0] = 1
-        out_probs[out_probs < 0.0] = 0
+      
 
-        model_label_pred_test_lst.append(out_probs.detach().numpy())
-        label_lst_test.append(model_label[fold_test_index])
+        
 
         for vec in protein_representation_array[fold_test_index]:
             for protein, vector in protein_and_representation_dictionary.items():
                 if str(vector) == str(list(vec)):
                     protein_name.append(protein)
                     continue
-        fmax = 0.0
-        tmax = 0.0
 
-        for t in range(1, 101):
-            threshold = t / 100.0
-            fscore = F_max_scoring.evaluate_annotation_f_max(
-                y_test, out_probs
-            )
-            if fmax < fscore:
-                fmax = fscore
-                tmax = threshold
-        f_max_cv_test.append(fmax)
+    
 
-    test_loss = [sum(x) for x in zip(*val_loss_lst_s)]
-    training_loss = [sum(x) for x in zip(*running_loss_lst_s)]
-    """plt.figure(figsize=(10, 5))
+    test_loss = np.mean(np.stack(val_loss_lst_s, axis=0), axis=0).tolist()
+    training_loss = np.mean(np.stack(running_loss_lst_s, axis=0), axis=0).tolist()
+    
+    plt.figure(figsize=(10, 5))
     plt.title("Training and Validation Loss")
     plt.plot(test_loss, label="val")
     plt.plot(training_loss, label="train")
     plt.xlabel("iterations")
     plt.ylabel("Loss")
     plt.legend()
-    plt.show()"""
-
+    plt.show()
+    
     parameter = {
         "classifier_name": classifier_name,
         "criterion": [criterion],
         "optimizer": str(optimizer),
     }
-    #breakpoint()
+  
     return (
         f_max_cv_train,
         f_max_cv_test,

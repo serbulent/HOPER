@@ -64,7 +64,36 @@ from Function_Prediction.Model_Parameters import SVC_Classifier_parameters
 from Function_Prediction.Model_Parameters import RandomForest_Classifier_parameters
 from Function_Prediction import F_max_scoring
 import random
+import os, random
+import numpy as np
+import torch
 
+def set_seed(seed: int = 42, deterministic: bool = True):
+    # Python & OS
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    random.seed(seed)
+
+    # NumPy
+    np.random.seed(seed)
+
+    # PyTorch (CPU & CUDA)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # çoklu GPU
+
+    # CuDNN / determinism
+    if deterministic:
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        # PyTorch 1.12+ için:
+        try:
+            torch.use_deterministic_algorithms(True)
+        except Exception:
+            pass
+    else:
+        torch.backends.cudnn.deterministic = False
+        torch.backends.cudnn.benchmark = True
+set_seed(42)
 # if every fold contains at least 2 positive samples return true,otherwise return false
 def check_for_at_least_two_class_sample_exits(y):
 
@@ -96,16 +125,17 @@ def neural_network_eval(
     parameter,
 ):
     #breakpoint()
-    representation_name_concated = "_".join(representation_name)
+    representation_name_concated = representation_name
     #breakpoint()
     if eval_type=="training":
-      paths =os.path.join(path,"training",representation_name_concated+"_"+classifier_name+"_binary_classifier.pt")
+      #breakpoint()
+      paths =os.path.join(path,"training",representation_name_concated[0]+"_"+classifier_name+"_binary_classifier.pt")
       #breakpoint()
       torch.save(model.state_dict(), paths)
       
-      representation_name_concated = "_".join(representation_name)
+      
       best_parameter_dataframe = pd.DataFrame(parameter)
-      training_path=os.path.join(path,"training","Neural_network_"+ representation_name_concated+"_binary_classifier_best_parameter.csv")
+      training_path=os.path.join(path,"training","Neural_network_"+ representation_name_concated[0]+"_binary_classifier_best_parameter.csv")
       best_parameter_dataframe.to_csv(training_path,index=False)
      
     binary_evaluate.evaluate(
@@ -114,7 +144,7 @@ def neural_network_eval(
         label_lst,
         f_max_cv,
         classifier_name,
-        representation_name_concated,
+        representation_name_concated[0],
         file_name,
         index_,
         eval_type,
@@ -123,7 +153,7 @@ def neural_network_eval(
     label_predictions = pd.DataFrame(
         np.concatenate(model_label_pred_lst), columns=["Label"]
     )
-    label_prediction_path=os.path.join(path,eval_type,representation_name_concated+"_binary_classifier_"+classifier_name+eval_type+"_predictions.csv")
+    label_prediction_path=os.path.join(path,eval_type,representation_name_concated[0]+"_binary_classifier_"+classifier_name+eval_type+"_predictions.csv")
     label_predictions.insert(0, "protein_id", protein_name)
     label_predictions.to_csv(
         label_prediction_path,
@@ -293,6 +323,7 @@ def select_best_model_with_hyperparameter_tuning(
                 representation_name,
                 protein_and_representation_dictionary,
             )
+            #breakpoint()
             
             neural_network_eval(
                 f_max_cv_train,
