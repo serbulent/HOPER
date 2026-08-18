@@ -151,6 +151,7 @@ if "case_study" in data["parameters"]["choice_of_module"]:
   if "prediction" in parameter_class_obj.choice_of_task_name:
     for i in parameter_class_obj.prediction["prepared_path"]:
       test_data = pd.read_csv(i)
+      #breakpoint()
       classifier_name_lst = parameter_class_obj.prediction["classifier_name"]
       binary_prediction.make_prediction(
             parameter_class_obj.prediction["representation_names"][0],
