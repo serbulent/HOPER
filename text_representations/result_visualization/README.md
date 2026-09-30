@@ -1,4 +1,4 @@
-# result_visualization
+# Result visualization
 
 This repository contains Python scripts for analyzing prediction results and creating figures and significance tables for ontology-based function prediction.
 
