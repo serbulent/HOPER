@@ -1,4 +1,4 @@
-# Currently Under Improvment! We are diligently streamlining this repository for seamless automation!
+# Currently Under Improvement! We are diligently streamlining this repository for seamless automation!
 # HOPER (Holistic Protein Representation)
 
 <p align="center" width="100%">
