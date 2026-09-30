@@ -129,12 +129,17 @@ parameters:
   
 ```
 
-parameters:
-    choice_of_module: [SimpleAe] # Module selection PPI,Preprocessing,SimpleAe
-#*******************SimpleAe*********************************************
-    module_name: SimpleAe #Protein sequence based protein representation 
-    representation_path: ./case_study/case_study_results/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
-
+python simple_ae.py train \
+  --fused_rep_path data/fused_train.csv \
+  --model_save_path models/simple_ae_weights.pth \
+  --scaler_save_path models/simple_ae_scaler.pkl \
+  --output_csv outputs/simple_ae_representation.csv \
+  --epochs 400 \
+  --batch_size 128 \
+  --learning_rate 0.001 \
+  --validation_split 0.2 \
+  --seed 42 \
+  --loss_plot_path outputs/simple_ae_loss.png
 ```
 
   
