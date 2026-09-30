@@ -139,9 +139,35 @@ parameters:
 
   
 * Run HOPER to produce MultiModalAE example
-
+  ```
+  python multimodal_ae.py \
+  --seq_csv data/sequence_representation.csv \
+  --ppi_csv data/ppi_representation.csv \
+  --text_csv data/text_representation.csv \
+  --representation_dim 512 \
+  --epochs 400 \
+  --batch_size 128 \
+  --lr 0.001 \
+  --save_model_path models/multimodal_ae_weights.pth \
+  --save_csv_path outputs/multimodal_representation.csv \
+  --loss_plot_path outputs/multimodal_ae_loss.png
+```
 * Run HOPER to produce TransferAE example
-
+```
+python Transfer_ae.py \
+  --mode train \
+  --seq_csv data/sequence_representation.csv \
+  --ppi_csv data/ppi_representation.csv \
+  --text_csv data/text_representation.csv \
+  --model_weights models/multimodal_ae_weights.pth \
+  --save_model_path models/transfer_ae_weights.pth \
+  --save_csv_path outputs/transfer_ae_representation.csv \
+  --representation_dim 512 \
+  --epochs 200 \
+  --batch_size 128 \
+  --seed 42 \
+  --loss_plot_path outputs/transfer_ae_loss.png
+  ```
 *Reproducible run of paper
 
 ```
