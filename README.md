@@ -64,8 +64,8 @@ that interacting proteins are likely to act in the same biological process. Also
   
 * biosentvec and biowordvec models must be downloaded to HOPER/text_representations/representation_generation/models from the urls given below. Alternatively model_download parameter must be set as "y" to download models automatically if biosentvec or biowordvec representations selected to be generated.
 
-https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
-https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
+  https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
+  https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
 
   
 # How to run HOPER
