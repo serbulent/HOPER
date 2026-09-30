@@ -139,7 +139,7 @@ parameters:
 
   
 * Run HOPER to produce MultiModalAE example
-  ```
+```
   python multimodal_ae.py \
   --seq_csv data/sequence_representation.csv \
   --ppi_csv data/ppi_representation.csv \
@@ -153,6 +153,7 @@ parameters:
   --loss_plot_path outputs/multimodal_ae_loss.png
 ```
 * Run HOPER to produce TransferAE example
+  
 ```
 python Transfer_ae.py \
   --mode train \
