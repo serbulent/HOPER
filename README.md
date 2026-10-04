@@ -10,19 +10,20 @@ that interacting proteins are likely to act in the same biological process. Thes
 - Text-based protein representations calculated with pre-trained natural language processing models.
 
 <img width="729" height="960" alt="HOPER_Manuscript_Figure1" src="https://github.com/user-attachments/assets/d3d2e2fe-2579-45da-a151-f1c0c8f9327a" />
+
 The overview of HOPER. We first generated protein representations (embeddings) independently using three different modalities (i.e., protein sequence, protein-protein interaction, and protein-related text). Then, we benchmarked them to find the best-performing representation model for each modality in the context of protein function prediction in a low-data setting. After that, we constructed multimodal learning models that take representations of independent modalities as input and produce a holistic embedding by leveraging their relationships. Finally, as a use-case study, we predicted new tumor immune-escape proteins in the lung adenocarcinoma using our model and discussed findings.
 
 # Installation Steps
 
 ## HOPER Installation Instructions
 
-* Clone HOPER repository
+* Clone the HOPER repository
 
     git clone https://github.com/serbulent/HOPER.git
   
 * Run python creat_env.py
 
-* In order for the models to work, data, models files and uniprot_sprot.xml.gz files for uniprot preprocessing must be downloaded.Downloaded files are placed in the **HOPER** folder.
+* In order for the models to work, data, models files and uniprot_sprot.xml.gz files for uniprot preprocessing must be downloaded. Place the downloaded files in the **HOPER** folder.
 
     -Data files installation: https://drive.google.com/file/d/1R7jRfnBWmO6i6S1vqQd6zZt2-kcK6Eom/view?usp=drive_link
   
@@ -48,7 +49,7 @@ The overview of HOPER. We first generated protein representations (embeddings) i
 
 * Make node2vec executable and add it to the system PATH or move it to the location you run.
 
-* You can make protein names using edgelist_code.py. These names will be needed later for the node2vec.py and HOPE.py files. Do not forget the location information.
+* You can make protein names using edgelist_code.py. You will need these names later for node2vec.py and HOPE.py. Do not forget the location information.
 
 
 
@@ -56,7 +57,7 @@ The overview of HOPER. We first generated protein representations (embeddings) i
 
 * To use the text representation generator, copy UniProt and PubMed text files to HOPER/text_representations/representation_generation/data/ in separate folders named uniprot and pubmed.
   
-* biosentvec and biowordvec models must be downloaded to HOPER/text_representations/representation_generation/models from the urls given below. Alternatively, the model_download parameter must be set to "y" to download models automatically if biosentvec or biowordvec representations are selected to be generated.
+* biosentvec and biowordvec models must be downloaded to HOPER/text_representations/representation_generation/models from the urls given below. Alternatively, set model_download to "y" to download models automatically if you select biosentvec or biowordvec representations.
 
   https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
   https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
