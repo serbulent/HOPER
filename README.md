@@ -1,21 +1,16 @@
 # HOPER (Holistic Protein Representation)
 
-<p align="center" width="100%">
-    <img width=" 65% " src="Figures/figure_.jpg">
-</p>
+- Holistic protein representation uses  multimodal learning to predict protein functions with low amount of training data. 
 
+- Representation vectors are created using protein sequence, protein text and protein-protein interaction data types to achieve this goal.
 
+- The rationale behind incorporating protein-protein interactions into our holistic protein representation model is the assumption 
+that interacting proteins are likely to act in the same biological process. These proteins are also likely to be located in the same cellular compartment. 
 
--Holistic protein representation uses  multimodal learning model to predict protein functions even with low-data. 
+- Text-based protein representations calculated with pre-trained natural language processing models.
 
--Representation vectors created using protein sequence, protein text and protein-protein interaction data types to achieve this goal.
-
--The rationale behind  incorporating protein-protein interactions into our holistic protein representation model is the assumption 
-that interacting proteins are likely to act in the same biological process. Also, these proteins are probably located at the same location in the cell. 
-
--Text-based protein representations calculated with pre-trained natural language processing models.
-
--We aim to increase low-data prediction performance by using these three data types together.
+<img width="729" height="960" alt="HOPER_Manuscript_Figure1" src="https://github.com/user-attachments/assets/d3d2e2fe-2579-45da-a151-f1c0c8f9327a" />
+The overview of HOPER. We first generated protein representations (embeddings) independently using three different modalities (i.e., protein sequence, protein-protein interaction, and protein-related text). Then, we benchmarked them to find the best-performing representation model for each modality in the context of protein function prediction in a low-data setting. After that, we constructed multimodal learning models that take representations of independent modalities as input and produce a holistic embedding by leveraging their relationships. Finally, as a use-case study, we predicted new tumor immune-escape proteins in the lung adenocarcinoma using our model and discussed findings.
 
 # Installation Steps
 
