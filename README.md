@@ -1,4 +1,3 @@
-# Currently Under Improvement! We are diligently streamlining this repository for seamless automation!
 # HOPER (Holistic Protein Representation)
 
 <p align="center" width="100%">
@@ -20,7 +19,7 @@ that interacting proteins are likely to act in the same biological process. Also
 
 # Installation Steps
 
-## HOPER Instalation Instructions
+## HOPER Installation Instructions
 
 * Clone HOPER repository
 
@@ -30,11 +29,11 @@ that interacting proteins are likely to act in the same biological process. Also
 
 * In order for the models to work, data, models files and uniprot_sprot.xml.gz files for uniprot preprocessing must be downloaded.Downloaded files are placed in the **HOPER** folder.
 
-    -Data files instalation: https://drive.google.com/file/d/1R7jRfnBWmO6i6S1vqQd6zZt2-kcK6Eom/view?usp=drive_link
+    -Data files installation: https://drive.google.com/file/d/1R7jRfnBWmO6i6S1vqQd6zZt2-kcK6Eom/view?usp=drive_link
   
-    -Uniprot preprocessing data instalation: https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link
+    -UniProt preprocessing data installation: https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link
 
-## PPI Model Instalation Instructions
+## PPI Model Installation Instructions
 * To install packages to use for Node2vec and HOPE in your ppi_representations directory, use:
 
   * GEM version 213189b; use for old version:
@@ -43,7 +42,7 @@ that interacting proteins are likely to act in the same biological process. Also
     
     git checkout  [213189b]
 
-* To make Node2vec executable; Clone repository git clone https://github.com/snap-stanford/snap and Compiles SNAP. The code for compiles is as below:
+* To make Node2vec executable; Clone repository git clone https://github.com/snap-stanford/snap and Compiles SNAP. The code to compile is as below:
   
   - cd snap/
   - rm -rf examples/Release
@@ -52,17 +51,17 @@ that interacting proteins are likely to act in the same biological process. Also
   - chmod +x node2vec
   - ls -alh node2vec
 
-* Make node2vec executable and add to system PATH or move it to the location you run.
+* Make node2vec executable and add it to the system PATH or move it to the location you run.
 
-* You can make protein names using edgelist_code.py These names will be needed later for the node2vec.py and HOPE.py files. Do not forget the location information.
+* You can make protein names using edgelist_code.py. These names will be needed later for the node2vec.py and HOPE.py files. Do not forget the location information.
 
 
 
 ## Text Model Installation Instructions
 
-* To use text representation generator, copy uniprot and pubmed text files to HOPER/text_representations/representation_generation/data/ in separate folders named as uniprot and pubmed.
+* To use the text representation generator, copy UniProt and PubMed text files to HOPER/text_representations/representation_generation/data/ in separate folders named uniprot and pubmed.
   
-* biosentvec and biowordvec models must be downloaded to HOPER/text_representations/representation_generation/models from the urls given below. Alternatively model_download parameter must be set as "y" to download models automatically if biosentvec or biowordvec representations selected to be generated.
+* biosentvec and biowordvec models must be downloaded to HOPER/text_representations/representation_generation/models from the urls given below. Alternatively, the model_download parameter must be set to "y" to download models automatically if biosentvec or biowordvec representations are selected to be generated.
 
   https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
   https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
@@ -70,7 +69,7 @@ that interacting proteins are likely to act in the same biological process. Also
   
 # How to run HOPER
 
-Run module main function after editing  the configuration file Hoper.yaml as below examples as;
+Run the module main function after editing  the configuration file Hoper.yaml as in the examples below;
 
 ```
 python Hoper_representation_generetor_main.py 
@@ -79,12 +78,12 @@ python Hoper_representation_generetor_main.py
 * Run HOPER to produce Text Representation Preprocessing [readme.md](https://github.com/serbulent/HOPER/tree/main/text_representations/preprocess)
   
 ```
-  choice_of_module: [Preprocessing] # Module selection PPI,Preprocessing,SimpleAe
+  choice_of_module: [Preprocessing] # Module selection PPI, Preprocessing, SimpleAe
  #********************Preprocessing Module********************************
     module_name: Preprocessing
     uniprot_dir: ./uniprot_sprot.xml.gz 
 ```
-* Run HOPER to produce text representation example for more information please read
+* Run HOPER to produce a text representation example; for more information, please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/text_representations/representation_generation/README.md)
 
 ```
@@ -101,7 +100,7 @@ python Hoper_representation_generetor_main.py
         result_files_path:  [./data/text_representations/result_visualization/result_files/results/]
 ```
 
-* Run HOPER to produce PPI representation example for more information please read
+* Run HOPER to produce a PPI representation example; for more information, please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/ppi_representations/readme.md)
 
 ```
@@ -174,12 +173,12 @@ python Transfer_ae.py \
   --seed 42 \
   --loss_plot_path outputs/transfer_ae_loss.png
   ```
-*Reproducible run of paper
+*Reproducible run of the paper
 
 ```
 python case_study_main.py
 ```
-* Run case_study_main.py for making immun escape prediction for more information please read
+* Run case_study_main.py to make immune escape prediction; for more information, please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/case_study/readme.md)
 
 ```
