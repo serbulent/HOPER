@@ -20,6 +20,44 @@ python simple_ae.py inference \\
   --scaler_load_path models/scaler.pkl \\
   --output_csv outputs/simple_ae_inference.csv
 """
+import argparse
+import copy
+import os
+import pickle
+import random
+import time
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import torch
+import torch.nn as nn
+import tqdm
+from sklearn.preprocessing import StandardScaler
+from torch.utils.data import DataLoader
+
+
+def get_device():
+    """CPU by default; set HOPER_DEVICE=cuda to use a GPU."""
+    return torch.device(os.environ.get("HOPER_DEVICE", "cpu"))
+
+
+def read_fused_csv(path):
+    """Read a multi-column representation CSV with or without a leading pandas index column."""
+    fused_rep = pd.read_csv(path)
+    fused_rep = fused_rep.loc[:, [col for col in fused_rep.columns if not str(col).startswith("Unnamed:")]]
+    if 'Entry' not in fused_rep.columns:
+        raise ValueError("'Entry' column not found. Make sure your CSV contains a column named 'Entry'.")
+    return fused_rep.reset_index(drop=True)
+
+
+def ensure_parent_dir(path):
+    parent = os.path.dirname(path)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
+
 #----------------------------
 # 1. Autoencoder Definition
 # ----------------------------
@@ -133,9 +171,7 @@ def train_model(model, train_loader, validation_loader, criterion,
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = float('inf')
 
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,
-                                                           mode='min',
-                                                           verbose=True)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min')
 
     fused_tensors_size = fused_tensors.shape[1]
 
@@ -196,15 +232,15 @@ def run_training(args):
     - Saves best weights and the scaler object
     - Generates simple_ae vectors and saves to CSV
     """
-    fused_rep = pd.read_csv(args.fused_rep_path,index_col=0)
-    if 'Entry' not in fused_rep.columns:
-        raise ValueError("'Entry' column not found. Make sure your CSV contains a column named 'Entry'.")
+    fused_rep = read_fused_csv(args.fused_rep_path)
 
     scaler = StandardScaler()
     cols_to_scale = [col for col in fused_rep.columns if col != 'Entry']
     fused_rep.loc[:, cols_to_scale] = scaler.fit_transform(fused_rep.loc[:, cols_to_scale])
 
     scaler_path = args.scaler_save_path if args.scaler_save_path else "scaler.pkl"
+    for output_path in (scaler_path, args.model_save_path, args.output_csv, args.loss_plot_path):
+        ensure_parent_dir(output_path)
     with open(scaler_path, 'wb') as f:
         pickle.dump(scaler, f)
     print(f"[INFO] Scaler object saved to '{scaler_path}'.")
@@ -236,7 +272,7 @@ def run_training(args):
     validation_loader = DataLoader(val_indices, batch_size=batch_size, shuffle=True, pin_memory=True)
 
     representation_dim = len(fused_rep_two_col['Vector'][0])
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = get_device()
     print(f"[INFO] Device: {device}")
 
     model = Autoencoder(representation_dim).to(device)
@@ -299,9 +335,8 @@ def run_inference(args):
         scaler: StandardScaler = pickle.load(f)
     print(f"[INFO] Scaler loaded from '{args.scaler_load_path}'.")
 
-    fused_rep = pd.read_csv(args.fused_rep_path,index_col=0)
-    if 'Entry' not in fused_rep.columns:
-        raise ValueError("'Entry' column not found. Make sure your CSV contains a column named 'Entry'.")
+    fused_rep = read_fused_csv(args.fused_rep_path)
+    ensure_parent_dir(args.output_csv)
 
     cols_to_scale = [col for col in fused_rep.columns if col != 'Entry']
     fused_rep.loc[:, cols_to_scale] = scaler.transform(fused_rep.loc[:, cols_to_scale])
@@ -310,7 +345,7 @@ def run_inference(args):
     fused_tensors = torch.tensor(list(fused_rep_two_col['Vector'].values), dtype=torch.float32)
 
     representation_dim = len(fused_rep_two_col['Vector'][0])
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = get_device()
     print(f"[INFO] Device: {device}")
 
     model = Autoencoder(representation_dim).to(device)

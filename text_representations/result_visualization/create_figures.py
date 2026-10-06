@@ -7,7 +7,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 #import pixiedust
-pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_colwidth', None)
 pd.options.display.max_rows = 4000
 
 result_path = ''
@@ -102,12 +102,9 @@ def prepare_figure_data_for_aspect(aspect):
 
 
     new_index =  ["Accuracy","F1-Weighted","Precision","Recall", "Hamming"]
-    pred_mean_df = pd.DataFrame([go_pred_tableACC_aspect_mean])
-    
-    pred_mean_df = pred_mean_df.append(go_pred_tableF1_aspect_mean, ignore_index=True)
-    pred_mean_df = pred_mean_df.append(go_pred_tablePR_aspect_mean, ignore_index=True)
-    pred_mean_df = pred_mean_df.append(go_pred_tableREC_aspect_mean, ignore_index=True)
-    pred_mean_df = pred_mean_df.append(go_pred_tableHAMM_aspect_mean, ignore_index=True)
+    pred_mean_df = pd.DataFrame([go_pred_tableACC_aspect_mean, go_pred_tableF1_aspect_mean,
+                                 go_pred_tablePR_aspect_mean, go_pred_tableREC_aspect_mean,
+                                 go_pred_tableHAMM_aspect_mean]).reset_index(drop=True)
    
     pred_mean_df = pred_mean_df.set_index(pd.Series(new_index))
     pred_mean_df_table = pred_mean_df.transpose()
@@ -141,7 +138,7 @@ def set_colors_and_marks_for_representation_groups(ax):
             signed_text = "^" + label.get_text()
             label.set_text(signed_text)
     fontproperties = {'weight' : 'bold'}
-    ax.set_xticklabels(ax.get_xticklabels(), fontproperties)
+    ax.set_xticklabels(ax.get_xticklabels(), fontdict=fontproperties)
 
 #create_figures(): Creates dataframes for figures and generates the figures.
 def create_figures():

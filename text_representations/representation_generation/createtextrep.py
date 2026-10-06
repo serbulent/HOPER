@@ -1,77 +1,64 @@
 '''
 This script provides a convenient way to create different types of text representations by specifying the desired representation techniques and the paths to the input files via command-line arguments.
-Creating TFIDF representations: If the tfidf or all flags are set, the script sets the file paths for the create_tfidf module and calls its main() function to create TFIDF representations.
-Creating biosentvec representations: If the biosentvec or all flags are set, the script sets the file paths for the create_biosentvec module and calls its main() function to create biosentvec representations.
-Creating biowordvec representations: If the biowordvec or all flags are set, the script sets the file paths for the create_biowordvec module and calls its main() function to create biowordvec representations.
+Only the generator modules that are selected are imported, so e.g. TF-IDF does not need the BioSentVec/BioWordVec/OpenAI dependencies.
 '''
 
 import argparse
+import importlib
 import os
-import create_tfidf as tf
-import create_biosentvec as bs
-import create_biowordvec as bw
-import create_biobert as bb
-import create_openai as oai
+import urllib.request
+
+import rep_paths
 
 parser = argparse.ArgumentParser(description='Create text representations')
 parser.add_argument("-tfidf","--tfidf", action='store_true', help="Create TFIDF representations")
 parser.add_argument("-biobert","--biobert", action='store_true', help="Create bioBERT representations")
 parser.add_argument("-bsv", "--biosentvec", action='store_true',  help="Create biosentvec representations")
 parser.add_argument("-bwv", "--biowordvec", action='store_true',  help="Create biowordvec representations")
-parser.add_argument("-openai","--openai", action='store_true', help="Create OpenAI representations")
+parser.add_argument("-openai","--openai", action='store_true', help="Create OpenAI representations (needs OPENAI_API_KEY)")
 parser.add_argument("-upfp", "--uniprotfilespath", required=True,  help="Path for the uniprot files")
 parser.add_argument("-pmfp", "--pubmedfilespath", required=True,  help="Path for the pubmed files")
-parser.add_argument("-mdw", "--model_download", help="Download biosentvec and biowordvec pre-trained models automatically")
-parser.add_argument("-a", "--all", action='store_true',  help="Create TFIDF, biosentvec and biowordvec representations")
-
-
-try:
-    args = parser.parse_args()
-    if not (args.uniprotfilespath or args.pubmedfilespath):
-            parser.error('At least one path should be specified!')
-except:
-    parser.print_help()
-
+parser.add_argument("-mdw", "--model_download", default="n", help="y: download biosentvec and biowordvec pre-trained models automatically")
+parser.add_argument("-a", "--all", action='store_true',  help="Create all representations")
+args = parser.parse_args()
 print(args)
 
-if args.tfidf or args.biosentvec or args.biowordvec or args.all:
-    print("Loading files... \n\n")
-    
- 
+
+def download_model(url, path):
+    """Download a pre-trained model to its exact file name (skipped when it already exists)."""
+    if os.path.isfile(path) and os.path.getsize(path) > 1024 * 1024:
+        print("Model already present: " + path)
+        return
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    print("Downloading " + url + " -> " + path)
+    tmp_path = path + ".part"
+    urllib.request.urlretrieve(url, tmp_path)
+    os.replace(tmp_path, path)
+
+
+def run(module_name, label):
+    print("\n\n Creating " + label + " representations...\n")
+    module = importlib.import_module(module_name)
+    module.ufiles_path = args.uniprotfilespath
+    module.pfiles_path = args.pubmedfilespath
+    module.main()
+
+
 if args.tfidf or args.all:
-    print("\n\n Creating tfidf representations...\n")
-    tf.ufiles_path = args.uniprotfilespath
-    tf.pfiles_path = args.pubmedfilespath
-    tf.main()
-    
+    run("create_tfidf", "tfidf")
+
 if args.biobert or args.all:
-    print("\n\n Creating biobert representations...\n")
-    bb.ufiles_path = args.uniprotfilespath
-    bb.pfiles_path = args.pubmedfilespath
-    bb.main()
-    
+    run("create_biobert", "biobert")
+
 if args.openai or args.all:
-    print("\n\n Creating OpenAI representations...\n")
-    oai.ufiles_path = args.uniprotfilespath
-    oai.pfiles_path = args.pubmedfilespath
-    oai.main()
-      
+    run("create_openai", "OpenAI")
+
 if args.biosentvec or args.all:
     if args.model_download == "y":
-        print("\n\nDownloading biosentvec model...\n")
-        os.system("wget -P " + os.path.join(os.getcwd(),'text_representations/representation_generation/models') + " https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin")
-    
-    print("\n\nCreating biosentvec representations...\n")
-    bs.ufiles_path = args.uniprotfilespath
-    bs.pfiles_path = args.pubmedfilespath
-    bs.main()
+        download_model(rep_paths.BIOSENTVEC_URL, rep_paths.BIOSENTVEC_MODEL)
+    run("create_biosentvec", "biosentvec")
 
 if args.biowordvec or args.all:
     if args.model_download == "y":
-        print("\n\nDownloading biowordvec model...\n")
-        os.system("wget -P " + os.path.join(os.getcwd(),'text_representations/representation_generation/models') + " https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin")
-    
-    print("\n\nCreating biowordvec representations...\n")   
-    bw.ufiles_path = args.uniprotfilespath
-    bw.pfiles_path = args.pubmedfilespath
-    bw.main()
+        download_model(rep_paths.BIOWORDVEC_URL, rep_paths.BIOWORDVEC_MODEL)
+    run("create_biowordvec", "biowordvec")

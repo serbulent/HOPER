@@ -27,15 +27,7 @@ module_name=data["parameters"]["module_name"]
 
 if "case_study" in data["parameters"]["choice_of_module"]:
   
-  os.system("conda activate hoper_case_study_env ")
-  os.system("pip install imbalanced-learn")
-  os.system("pip install scikit-learn==1.0.2")
-  os.system("pip install tqdm")
-  os.system("pip install psutil==5.9.0")
-  os.system("pip install visions==0.7.4 ")
-  os.system("pip install torchsampler==0.1.2")
-  os.system("pip install torchmetrics==0.4.1")
-  os.system("pip install torch")
+  # Dependencies come from case_study/hoper_case_study_env.yml (run inside `conda activate hoper_case_study_env`).
 
 
   datapreprocessed_lst = []

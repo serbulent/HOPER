@@ -1,0 +1,13 @@
+name: HoloProtRep-AE
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+    - matplotlib==3.9.2
+    - numpy==1.26.4
+    - pandas==2.2.3
+    - scikit-learn==1.5.2
+    - torch==2.4.1
+    - tqdm==4.67.1

@@ -1,0 +1,24 @@
+# Downloaded data and models (see download_data.sh / README)
+/data/
+/data.zip
+/uniprot_sprot.xml.gz
+text_representations/representation_generation/data/uniprot/
+text_representations/representation_generation/data/pubmed/
+text_representations/representation_generation/models/*.bin
+text_representations/result_visualization/result_files/results/
+
+# Built by create_env.sh
+ppi_representations/bin/
+ppi_representations/snap/
+
+# Generated outputs
+/outputs/
+case_study/case_study_results/
+text_representations/representation_generation/*_representations/*.csv
+text_representations/representation_generation/*_representations/*.npz
+text_representations/preprocess/data/uniprot_*/
+text_representations/preprocess/data/human_pubmed_*/
+tempGraph.*
+tests/tmp/
+__pycache__/
+*.pyc

@@ -5,11 +5,12 @@ from nltk.corpus import stopwords
 from string import punctuation
 from tqdm import tqdm
 from openai import OpenAI
-import nltk
 
-nltk.download('punkt_tab')
+import rep_paths
+
 ufiles_path = ''
 pfiles_path = ''
+rep_paths.ensure_nltk_data()
 stop_words = set(stopwords.words('english'))
 
 '''
@@ -46,29 +47,23 @@ Finally, the resulting DataFrame is saved as a CSV file.
 '''
 
 def create_reps(tp):
-    path=os.getcwd()
-    files = os.listdir(pfiles_path)
-    print("\n\nLoading model...\n")
-    client = OpenAI(
-        api_key="your api key"
-    )
+    files = sorted(os.listdir(pfiles_path))
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        raise SystemExit("Set the OPENAI_API_KEY environment variable to create OpenAI representations.")
+    client = OpenAI(api_key=api_key)
 
     data = []
-    
+
     print("\n\nCreating " + tp + " openai embeddings...\n")
-    #for i in tqdm(range(20)):
     for i in tqdm(range(len(files))):
         if tp == 'uniprot':
-            contentu = open(ufiles_path + files[i])
-            sentence = preprocess_sentence(contentu.read())
+            sentence = preprocess_sentence(rep_paths.read_text(ufiles_path, files[i]))
         elif tp == 'pubmed':
-            contentp = open(pfiles_path + files[i])
-            sentence = preprocess_sentence(contentp.read())
+            sentence = preprocess_sentence(rep_paths.read_text(pfiles_path, files[i]))
         elif tp == 'uniprotpubmed':
-            contentu = open(ufiles_path + files[i])
-            contentp = open(pfiles_path + files[i])
-            sentence = preprocess_sentence(contentu.read() + contentp.read())
-        
+            sentence = preprocess_sentence(rep_paths.read_text(ufiles_path, files[i]) + rep_paths.read_text(pfiles_path, files[i]))
+
         try:
             response = client.embeddings.create(
                 input=sentence[:8191],
@@ -84,7 +79,7 @@ def create_reps(tp):
 
     df = pd.DataFrame(data, columns=['Entry', 'Vector']) 
     df = convert_dataframe_to_multi_col(df)
-    df.to_csv(os.path.join(path,'openai_representations/' + tp + '_openai_large_vectors_multi_col.csv'), index = False)
+    df.to_csv(os.path.join(rep_paths.output_dir('openai'), tp + '_openai_large_vectors_multi_col.csv'), index = False)
 
 def main():
     create_reps("uniprot")

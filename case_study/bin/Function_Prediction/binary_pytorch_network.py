@@ -62,8 +62,11 @@ def NN(
     representation_name,
     protein_and_representation_dictionary,
 ):
-    #breakpoint()
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # CPU by default (reproducible, works on machines whose GPU is unsupported by the pinned torch);
+    # set HOPER_DEVICE=cuda to train on a GPU.
+    device = torch.device(os.environ.get("HOPER_DEVICE", "cpu"))
+    if device.type == "cuda":
+        os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 
     f_max_cv_train = []
     f_max_cv_test = []
@@ -178,7 +181,6 @@ def NN(
             f = F_max_scoring.evaluate_annotation_f_max(y_train, preds)
             if f > best_f:
                 best_f, best_t = f, t
-                breakpoint()
         preds_train = (probs_train >= best_t).astype(int)
         
 

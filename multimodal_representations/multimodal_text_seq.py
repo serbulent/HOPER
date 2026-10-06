@@ -183,7 +183,7 @@ def extract_fused_representations(model, merged, seq_t, text_t, device):
 def main():
     args = parse_arguments()
     set_seed(args.seed)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device(os.environ.get('HOPER_DEVICE', 'cpu'))  # set HOPER_DEVICE=cuda for GPU
     print(f"Using device: {device}")
 
     merged, seq_t, text_t, train_i, val_i = load_and_preprocess_data(args)
@@ -199,7 +199,7 @@ def main():
 
     criterion = nn.MSELoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
-    scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', verbose=True)
+    scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, mode='min')
 
     model, train_hist, val_hist = train_model(
         model, train_i, val_i, seq_t, text_t,

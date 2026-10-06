@@ -73,7 +73,7 @@ def main():
   yaml_file_path=os.getcwd()
   #upload yaml file
   
-  stream = open(os.path.join(yaml_file_path, 'Hoper_representation_generetor.yaml'), 'r') 
+  stream = open(os.environ.get("HOPER_CONFIG", os.path.join(yaml_file_path, "Hoper_representation_generetor.yaml")), 'r') 
   data = yaml.safe_load(stream)
 
   #breakpoint()

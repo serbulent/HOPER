@@ -217,7 +217,7 @@ def train_model_for_seq(model, train_loader, validation_loader, criterion, optim
     val_loss_history = []
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = float('inf')
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', verbose=True)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min')
     loss_vals = []
 
     # Get tensor sizes
@@ -426,16 +426,17 @@ def extract_fused_representation(model, sequence_tensors, entries, device):
     model.encoder4.register_forward_hook(get_activation('encoder4'))
     model.eval()
 
-    fused_rep_ae = pd.DataFrame(columns=['Entry', 'Vector'])
+    rows = []
     seq_tensor_size = sequence_tensors.shape[1]
-    
-    for i, entry in enumerate(tqdm.tqdm(entries, desc="Extracting Fused Representations")):
-        seq_tensor = sequence_tensors[i].view(-1, seq_tensor_size).to(device)
-        _ = model(seq_tensor)
-        coding_layer_output = activation['encoder4'].tolist()[0]
-        new_row = {'Entry': entry, 'Vector': coding_layer_output}
-        fused_rep_ae = fused_rep_ae.append(new_row, ignore_index=True)
-    
+
+    with torch.no_grad():
+        for i, entry in enumerate(tqdm.tqdm(entries, desc="Extracting Fused Representations")):
+            seq_tensor = sequence_tensors[i].view(-1, seq_tensor_size).to(device)
+            _ = model(seq_tensor)
+            coding_layer_output = activation['encoder4'].tolist()[0]
+            rows.append({'Entry': entry, 'Vector': coding_layer_output})
+
+    fused_rep_ae = pd.DataFrame(rows, columns=['Entry', 'Vector'])
     fused_rep_ae_multi_col = convert_dataframe_to_multi_col(fused_rep_ae)
     return fused_rep_ae_multi_col
 
@@ -478,7 +479,17 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--save_model_path", type=str, default="transfer_ae_weights.pth", help="Path to save trained model (only train)")
     parser.add_argument("--loss_plot_path", type=str, default="loss_curve.png",
                         help="Path to save the training/validation loss curve image.")
+    # Only for test: optional per-dimension normalisation applied as (x + shift) * scale
+    parser.add_argument("--shift_factors", type=str, default=None,
+                        help="Text file with per-dimension shift factors (test mode, optional)")
+    parser.add_argument("--scaling_factors", type=str, default=None,
+                        help="Text file with per-dimension scaling factors (test mode, optional)")
     return parser.parse_args()
+
+
+def read_factor_matrix(path):
+    with open(path, 'r') as f:
+        return np.array([[float(val) for val in line.strip().split()] for line in f if line.strip()])
 def plot_losses(train_hist, val_hist,save_path):
     plt.figure()
     plt.plot(train_hist, label='Train')
@@ -520,8 +531,8 @@ def prepare_test_data(seq_csv):
 if __name__ == "__main__":
     args = parse_arguments()
     set_seed(args.seed)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-   
+    device = torch.device(os.environ.get("HOPER_DEVICE", "cpu"))  # set HOPER_DEVICE=cuda for GPU
+
     print(f"Using device: {device}")
     epochs = args.epochs
     representation_dim = args.representation_dim
@@ -560,7 +571,6 @@ if __name__ == "__main__":
     
     # Train sequence autoencoder
         trained_model, train_loss_history, val_loss_history, loss_vals = train_model_for_seq(seq_model, train_loader, validation_loader, criterion, optimizer, args.epochs,sequence_tensors, text_tensors, device)
-        breakpoint()
         plot_losses(train_loss_history, val_loss_history,args.loss_plot_path)
     # Save trained model
         torch.save(trained_model.state_dict(), args.save_model_path)
@@ -572,39 +582,13 @@ if __name__ == "__main__":
 
     elif args.mode == "test":
         #from transfer_ae_components import prepare_test_data, Autoencoder_Seq, extract_fused_representation
-        file_path = "/media/DATA2/sinem/isik_makale_1003/prott5_sequence_scaling_factors.txt"
         sequence_tensors,entries = prepare_test_data(seq_csv)
-        with open(file_path, 'r') as f:
-            lines = f.readlines()
-
-
-        matrix = []
-        for line in lines:
-    
-            values = line.strip().split()
-            matrix.append([float(val) for val in values])
-
-
-        matrix_np = np.array(matrix)
-
-        path_sift="/media/DATA2/sinem/isik_makale_1003/shift_factors.txt"
-        
-        with open(path_sift, 'r') as f:
-            lines = f.readlines()
-
-
-        matrix = []
-        for line in lines:
-    
-            values = line.strip().split()
-            matrix.append([float(val) for val in values])
-
-
-        sift_factor = np.array(matrix)
-        
-        sequence_tensors=sequence_tensors + sift_factor.T 
-        sequence_tensors = sequence_tensors * matrix_np.T 
-        sequence_tensors=sequence_tensors.float() 
+        # Training uses the representations as given; apply the optional normalisation only when supplied.
+        if args.shift_factors:
+            sequence_tensors = sequence_tensors + torch.tensor(read_factor_matrix(args.shift_factors).T)
+        if args.scaling_factors:
+            sequence_tensors = sequence_tensors * torch.tensor(read_factor_matrix(args.scaling_factors).T)
+        sequence_tensors=sequence_tensors.float()
         #import pdb; pdb.set_trace()       
         model = Autoencoder_Seq(Autoencoder())
         model.load_state_dict(torch.load(args.model_weights, map_location=device))

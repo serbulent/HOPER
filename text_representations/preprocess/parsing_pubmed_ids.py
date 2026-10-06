@@ -21,7 +21,7 @@ error=open(os.path.join(yaml_file_path, "text_representations/preprocess/data/pu
 #        os.makedirs(path + "/training", exist_ok=True)
 #        os.makedirs(path + "/test", exist_ok=True)
 yaml_file_path=os.getcwd()                                                  #upload yaml file
-stream = open(os.path.join(yaml_file_path,'Hoper_representation_generetor.yaml'), 'r')
+stream = open(os.environ.get("HOPER_CONFIG", os.path.join(yaml_file_path, "Hoper_representation_generetor.yaml")), 'r')
 
 data = yaml.safe_load(stream)
 
