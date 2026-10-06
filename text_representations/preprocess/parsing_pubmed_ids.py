@@ -57,4 +57,4 @@ def main():
     # for record in SeqIO.parse(file, "uniprot-xml"):
         for record in tqdm(SeqIO.UniprotIO.UniprotIterator(handle)): 
            if (record.annotations["organism"]=="Homo sapiens (Human)"):
-             extract_relevant_info_from_uniprot(record)
+             extract_relevant_info_from_uniprot(record)

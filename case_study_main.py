@@ -150,4 +150,4 @@ if "case_study" in data["parameters"]["choice_of_module"]:
             test_data,
             parameter_class_obj.prediction["model_directory"],
             classifier_name_lst,
-      )
+      )

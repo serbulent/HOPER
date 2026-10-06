@@ -84,4 +84,4 @@ def create_reps(tp):
 def main():
     create_reps("uniprot")
     create_reps("pubmed")
-    create_reps("uniprotpubmed")
+    create_reps("uniprotpubmed")
