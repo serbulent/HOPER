@@ -223,4 +223,3 @@ dependencies:
   - zlib=1.3.1=hb9d3cd8_2
   - zstandard=0.23.0=py312h66e93f0_1
   - zstd=1.5.7=hb8e6e7a_2
-prefix: /media/DATA2/testuser2/anaconda3/envs/prott5xl

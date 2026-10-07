@@ -5,6 +5,7 @@
 text_representations/representation_generation/data/uniprot/
 text_representations/representation_generation/data/pubmed/
 text_representations/representation_generation/models/*.bin
+sequence_representations/models/
 text_representations/result_visualization/result_files/results/
 
 # Built by create_env.sh

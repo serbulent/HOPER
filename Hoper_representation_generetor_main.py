@@ -28,6 +28,7 @@ ENV_TEXT = "HOPER_textrepresentations"
 ENV_PREPROCESS = "hoper_preprocess"
 ENV_CASE_STUDY = "hoper_case_study_env"
 ENV_AE = "HoloProtRep-AE"
+ENV_SEQUENCE = "prott5xl"
 
 
 def find_conda():
@@ -76,6 +77,13 @@ def main():
             hope = params["HOPE_module"]["parameter_selection"]
             run_in_env(ENV_PPI, ["ppi_representations/HOPE.py", edge_f, protein_id, is_directed,
                                  json.dumps(hope["d"]), json.dumps(hope["beta"])])
+
+    if "sequence" in modules:
+        seq = params["sequence_module"]
+        run_in_env(ENV_SEQUENCE, ["sequence_representations/prott5xl.py",
+                                  "--input", seq["input_path"], "--output", seq["output_path"],
+                                  "--model", seq.get("model", "bfd"),
+                                  "--batch_size", seq.get("batch_size", 8)])
 
     if "Preprocessing" in modules:
         run_in_env(ENV_PREPROCESS, ["text_representations/preprocess/preprocess_main.py"])

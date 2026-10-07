@@ -1,5 +1,5 @@
 parameters:
-    # Modules to run, in this order: PPI, Preprocessing, text, fuse_representations, SimpleAe
+    # Modules to run, in this order: PPI, sequence, Preprocessing, text, fuse_representations, SimpleAe
     choice_of_module: [PPI]
     #*************************************MODULES********************************************************************
     #********************PPI Module********************************
@@ -17,6 +17,13 @@ parameters:
         parameter_selection:
             d:  [5]
             beta:  [0.00390625]
+    #********************Sequence Representation Module (ProtT5-XL)********************************
+    module_name: sequence
+    sequence_module:
+        input_path: ./sequence_representations/example_sequences.fasta   # FASTA, or CSV with Entry + Sequence
+        output_path: ./outputs/prott5_bfd_representation.csv
+        model: bfd          # bfd (matches the example data) or uniref50
+        batch_size: 8
     #********************Text Representation Module********************************
     module_name: text
     choice_of_process:  [generate,visualize]

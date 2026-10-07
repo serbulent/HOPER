@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # End-to-end smoke test of the README workflow on small example inputs.
 #   bash tests/smoke_test.sh            # all steps
-#   bash tests/smoke_test.sh --quick    # skip the BioBERT model download and preprocessing
+#   bash tests/smoke_test.sh --quick    # skip the model downloads (ProtT5 ~4.8 GB, BioBERT) and preprocessing
 # Prerequisites: bash create_env.sh && bash download_data.sh [--uniprot]
 # Each step checks the produced files, not only the exit code. Prints a summary; exit code 1 if any step failed.
 set -u
@@ -49,6 +49,22 @@ t_ppi() {
 import pickle
 for f in ['data/Node2vec_d_10_p_0.25_q_0.25.pkl', 'data/HOPE_d_5_beta_0.00390625.pkl']:
     df = pickle.load(open(f, 'rb')); assert df.shape == (5, 2), df.shape; print(f, df.shape)"
+}
+
+t_sequence() {
+  # ProtT5-XL (bfd) vectors must match the authors' vectors shipped in the example data
+  local out="$TMP/prott5_bfd.csv"
+  launcher "$(config seq "    choice_of_module: [sequence]
+    sequence_module: {input_path: ./sequence_representations/example_sequences.fasta, output_path: $out, model: bfd, batch_size: 4}")" || return 1
+  pycheck "
+import numpy as np, pandas as pd
+new = pd.read_csv('$out').set_index('Entry')
+ref = pd.read_csv('data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv')
+ref = ref.loc[:, [c for c in ref.columns if not str(c).startswith('Unnamed')]].set_index('Entry')
+assert new.shape == (3, 1024), new.shape
+for e in new.index:
+    a, b = new.loc[e].values.astype(float), ref.loc[e].values.astype(float)
+    c = float(a @ b / np.linalg.norm(a) / np.linalg.norm(b)); print(e, 'cosine vs T5_UNIPROT_HUMAN', round(c, 5)); assert c > 0.999"
 }
 
 t_fuse() {
@@ -202,6 +218,7 @@ assert d.shape == (1085, 2) and set(d['Label']) <= {0, 1}"
 }
 
 step "PPI: Node2vec + HOPE (launcher)"          t_ppi
+[ $QUICK -eq 0 ] && step "sequence: ProtT5-XL bfd (launcher)" t_sequence
 step "fuse_representations (launcher)"         t_fuse
 step "text: TF-IDF, 300 proteins (launcher)"   t_text_tfidf
 [ $QUICK -eq 0 ] && step "text: BioBERT, 20 proteins (launcher)" t_text_biobert

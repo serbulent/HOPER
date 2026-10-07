@@ -21,7 +21,7 @@ The overview of HOPER. We first generated protein representations (embeddings) i
   No system C/C++ compiler or `sudo` is needed.
 - Disk: ~35 GB for the conda environments, ~1 GB for the example data
   (+ ~0.85 GB for `uniprot_sprot.xml.gz` and ~9 GB of preprocessing output if you run *Preprocessing*).
-- RAM: 8 GB is enough for every step in this README except BioSentVec (~22 GB model) and
+- RAM: 8 GB is enough for every step in this README (ProtT5-XL needs ~6 GB) except BioSentVec (~22 GB model) and
   BioWordVec (~13 GB model), which must fit in memory.
 - A GPU is optional. All modules run on CPU by default; set `HOPER_DEVICE=cuda` to use a GPU.
 
@@ -45,6 +45,7 @@ bash tests/smoke_test.sh    # optional: runs every step below on small inputs an
 | `HOPER_textrepresentations` | TF-IDF, BioBERT, BioSentVec, BioWordVec, OpenAI representations and result visualization |
 | `hoper_case_study_env` | `fuse_representations`, `case_study_main.py` |
 | `HoloProtRep-AE` | SimpleAE, MultiModalAE, TransferAE |
+| `prott5xl` | ProtT5-XL sequence representations |
 | `hoper_build` | only used to compile SNAP node2vec into `ppi_representations/bin/` |
 
 `download_data.sh` places the data where the modules expect it: `./data/`, the UniProt and PubMed text files in
@@ -86,6 +87,31 @@ parameters:
 ```
 
 Output: `data/Node2vec_d_<d>_p_<p>_q_<q>.pkl` and `data/HOPE_d_<d>_beta_<beta>.pkl` (columns `Entry`, `Vector`).
+
+### Sequence representations (ProtT5-XL)
+
+More information: [sequence_representations/readme.md](sequence_representations/readme.md)
+
+```yaml
+parameters:
+    choice_of_module: [sequence]
+    sequence_module:
+        input_path: ./sequence_representations/example_sequences.fasta   # FASTA, or CSV with Entry + Sequence
+        output_path: ./outputs/prott5_bfd_representation.csv
+        model: bfd          # bfd (matches the example data) or uniref50
+        batch_size: 8
+```
+
+or directly:
+
+```shell
+conda activate prott5xl
+python sequence_representations/prott5xl.py --input proteins.fasta --output outputs/prott5_bfd_representation.csv
+```
+
+Output: a multi-column CSV (`Entry`, 1024 columns). The default model, `Rostlab/prot_t5_xl_bfd`, is the one used
+for the sequence vectors in the example data (`data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv`).
+The encoder weights (~4.8 GB) are downloaded on first use to `sequence_representations/models/`.
 
 ### Text preprocessing (UniProt / PubMed)
 
@@ -183,8 +209,8 @@ Training on the 14,941 example proteins for 400 epochs takes ~30 minutes on CPU.
 
 ### MultiModalAE (sequence + PPI + text)
 
-Inputs are multi-column CSVs with an `Entry` column. The model expects 1024-d sequence (ProtT5), 500-d PPI and
-3072-d text (OpenAI `text-embedding-3-large`) representations.
+Inputs are multi-column CSVs with an `Entry` column. The model expects 1024-d sequence (ProtT5, e.g. the output of
+`sequence_representations/prott5xl.py`), 500-d PPI and 3072-d text (OpenAI `text-embedding-3-large`) representations.
 
 ```shell
 conda activate HoloProtRep-AE

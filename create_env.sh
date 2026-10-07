@@ -64,6 +64,7 @@ run_step "hoper_preprocess"            make_env hoper_preprocess text_representa
 run_step "HOPER_textrepresentations"   make_env HOPER_textrepresentations text_representations/text_representations.yml
 run_step "sent2vec (epfml)"            conda run --no-capture-output -n HOPER_textrepresentations pip install --no-build-isolation "git+https://github.com/epfml/sent2vec.git@$SENT2VEC_COMMIT"
 run_step "HoloProtRep-AE"              make_env HoloProtRep-AE multimodal_representations/simple_ae_env.yml
+run_step "prott5xl"                    make_env prott5xl sequence_representations/prott5xl_environment.yaml
 
 echo; echo "======== Summary"
 failed=0
