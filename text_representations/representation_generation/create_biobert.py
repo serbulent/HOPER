@@ -6,6 +6,8 @@ from transformers import AutoTokenizer, AutoModel
 import torch
 import gc
 
+import rep_paths
+
 ufiles_path = ''
 pfiles_path = ''
 
@@ -30,8 +32,7 @@ def create_reps(tp):
     model = AutoModel.from_pretrained(model_name)
 
     data = []
-    path=os.getcwd()
-    
+
     print('Generating ' + tp + ' embeddings...')
     for i in tqdm(range(len(files))):
         file_content = ""
@@ -58,7 +59,7 @@ def create_reps(tp):
 
     df = pd.DataFrame(data, columns=['Entry', 'Vector']) 
     df = convert_dataframe_to_multi_col(df, id_column='Entry')
-    df.to_csv(os.path.join(path,'biobert_representations/' + tp + '_biobert_embeddings_multi_col.csv'), index = False)
+    df.to_csv(os.path.join(rep_paths.output_dir('biobert'), tp + '_biobert_embeddings_multi_col.csv'), index = False)
    
 def main():
     create_reps("uniprot")

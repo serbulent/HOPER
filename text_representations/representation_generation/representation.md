@@ -1,108 +1,57 @@
 # Representation generation
 
-This repository contains Python scripts to generate text representations using different techniques. It provides options to create TF-IDF representations, BioSentVec representations, and BioWordVec representations for input data.  It takes input data from UniProt and PubMed sources and generates vector representations for each entry. 
+`createtextrep.py` creates text-based protein representations from UniProt and PubMed text files (one `<UniProt id>.txt`
+file per protein in each folder): TF-IDF, BioBERT, BioSentVec, BioWordVec and OpenAI embeddings. For each method
+three variants are produced: `uniprot`, `pubmed` and `uniprotpubmed` (both texts concatenated).
 
-Dataset is temporarily limited to 20 entries to make testing easier. PCA analysis for tfidf vectors also disabled because the limit is less than the PCA components.
+## Setup
 
-# Dependencies
- 1.	Python 3.7.3
- 2.	pandas 1.1.4
- 3.	sklearn
- 4.	os
- 5.	fasttext
- 6.	string
- 7.	nltk
- 8.	sent2vec
-    
+`bash create_env.sh` creates the `HOPER_textrepresentations` environment and `bash download_data.sh` places the
+example texts (20,365 human proteins) in `data/uniprot/` and `data/pubmed/` of this folder. See the main
+[README](../../README.md#installation).
 
-## Data
+## Running
 
-Uniprot and Pubmed files must be in text format and named with the uniprot ids. Download and unzip the files to the data folder from the urls given below.
+From the repository root with the launcher (`choice_of_module: [text]`, `choice_of_process: [generate]`, see the
+main README), or directly:
 
-https://drive.google.com/file/d/1jZJiL6R9c4hsxh_k5pCBsX6LG1zzbITX/view?usp=drive_link
-https://drive.google.com/file/d/1BwU2DXCXdtHGxtY1TlQxTuNbc7xVBzDp/view?usp=drive_link
-
-## Models
-
-biosentvec and biowordvec models must be downloaded to "models" folder from the urls below. Alternatively model_download parameter must be set as "y" to download models automatically if biosentvec or biowordvec representations selected to be generated.
-
-https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
-https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
-
+```shell
+conda activate HOPER_textrepresentations
+python text_representations/representation_generation/createtextrep.py --tfidf \
+  -upfp text_representations/representation_generation/data/uniprot/ \
+  -pmfp text_representations/representation_generation/data/pubmed/
+```
 
 ### Options
 
-The script allows users to specify different options to create specific types of text representations (TFIDF, biosentvec, and biowordvec) and provides flexibility by allowing the creation of all representation types if the -a or --all option is specified.
+| Option | |
+|---|---|
+| `-tfidf`, `--tfidf` | TF-IDF |
+| `-biobert`, `--biobert` | BioBERT (`dmis-lab/biobert-base-cased-v1.1`, downloaded from Hugging Face on first use) |
+| `-bsv`, `--biosentvec` | BioSentVec (~22 GB model, must fit in RAM) |
+| `-bwv`, `--biowordvec` | BioWordVec (~13 GB model, must fit in RAM) |
+| `-openai`, `--openai` | OpenAI `text-embedding-3-large` (needs `OPENAI_API_KEY`) |
+| `-a`, `--all` | all of the above |
+| `-upfp`, `--uniprotfilespath` | folder with the UniProt text files (required) |
+| `-pmfp`, `--pubmedfilespath` | folder with the PubMed text files (required) |
+| `-mdw y`, `--model_download y` | download the BioSentVec/BioWordVec models to `models/` if they are missing |
 
-`-tfidf` or `--tfidf`: Creates TFIDF representations.
+The BioSentVec/BioWordVec models can also be downloaded beforehand into `models/`:
 
-`-bsv` or `--biosentvec`: Creates biosentvec representations.
-
-`-bwv` or `--biowordvec`: Creates biowordvec representations.
-
-`-upfp` or `--uniprotfilespath`: Specifies the path for the uniprot files. This option is required.
-
-`-pmfp` or `--pubmedfilespath`: Specifies the path for the pubmed files. This option is required.
-
-`-a` or `--all`: Creates all types of representations (TFIDF, biosentvec, and biowordvec).
-
-`-mdw` or `--model_download`: download biosentvec and biowordvec model automatically.
-
-### How to Run
-
-Our users who have installed Hoper do not need to perform the following operations. 
-
-If you have not installed Hoper, you must perform the steps below to run text representation generation.
-
-Step by step operation:
-  1. Clone repository
-  2. Install dependencies(given above)
-  3. Download biosentvec and biowordvec models to models folder
-  4. Download and unzip uniprot and pubmed files to data folder
-  5. Run the script
-
-Examples:
-
-1. To create TF-IDF representations:
-
-```
-python createtextrep.py --tfidf -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files -mdw y
+```shell
+curl -L -o text_representations/representation_generation/models/BioSentVec_PubMed_MIMICIII-bigram_d700.bin https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
+curl -L -o text_representations/representation_generation/models/BioWordVec_PubMed_MIMICIII_d200.bin https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
 ```
 
-2. To create biosentvec representations:
+## Output
 
-```
-python createtextrep.py --bsv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files -mdw y
-```
+Written to `<method>_representations/` in this folder; all CSVs are multi-column (`Entry`, `0`, `1`, ...).
 
-2. To create biowordvec representations:
-
-```
-python createtextrep.py --bwv -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files -mdw y
-```
-
-3. To create all three representations:
-
-```
-python createtextrep.py --a -upfp /path/to/uniprot/files -pmfp /path/to/pubmed/files -mdw y
-```
-
-## Definition of Output
-
-The script will load the text files and perform the selected actions based on the provided options. The output will be generated in the following manner:
-
-- If the `-tfidf` option is selected, a csv file inluding TF-IDF vectors and four csv files (PCA 256, PCA 512, PCA 1024 and PCA 2048) including vectors generated by PCA analysis will be created and saved.
-
-- If the `-bsv` option is selected, a csv file including biosentvec vectors will be created and saved.
-
-- If the `-bwv` option is selected, a csv file including biowordvec vectors will be created and saved.
-
-## License
-
-Copyright (C)
-
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+- TF-IDF (`tfidf_representations/`): SVD-reduced vectors `<type>_tfidf_vectors_svd{256,512,1024,2048}.csv` and the
+  full sparse matrix `<type>_tfidf_vectors.npz` with `<type>_tfidf_entries.csv` (rows) and
+  `<type>_tfidf_vocabulary.csv` (columns). `HOPER_TFIDF_DENSE_CSV=1` also writes the full matrix as a dense CSV
+  (~8 GB of RAM for the full data set). The full data set takes about 20 minutes on CPU.
+- BioBERT: `biobert_representations/<type>_biobert_embeddings_multi_col.csv` (768-d).
+- BioSentVec: `biosentvec_representations/<type>_biosentvec_vectors_multi_col.csv` (700-d).
+- BioWordVec: `biowordvec_representations/<type>_biowordvec_vectors_multi_col.csv` (200-d).
+- OpenAI: `openai_representations/<type>_openai_large_vectors_multi_col.csv` (3072-d).

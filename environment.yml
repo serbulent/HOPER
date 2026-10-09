@@ -1,0 +1,8 @@
+# Launcher environment for Hoper_representation_generetor_main.py.
+# The launcher only reads the YAML config; every module runs in its own environment (see create_env.sh).
+name: hoper
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pyyaml

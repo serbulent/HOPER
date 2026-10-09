@@ -1,7 +1,7 @@
+"""Kept for backwards compatibility: environment creation now lives in create_env.sh."""
 import os
+import subprocess
+import sys
 
-os.system("conda env create -f case_study/hoper_case_study_env.yml")
-os.system("conda env create -f ppi_representations/hoper_PPI.yml")
-os.system("conda env create -f text_representations/preprocess/hoper_preprocess.yml")
-os.system("conda env create -f text_representations/text_representations.yml")
-os.system("conda env create -f multimodal_representations/simple_ae_env.yml")
+script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "create_env.sh")
+sys.exit(subprocess.call(["bash", script]))

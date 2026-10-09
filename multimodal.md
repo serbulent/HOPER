@@ -1,34 +1,35 @@
 # SimpleAE example
 
-1. Download the data files: 
-
-   - [Data files](https://drive.google.com/file/d/1R7jRfnBWmO6i6S1vqQd6zZt2-kcK6Eom/view?usp=drive_link)
-
-1. Place data.zip file under **Hoper** directory:
+1. Install HOPER and download the example data (see [README.md](README.md#installation)):
 
     ```shell
-    cd HOPER
-    unzip data.zip
+    bash create_env.sh
+    bash download_data.sh
     ```
 
-1. create the necessary environment with:
-
-    ```shell
-    python create_env.py 
-    ```
-
-1. Make manipulations on Hoper_representation_generetor.yaml file for generating multimodal representations. Change the "choice_of_module" parameter to SimpleAe and provide the representation_path parameter as your representation path.
+1. In `Hoper_representation_generetor.yaml` set `choice_of_module` to `SimpleAe` and point `representation_path`
+   to a multi-column representation file (`Entry`, `0`, `1`, ...):
 
     ```yaml
-    choice_of_module: [SimpleAe] # Module selection 
+    choice_of_module: [SimpleAe]
 
     #*******************SimpleAe*********************************************
-        module_name: SimpleAe
-        representation_path: ./data/hoper_sequence_representations/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
+    module_name: SimpleAe
+    representation_path: ./data/hoper_sequence_representations/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
+    simple_ae_module:
+        output_dir: ./outputs
+        epochs: 400
     ```
 
-1. Run Simple autoencoder for multimodal representations
+1. Run the simple autoencoder (about 30 minutes on CPU for 400 epochs):
 
-    ```shell	
-        python Hoper_representation_generetor_main.py
+    ```shell
+    conda activate hoper
+    python Hoper_representation_generetor_main.py
     ```
+
+   Outputs: `outputs/simple_ae_representation.csv`, `outputs/simple_ae_weights.pth`, `outputs/simple_ae_scaler.pkl`,
+   `outputs/simple_ae_loss.png`.
+
+MultiModalAE and TransferAE are run the same way (`choice_of_module: [MultiModalAe]` / `[TransferAe]`); see
+[multimodal_representations/readme.md](multimodal_representations/readme.md).

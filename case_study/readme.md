@@ -20,42 +20,52 @@ You can access the information about the fuse_representations, prepare_datasets,
 
 # How to run Protein Function Prediction
 
-Step by step operation:
-  1. Clone repository
-  3. Download datasets,unzip and place the folder
-  4. Edit the configuration file : **Hoper.yaml** 
-- i.e., python **HOPER_main.py**
+Install HOPER and download the example data first (see the main [README](../README.md#installation):
+`bash create_env.sh` and `bash download_data.sh`). Then, from the repository root:
+
+```shell
+conda activate hoper_case_study_env
+python case_study_main.py
+```
+
+The run is configured by `case_study.yaml` in the repository root. With the example data it prepares the dataset,
+trains and tests the classifier and predicts the 1,085 proteins in `rep_dif_ae.csv` (about one minute on CPU).
+Training runs on CPU by default; set `HOPER_DEVICE=cuda` to use a GPU.
 
 # Dependencies
 
- You can access dependencies from case_study_env.yml file
+ `case_study/hoper_case_study_env.yml` (environment `hoper_case_study_env`, created by `create_env.sh`).
  
-# Example of protein function prediction configuration file 
+# Example of protein function prediction configuration file (`case_study.yaml`)
 
     parameters:
-    choice_of_task_name:  [prepare_datasets,model_training_test,prediction]
-    fuse_representations: ** # This step make concatenation of protein representation vectors.**
-        representation_files: [../multi_modal_rep_ae_multi_col_256.csv,/media/DATA2/sinem/node2vec_d_50_p_0.5_q_0.25_multi_col.csv]
-        min_fold_number:  2  # Minimum_number_of_combinations. For example if 3 representations are supplied and min_fold_number = 2
-        #then the function will produce double and triple combinations of the protein representation vector. Such as Vec1_Vec2, Vec1_Vec3, Vec2_Vec3 and Vec1_Vec2_Vec3
-        representation_names:  [modal_rep_ae,node2vec,bertavg]     
-        
-    prepare_datasets:  
-        positive_sample_data:  [../positive.csv]
-        negative_sample_data:  [../neg_data.csv]
-        prepared_representation_file:  [../multi_modal_rep_ae_multi_col_256.csv] 
-        representation_names:  [modal_rep_ae] 
-    
-    model_training_test:
+      choice_of_module: [case_study]
+      module_name: case_study
+      choice_of_task_name:  [prepare_datasets,model_training_test,prediction]   # also: fuse_representations
+      fuse_representations:   # concatenation of protein representation vectors
+        representation_files: [./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv]
+        min_fold_number:  2  # Minimum number of combinations. For example if 3 representations are supplied and min_fold_number = 2
+        # then the function will produce double and triple combinations: Vec1_Vec2, Vec1_Vec3, Vec2_Vec3 and Vec1_Vec2_Vec3
+        representation_names:  [node2vec,modal_rep_ae]   # same order as representation_files
+      prepare_datasets:
+        positive_sample_data:  ["./data/hoper_case_study_example_data/prepare_datasets/positive.csv"]
+        negative_sample_data:  ["./data/hoper_case_study_example_data/prepare_datasets/neg_data.csv"]
+        prepared_representation_file:  ["./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv"]
         representation_names:  [modal_rep_ae]
-        scoring_function:  ["f_max"]  # "f1_micro","f1_macro", "f1_weighted", "f_max"
-        prepared_path:  ["../results/modal_rep_ae_binary_data.pickle"]
-        classifier_name:  ["Fully_Connected_Neural_Network"] #"RandomForestClassifier", "SVC", "KNeighborsClassifier", "Fully_Connected_Neural_ Network",
-    prediction:
-        representation_names:  [modal_rep_ae] 
-        prepared_path:  ["../rep_file/rep_dif_ae.csv"]
-        classifier_name:  ['Fully_Connected_Neural_Network']         
-        model_directory:  ["../case_study_results/test/modal_rep_ae_Fully_Connected_Neural_Network_binary_classifier.pt"] 
+      model_training_test:
+        representation_names:  [modal_rep_ae]
+        scoring_function:  ["f_max"]  # "f1_micro", "f1_macro", "f1_weighted", "f_max"
+        prepared_path:  ["./case_study/case_study_results/modal_rep_ae_binary_data.pickle"]   # used when prepare_datasets is not run
+        classifier_name:  ["Fully_Connected_Neural_Network"]   # or "RandomForestClassifier", "SVC", "KNeighborsClassifier", "XGBoost"
+      prediction:
+        representation_names:  [modal_rep_ae]
+        prepared_path:  ["./data/hoper_case_study_example_data/prediction_example_data/rep_dif_ae.csv"]
+        classifier_name:  ['Fully_Connected_Neural_Network']
+        model_directory:  ["./case_study/case_study_results/training/modal_rep_ae_Fully_Connected_Neural_Network_binary_classifier.pt"]
+
+The prediction input must use the same representation (and dimension) as the training data:
+`multi_modal_rep_ae_multi_col_256.csv` and `rep_dif_ae.csv` are both 384-dimensional.
+Model files are named `<representation_names>_<classifier>_binary_classifier.pt`.
 
 # Definition of output files (results)
 
@@ -100,5 +110,5 @@ Step by step operation:
 
     - "case_study_results/test/representation_name_model_name_binary_classifier_test_predictions.tsv"
  - Prediction result files:
-   - "case_study_results/prediction/Representation_name_prediction_binary_classifier_classifier_name.tsv"
+   - "case_study_results/prediction/representation_name_prediction_binary_classifier_classifier_name.csv" (columns `protein_id`, `Label`)
 

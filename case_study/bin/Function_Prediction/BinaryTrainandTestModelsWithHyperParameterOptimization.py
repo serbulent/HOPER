@@ -206,7 +206,10 @@ def neural_network_eval(
       torch.save(model.state_dict(), paths)
       
       
-      best_parameter_dataframe = pd.DataFrame(parameter)
+      best_parameter_dataframe = pd.DataFrame([{
+          key: (value[0] if isinstance(value, (list, tuple)) and len(value) == 1 else value)
+          for key, value in parameter.items()
+      }])
       training_path=os.path.join(path,"training","Neural_network_"+ representation_name_concated[0]+"_binary_classifier_best_parameter.csv")
       best_parameter_dataframe.to_csv(training_path,index=False)
      
@@ -476,8 +479,15 @@ def select_best_model_with_hyperparameter_tuning(
 
 ):
 
+    # Callers pass either a single name or a list of names; downstream code indexes
+    # representation_name[0], so normalise to a one-element list holding the full name.
+    if isinstance(representation_name, (list, tuple)):
+        representation_name = ["_".join(str(name) for name in representation_name)]
+    else:
+        representation_name = [str(representation_name)]
+
     fmax_scorer = make_scorer(fmax_scorer_func)
-    
+
     scoring = {
     "f1_micro": "f1_micro",
     "f1_macro": "f1_macro",

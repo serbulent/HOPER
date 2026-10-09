@@ -30,7 +30,8 @@ dependencies:
       - matplotlib==3.3.4
       - networkx==2.4
       - numpy==1.17.0
-      - nxt-gem==0.0.0
+      # GEM (commit 213189b) is installed by create_env.sh with --no-deps: its setup.py pins
+      # theano/keras, which the Node2vec/HOPE code paths do not use.
       - pandas==1.1.5
       - pillow==8.4.0
       - pyparsing==3.1.0
@@ -40,4 +41,3 @@ dependencies:
       - scikit-learn==0.21.2
       - scipy==0.19.0
       - six==1.16.0
-prefix: ./hoper_PPI

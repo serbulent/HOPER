@@ -8,8 +8,8 @@ Documentation
 
 Detailed information about each module is available below:
 
-Preprocessing: Detailed documentation [preprocess.md](https://github.com/serbulent/HOPER/tree/main/text_representations/preprocess)
+Preprocessing: Detailed documentation [preprocess.md](preprocess/preprocess.md)
 
-Text Representation Generation: Detailed documentation [representation.md](https://github.com/serbulent/HOPER/tree/main/text_representations/representation_generation)
+Text Representation Generation: Detailed documentation [representation.md](representation_generation/representation.md)
 
-Result Visualization: Detailed documentation [result_visualization.md](https://github.com/serbulent/HOPER/tree/main/text_representations/result_visualization)
+Result Visualization: Detailed documentation [result_visualization.md](result_visualization/result_visualization.md)

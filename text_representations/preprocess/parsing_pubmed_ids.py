@@ -7,7 +7,7 @@ import os
 import os.path
 from os import path
 import gzip
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 import pdb
 import sys
 yaml_file_path = os.getcwd()
@@ -21,7 +21,7 @@ error=open(os.path.join(yaml_file_path, "text_representations/preprocess/data/pu
 #        os.makedirs(path + "/training", exist_ok=True)
 #        os.makedirs(path + "/test", exist_ok=True)
 yaml_file_path=os.getcwd()                                                  #upload yaml file
-stream = open(os.path.join(yaml_file_path,'Hoper_representation_generetor.yaml'), 'r')
+stream = open(os.environ.get("HOPER_CONFIG", os.path.join(yaml_file_path, "Hoper_representation_generetor.yaml")), 'r')
 
 data = yaml.safe_load(stream)
 
@@ -57,4 +57,4 @@ def main():
     # for record in SeqIO.parse(file, "uniprot-xml"):
         for record in tqdm(SeqIO.UniprotIO.UniprotIterator(handle)): 
            if (record.annotations["organism"]=="Homo sapiens (Human)"):
-             extract_relevant_info_from_uniprot(record)
+             extract_relevant_info_from_uniprot(record)

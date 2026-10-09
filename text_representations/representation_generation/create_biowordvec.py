@@ -6,8 +6,11 @@ from string import punctuation
 import fasttext
 from tqdm import tqdm
 
+import rep_paths
+
 ufiles_path = ''
 pfiles_path = ''
+rep_paths.ensure_nltk_data()
 stop_words = set(stopwords.words('english'))
 
 '''
@@ -44,37 +47,26 @@ Finally, the resulting DataFrame is saved as a CSV file.
 '''
 
 def create_reps(tp):
-    path=os.getcwd()
-    files = os.listdir(pfiles_path)
+    files = sorted(os.listdir(pfiles_path))
+    rep_paths.require_model(rep_paths.BIOWORDVEC_MODEL, "BioWordVec")
     print("\n\nLoading model...\n")
-    try:
-            model = fasttext.load_model(os.path.join(path,'models/BioWordVec_PubMed_MIMICIII_d200.bin'))
-    except Exception as e:
-            print(e)
-            print('model successfully loaded')
+    model = fasttext.load_model(rep_paths.BIOWORDVEC_MODEL)
 
-    df = pd.DataFrame(columns=['Entry', 'Vector'])
+    rows = []
     print("\n\nCreating " + tp + " biowordvec vectors...\n")
-    #for i in tqdm(range(20)):
     for i in tqdm(range(len(files))):
         if tp == 'uniprot':
-            contentu = open(ufiles_path + files[i])
-            sentence = preprocess_sentence(contentu.read())
+            sentence = preprocess_sentence(rep_paths.read_text(ufiles_path, files[i]))
         elif tp == 'pubmed':
-            contentp = open(pfiles_path + files[i])
-            sentence = preprocess_sentence(contentp.read())
+            sentence = preprocess_sentence(rep_paths.read_text(pfiles_path, files[i]))
         elif tp == 'uniprotpubmed':
-            contentu = open(ufiles_path + files[i])
-            contentp = open(pfiles_path + files[i])
-            sentence = preprocess_sentence(contentu.read() + contentp.read())
-        
-        sentence_vector = model.get_sentence_vector(sentence)
-        df1 = pd.DataFrame({'Entry': [files[i][:-4]], 'Vector': [sentence_vector]})
-        df = pd.concat([df, df1], ignore_index=True)
-        #df = df.append({'Entry' : files[i][:-4], 'Vector' : sentence_vector}, ignore_index = True)
+            sentence = preprocess_sentence(rep_paths.read_text(ufiles_path, files[i]) + rep_paths.read_text(pfiles_path, files[i]))
 
-    df = convert_dataframe_to_multi_col(df)
-    df.to_csv(os.path.join(path,'biowordvec_representations/' + tp + '_biowordvec_vectors_multi_col.csv'), index = False)
+        sentence_vector = model.get_sentence_vector(sentence)
+        rows.append({'Entry': os.path.splitext(files[i])[0], 'Vector': sentence_vector})
+
+    df = convert_dataframe_to_multi_col(pd.DataFrame(rows, columns=['Entry', 'Vector']))
+    df.to_csv(os.path.join(rep_paths.output_dir('biowordvec'), tp + '_biowordvec_vectors_multi_col.csv'), index = False)
 
 def main():
     create_reps("uniprot")

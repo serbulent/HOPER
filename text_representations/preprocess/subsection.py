@@ -7,12 +7,12 @@ import os
 import os.path
 from os import path
 import gzip
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 
 #removing PubMed references in the text; removing parentheses, dots and spaces in order
 #breakpoint()
 yaml_file_path=os.getcwd()                                                  #upload yaml file
-stream = open(os.path.join(yaml_file_path,'Hoper_representation_generetor.yaml'), 'r')
+stream = open(os.environ.get("HOPER_CONFIG", os.path.join(yaml_file_path, "Hoper_representation_generetor.yaml")), 'r')
 data = yaml.safe_load(stream)
 #os.path.join(yaml_file_path, 'text_representations/preprocess/data/subsections')   
 def removing_parentheses():      #removing parentheses including PubMed

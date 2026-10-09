@@ -1,9 +1,22 @@
+"""TransferAE: a sequence-only encoder initialised from the dual (sequence + text) autoencoder.
+
+Train it on proteins that have both representations; then (test mode) it produces representations for
+proteins that only have a sequence representation. Dimensions are taken from the data and the weights.
+
+    python multimodal_representations/transfer_text_seq.py --mode train --seq_csv seq.csv --text_csv text.csv \
+        --model_weights dual_modal_weights.pth --save_model_path transfer_ae_weights.pth --save_csv_path out.csv
+    python multimodal_representations/transfer_text_seq.py --mode test --seq_csv new_seq.csv \
+        --model_weights transfer_ae_weights.pth --save_csv_path new_out.csv
+"""
 import argparse
 import os
+import sys
 import random
 import copy
 import time
 from datetime import datetime
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
@@ -12,7 +25,19 @@ from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
 import tqdm
-from sklearn.preprocessing import StandardScaler
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rep_io
+
+
+def dual_dims_from_state(state_dict, prefix=""):
+    """Layer sizes of a dual (text + sequence) autoencoder, read from its saved weights."""
+    w = lambda name: state_dict[prefix + name + ".weight"].shape  # (out_features, in_features)
+    return dict(text_dim=w("encoder_text.0")[1], text_dim1=w("encoder_text.0")[0], text_dim2=w("encoder_text.2")[0],
+                seq_dim=w("encoder_seq.0")[1], seq_dim1=w("encoder_seq.0")[0], seq_dim2=w("encoder_seq.2")[0],
+                zdim=w("encoder_fuse.0")[0])
+
+
 class Autoencoder(nn.Module):
     """
     A multimodal autoencoder that fuses text,and sequence representations.
@@ -31,9 +56,9 @@ class Autoencoder(nn.Module):
                  zdim: int = 512):
         super(Autoencoder, self).__init__()
         self.text_dim = text_dim
+        self.text_dim2 = text_dim2
         self.seq_dim = seq_dim
         self.zdim = zdim
-        # Devam eden encoder ve decoder tanımlamaları...
 
 
         # Encoders
@@ -74,7 +99,7 @@ class Autoencoder(nn.Module):
         fused_output = self.decoder_fuse(z)
         text_chunk = fused_output[:, :self.text_dim2]
         
-        seq_chunk = fused_output[:, self.text_dim2 ]
+        seq_chunk = fused_output[:, self.text_dim2:]
         decoded_text = self.decoder_text(text_chunk)
         
         decoded_seq = self.decoder_seq(seq_chunk)
@@ -92,14 +117,15 @@ class Autoencoder_Seq(nn.Module):
     def __init__(self, pretrained_model):
         super(Autoencoder_Seq, self).__init__()
         self.pretrained_model = pretrained_model
-        self.text_dim = 3072
-        self.text_dim1 = 768
-        self.text_dim2 = 512
-        
-        self.seq_dim = 1024
-        self.seq_dim1 = 768
-        self.seq_dim2 = 512
-        self.zdim = representation_dim
+        # Layer sizes follow the pretrained dual autoencoder.
+        self.text_dim = pretrained_model.encoder_text[0].in_features
+        self.text_dim1 = pretrained_model.encoder_text[0].out_features
+        self.text_dim2 = pretrained_model.encoder_text[2].out_features
+
+        self.seq_dim = pretrained_model.encoder_seq[0].in_features
+        self.seq_dim1 = pretrained_model.encoder_seq[0].out_features
+        self.seq_dim2 = pretrained_model.encoder_seq[2].out_features
+        self.zdim = pretrained_model.encoder_fuse[0].out_features
 
         # Sequence encoder
         self.encoder3 = nn.Sequential(
@@ -217,7 +243,7 @@ def train_model_for_seq(model, train_loader, validation_loader, criterion, optim
     val_loss_history = []
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = float('inf')
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', verbose=True)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min')
     loss_vals = []
 
     # Get tensor sizes
@@ -259,6 +285,7 @@ def train_model_for_seq(model, train_loader, validation_loader, criterion, optim
                 scheduler.step(epoch_loss)
             elif phase == 'train':
                 train_loss_history.append(epoch_loss)
+        tqdm.tqdm.write(f"Epoch {epoch+1}/{num_epochs} - Train: {train_loss_history[-1]:.4f}, Val: {val_loss_history[-1]:.4f}")
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
     print('Best val loss: {:4f}'.format(best_loss))
@@ -266,107 +293,27 @@ def train_model_for_seq(model, train_loader, validation_loader, criterion, optim
     return model, train_loss_history, val_loss_history, loss_vals
 
 
-def convert_dataframe_to_multi_col(representation_dataframe):
-    """
-    Convert a DataFrame with vector representations into a multi-column format.
-
-    Each element in the 'Vector' column (assumed to be a list/array) is split into
-    its own column while retaining the identifier column ('Entry').
-
-    Args:
-        representation_dataframe (pd.DataFrame): DataFrame with columns 'Entry' and 'Vector'.
-
-    Returns:
-        pd.DataFrame: DataFrame with the 'Entry' column and one column per vector dimension.
-    """
-    entry = pd.DataFrame(representation_dataframe['Entry'])
-    vector = pd.DataFrame(list(representation_dataframe['Vector']))
-    multi_col_representation_vector = pd.merge(left=entry, right=vector, left_index=True, right_index=True)
-    return multi_col_representation_vector
-
-
-def convert_to_two_col(multi_col_representation_df):
-    """
-    Convert a multi-column representation DataFrame back to a two-column format.
-
-    This function iterates through the multi-column DataFrame (excluding the 'Entry'
-    column) and converts each row into a list of floats stored in a 'Vector' column.
-
-    Args:
-        multi_col_representation_df (pd.DataFrame): DataFrame where the first column is 'Entry'
-                                                    and subsequent columns are vector dimensions.
-
-    Returns:
-        pd.DataFrame: DataFrame with two columns: 'Entry' and 'Vector' (list of floats).
-    """
-    vals = multi_col_representation_df.iloc[:, 1:]
-    original_values_as_df = pd.DataFrame(columns=['Entry', 'Vector'])
-    for index, row in tqdm.tqdm(vals.iterrows(), total=len(vals), desc="Converting to two-col"):
-        list_of_floats = [float(item) for item in list(row)]
-        original_values_as_df.loc[index] = [multi_col_representation_df.iloc[index]['Entry'], list_of_floats]
-    return original_values_as_df
-
-
 ###############################################################################
 # Data Preparation Functions
 ###############################################################################
 
-def prepare_multimodal_data(seq_csv, text_csv):
+def prepare_multimodal_data(seq_csv, text_csv, scale=True):
     """
-    Load and preprocess multimodal representation vectors from CSV files.
-
-    The function reads sequence, text, and PPI representations (each CSV is expected
-    to have an 'Entry' column and the remaining columns as the vector). Each modality
-    is scaled using StandardScaler (excluding the 'Entry' column) and then converted into
-    a two-column format (with columns 'Entry' and 'Vector'). Finally, the three modalities
-    are merged on 'Entry'.
-
-    Args:
-        seq_csv (str): File path to the sequence representations CSV.
-        text_csv (str): File path to the text representations CSV.
-        ppi_csv (str): File path to the PPI representations CSV.
+    Load sequence and text representations (multi-column CSVs with an 'Entry' column), standardise each over its
+    whole file (as for the dual autoencoder) and keep the proteins present in both.
 
     Returns:
-        pd.DataFrame: Merged DataFrame with columns ["Entry", "sequence", "ppi", "text"].
+        Tuple: (entries, sequence_tensors, text_tensors, seq_shift, seq_scale)
     """
-    # Load CSV files
-    seq_rep_multi_col = pd.read_csv(seq_csv)
-    text_rep_multi_col = pd.read_csv(text_csv)
-    
-
-    # Scale the vectors (exclude the 'Entry' column)
-    """scaler = StandardScaler()
-    seq_rep_multi_col.loc[:, seq_rep_multi_col.columns != 'Entry'] = scaler.fit_transform(seq_rep_multi_col.loc[:, seq_rep_multi_col.columns != 'Entry'])
-    text_rep_multi_col.loc[:, text_rep_multi_col.columns != 'Entry'] = scaler.fit_transform(text_rep_multi_col.loc[:, text_rep_multi_col.columns != 'Entry'])"""
-   
-
-    # Convert to two-column format
-    sequence_rep = convert_to_two_col(seq_rep_multi_col)
-    
-    text_rep = convert_to_two_col(text_rep_multi_col)
-
-    # Merge the modalities
-    fuse_phase_2=sequence_rep.merge(text_rep, on='Entry')
-    
-    fuse_phase_2.columns = ["Entry", "sequence",  "text"]
-
-    return fuse_phase_2
-
-
-def create_tensors_from_fused_df(fused_df):
-    """
-    Convert fused multimodal representations into PyTorch tensors.
-
-    Args:
-        fused_df (pd.DataFrame): DataFrame with columns ["Entry", "sequence", "ppi", "text"].
-    
-    Returns:
-        Tuple: Three tensors for sequence, PPI, and text representations.
-    """
-    sequence_tensors = torch.tensor(list(fused_df['sequence'].values))
-    
-    text_tensors = torch.tensor(list(fused_df['text'].values))
-    return sequence_tensors, text_tensors
+    seq = rep_io.read_representation(seq_csv)
+    text = rep_io.read_representation(text_csv, scale=scale)
+    seq_shift = seq_scale = None
+    if scale:
+        seq_shift, seq_scale = rep_io.standardisation_factors(seq)
+        seq = rep_io.apply_factors(seq, seq_shift, seq_scale)
+    entries, (seq_v, text_v) = rep_io.align(seq, text)
+    return (entries, torch.tensor(seq_v, dtype=torch.float), torch.tensor(text_v, dtype=torch.float),
+            seq_shift, seq_scale)
 
 
 def create_dataloaders(dataset_size, batch_size=128, validation_split=0.2, seed=42):
@@ -415,29 +362,13 @@ def extract_fused_representation(model, sequence_tensors, entries, device):
         pd.DataFrame: DataFrame with columns ['Entry', 'Vector'] where 'Vector' is the encoded representation,
                       converted to a multi-column format.
     """
-    activation = {}
-    
-    def get_activation(name):
-        def hook(model, input, output):
-            activation[name] = output.detach()
-        return hook
-
-    # Register the forward hook on the encoder4 layer
-    model.encoder4.register_forward_hook(get_activation('encoder4'))
     model.eval()
-
-    fused_rep_ae = pd.DataFrame(columns=['Entry', 'Vector'])
-    seq_tensor_size = sequence_tensors.shape[1]
-    
-    for i, entry in enumerate(tqdm.tqdm(entries, desc="Extracting Fused Representations")):
-        seq_tensor = sequence_tensors[i].view(-1, seq_tensor_size).to(device)
-        _ = model(seq_tensor)
-        coding_layer_output = activation['encoder4'].tolist()[0]
-        new_row = {'Entry': entry, 'Vector': coding_layer_output}
-        fused_rep_ae = fused_rep_ae.append(new_row, ignore_index=True)
-    
-    fused_rep_ae_multi_col = convert_dataframe_to_multi_col(fused_rep_ae)
-    return fused_rep_ae_multi_col
+    chunks = []
+    with torch.no_grad():
+        for start in range(0, len(entries), 512):
+            _, _, encoded = model(sequence_tensors[start:start + 512].to(device))  # encoder4 output
+            chunks.append(encoded.cpu().numpy())
+    return rep_io.to_multi_col(entries, np.concatenate(chunks))
 
 
 def save_fused_representation(fused_rep_df, output_csv_path):
@@ -454,9 +385,6 @@ def save_fused_representation(fused_rep_df, output_csv_path):
 ###############################################################################
 # End of Module
 ###############################################################################
-# Global
-representation_dim = 512
-
 # Argument Parser
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="TransferAE Training and Inference")
@@ -467,7 +395,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--seq_csv", type=str, required=True, help="Path to sequence CSV file")
     parser.add_argument("--model_weights", type=str, required=True, help="Path to model weights")
     parser.add_argument("--save_csv_path", type=str, required=True, help="Path to save output fused CSV")
-    parser.add_argument("--representation_dim", type=int, default=512, help="Dimension of representation")
+    parser.add_argument("--representation_dim", type=int, default=None,
+                        help="Ignored: the representation size is that of the dual autoencoder in --model_weights")
     parser.add_argument("--batch_size", type=int, default=128, help="Batch size")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
 
@@ -478,6 +407,14 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--save_model_path", type=str, default="transfer_ae_weights.pth", help="Path to save trained model (only train)")
     parser.add_argument("--loss_plot_path", type=str, default="loss_curve.png",
                         help="Path to save the training/validation loss curve image.")
+    parser.add_argument("--no_scaling", action="store_true",
+                        help="Use the representations as given instead of standardising them (train)")
+    # Only for test: per-dimension normalisation (x + shift) * scale; by default the factors saved with the
+    # weights (<weights>.shift_factors.txt / .scaling_factors.txt) are used
+    parser.add_argument("--shift_factors", type=str, default=None,
+                        help="Text file with per-dimension shift factors (test mode, optional)")
+    parser.add_argument("--scaling_factors", type=str, default=None,
+                        help="Text file with per-dimension scaling factors (test mode, optional)")
     return parser.parse_args()
 def plot_losses(train_hist, val_hist,save_path):
     plt.figure()
@@ -495,61 +432,52 @@ def set_seed(seed):
     torch.backends.cudnn.deterministic = True
     os.environ['PYTHONHASHSEED'] = str(seed)
 def prepare_test_data(seq_csv):
-    """
-    Convert fused multimodal representations into PyTorch tensors.
+    """Sequence representations (normalisation is applied by the caller) -> (float64 array, entries)."""
+    seq = rep_io.read_representation(seq_csv)
+    return seq.values.astype(np.float64), list(seq.index)
 
-    Args:
-        fused_df (pd.DataFrame): DataFrame with columns ["Entry", "sequence", "ppi", "text"].
-    
-    Returns:
-        Tuple: Three tensors for sequence, PPI, and text representations.
-    """
-    seq_rep_multi_col = pd.read_csv(seq_csv)
-   
-    # Scale the vectors (exclude the 'Entry' column)
-    """scaler = StandardScaler()
-    seq_rep_multi_col.loc[:, seq_rep_multi_col.columns != 'Entry'] = scaler.fit_transform(seq_rep_multi_col.loc[:, seq_rep_multi_col.columns != 'Entry'])"""
-    sequence_rep = convert_to_two_col(seq_rep_multi_col)
-    sequence_rep.columns = ["Entry", "sequence"]
-    entries = sequence_rep["Entry"].tolist()
-    sequence_tensors = torch.tensor(list(sequence_rep['sequence'].values))
-    
-    return sequence_tensors,entries
+
+def ensure_parent_dirs(*paths):
+    for path in paths:
+        if path and os.path.dirname(path):
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+
+
+def check_dim(name, actual, expected, weights):
+    if actual != expected:
+        raise SystemExit("{} representations have {} dimensions but the model in {} expects {}.".format(
+            name, actual, weights, expected))
+
 
 # Main
 if __name__ == "__main__":
     args = parse_arguments()
     set_seed(args.seed)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-   
-    print(f"Using device: {device}")
-    epochs = args.epochs
-    representation_dim = args.representation_dim
-    seq_csv = args.seq_csv
-    
-    model_weights_path = args.model_weights
-    batch_size=args.batch_size
-    # Set device
+    device = torch.device(os.environ.get("HOPER_DEVICE", "cpu"))  # set HOPER_DEVICE=cuda for GPU
 
-    
-    
-    
+    print(f"Using device: {device}")
+    seq_csv = args.seq_csv
+    ensure_parent_dirs(args.save_csv_path, args.save_model_path, args.loss_plot_path)
+
     if args.mode == "train":
-        # Prepare fused multimodal data
-        fused_df = prepare_multimodal_data(args.seq_csv, args.text_csv)
-    
-    # Create tensors from the fused DataFrame
-        sequence_tensors,  text_tensors = create_tensors_from_fused_df(fused_df)
-        entries = fused_df["Entry"].tolist()
-    
+        if not args.text_csv:
+            raise SystemExit("Train mode requires --text_csv.")
+        entries, sequence_tensors, text_tensors, seq_shift, seq_scale = prepare_multimodal_data(
+            args.seq_csv, args.text_csv, scale=not args.no_scaling)
+
+        # Dual (sequence + text) autoencoder with the sizes stored in its weights
+        dual_state = torch.load(args.model_weights, map_location=device)
+        dims = dual_dims_from_state(dual_state)
+        check_dim("Sequence", sequence_tensors.shape[1], dims["seq_dim"], args.model_weights)
+        check_dim("Text", text_tensors.shape[1], dims["text_dim"], args.model_weights)
+
     # Create training and validation DataLoaders
-        train_loader, validation_loader = create_dataloaders(len(sequence_tensors), batch_size=128)
-        text_csv = args.text_csv
-        assert  args.text_csv, "Train mode requires text_csv."
-        
-        model = Autoencoder().to(device)
-        model.load_state_dict(torch.load(args.model_weights, map_location=device))
-    
+        train_loader, validation_loader = create_dataloaders(len(sequence_tensors), batch_size=args.batch_size,
+                                                             seed=args.seed)
+
+        model = Autoencoder(**dims).to(device)
+        model.load_state_dict(dual_state)
+
     # Create sequence autoencoder model and load parameters from pre-trained model
         seq_model = Autoencoder_Seq(model).to(device)
         seq_model.load_parameters()
@@ -560,10 +488,16 @@ if __name__ == "__main__":
     
     # Train sequence autoencoder
         trained_model, train_loss_history, val_loss_history, loss_vals = train_model_for_seq(seq_model, train_loader, validation_loader, criterion, optimizer, args.epochs,sequence_tensors, text_tensors, device)
-        breakpoint()
         plot_losses(train_loss_history, val_loss_history,args.loss_plot_path)
     # Save trained model
         torch.save(trained_model.state_dict(), args.save_model_path)
+        shift_path, scale_path = rep_io.factor_paths(args.save_model_path)
+        for path in (shift_path, scale_path):
+            if os.path.exists(path):
+                os.remove(path)
+        if seq_shift is not None:
+            rep_io.write_factors(shift_path, seq_shift)
+            rep_io.write_factors(scale_path, seq_scale)
         print(f"Trained model saved to {args.save_model_path}")
 
         fused_rep_df = extract_fused_representation(trained_model, sequence_tensors, entries, device)
@@ -572,45 +506,24 @@ if __name__ == "__main__":
 
     elif args.mode == "test":
         #from transfer_ae_components import prepare_test_data, Autoencoder_Seq, extract_fused_representation
-        file_path = "/media/DATA2/sinem/isik_makale_1003/prott5_sequence_scaling_factors.txt"
-        sequence_tensors,entries = prepare_test_data(seq_csv)
-        with open(file_path, 'r') as f:
-            lines = f.readlines()
-
-
-        matrix = []
-        for line in lines:
-    
-            values = line.strip().split()
-            matrix.append([float(val) for val in values])
-
-
-        matrix_np = np.array(matrix)
-
-        path_sift="/media/DATA2/sinem/isik_makale_1003/shift_factors.txt"
-        
-        with open(path_sift, 'r') as f:
-            lines = f.readlines()
-
-
-        matrix = []
-        for line in lines:
-    
-            values = line.strip().split()
-            matrix.append([float(val) for val in values])
-
-
-        sift_factor = np.array(matrix)
-        
-        sequence_tensors=sequence_tensors + sift_factor.T 
-        sequence_tensors = sequence_tensors * matrix_np.T 
-        sequence_tensors=sequence_tensors.float() 
-        #import pdb; pdb.set_trace()       
-        model = Autoencoder_Seq(Autoencoder())
-        model.load_state_dict(torch.load(args.model_weights, map_location=device))
+        values, entries = prepare_test_data(seq_csv)
+        # Same normalisation as in training: the factors saved with the weights, unless overridden.
+        saved_shift, saved_scale = rep_io.factor_paths(args.model_weights)
+        shift_file = args.shift_factors or (saved_shift if os.path.exists(saved_shift) else None)
+        scale_file = args.scaling_factors or (saved_scale if os.path.exists(saved_scale) else None)
+        if shift_file:
+            values = values + rep_io.read_factors(shift_file)
+        if scale_file:
+            values = values * rep_io.read_factors(scale_file)
+        print("Sequence normalisation: {}".format("(x + shift) * scale" if shift_file or scale_file else "none"))
+        sequence_tensors = torch.tensor(values, dtype=torch.float)
+        state = torch.load(args.model_weights, map_location=device)
+        dims = dual_dims_from_state(state, prefix="pretrained_model.")
+        check_dim("Sequence", sequence_tensors.shape[1], dims["seq_dim"], args.model_weights)
+        model = Autoencoder_Seq(Autoencoder(**dims))
+        model.load_state_dict(state)
         model = model.to(device)
-        
+
         fused_rep_df = extract_fused_representation(model, sequence_tensors, entries, device)
-        #import pdb; pdb.set_trace()
         fused_rep_df.to_csv(args.save_csv_path, index=False)
         print(f"Fused representations saved to {args.save_csv_path}")

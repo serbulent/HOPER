@@ -13,106 +13,79 @@ that interacting proteins are likely to act in the same biological process. Thes
 
 The overview of HOPER. We first generated protein representations (embeddings) independently using three different modalities (i.e., protein sequence, protein-protein interaction, and protein-related text). Then, we benchmarked them to find the best-performing representation model for each modality in the context of protein function prediction in a low-data setting. After that, we constructed multimodal learning models that take representations of independent modalities as input and produce a holistic embedding by leveraging their relationships. Finally, as a use-case study, we predicted new tumor immune-escape proteins in the lung adenocarcinoma using our model and discussed findings.
 
-# Installation Steps
+# Installation
 
-## HOPER Installation Instructions
+## Requirements
 
-* Clone the HOPER repository
+- Linux x86-64 (on Windows use WSL2) and `git`. macOS and native Windows are not supported.
+- [Miniforge](https://github.com/conda-forge/miniforge) (recommended; the workflow is tested with it). Miniconda/Anaconda
+  may ask you to accept the Anaconda Terms of Service for the `defaults` channel used by some environment files.
+  No system C/C++ compiler or `sudo` is needed.
 
-    git clone https://github.com/serbulent/HOPER.git
-  
-* Run python creat_env.py
+  ```shell
+  wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+  bash Miniforge3-Linux-x86_64.sh -b -p ~/miniforge3 && ~/miniforge3/bin/conda init bash   # then reopen the terminal
+  ```
+- Disk: ~35 GB for the conda environments, ~1 GB for the example data
+  (+ ~0.85 GB for `uniprot_sprot.xml.gz` and ~9 GB of preprocessing output if you run *Preprocessing*).
+- RAM: 8 GB is enough for every step in this README (ProtT5-XL needs ~6 GB) except BioSentVec (~22 GB model) and
+  BioWordVec (~13 GB model), which must fit in memory.
+- A GPU is optional. All modules run on CPU by default; set `HOPER_DEVICE=cuda` to use a GPU.
 
-* In order for the models to work, data, models files and uniprot_sprot.xml.gz files for uniprot preprocessing must be downloaded. Place the downloaded files in the **HOPER** folder.
+## Steps
 
-    -Data files installation: https://drive.google.com/file/d/1R7jRfnBWmO6i6S1vqQd6zZt2-kcK6Eom/view?usp=drive_link
-  
-    -UniProt preprocessing data installation: https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link
+```shell
+git clone https://github.com/serbulent/HOPER.git
+cd HOPER
+bash create_env.sh          # creates/updates all environments, installs GEM, builds node2vec (prints a summary)
+bash download_data.sh       # example data (~670 MB); add --uniprot for uniprot_sprot.xml.gz (needed by Preprocessing)
+bash tests/smoke_test.sh    # optional: runs every step below on small inputs and checks the outputs
+```
 
-## PPI Model Installation Instructions
-* To install packages to use for Node2vec and HOPE in your ppi_representations directory, use:
+`create_env.sh` creates these environments (each module runs in its own one):
 
-  * GEM version 213189b; use for old version:
-  
-    git clone [https://github.com/palash1992/GEM.git]
-    
-    git checkout  [213189b]
+| Environment | Used by |
+|---|---|
+| `hoper` | `Hoper_representation_generetor_main.py` (launcher, only needs `pyyaml`) |
+| `hoper_PPI` | Node2vec, HOPE ([GEM](https://github.com/palash1992/GEM) @ `213189b`, SNAP node2vec) |
+| `hoper_preprocess` | UniProt / PubMed preprocessing |
+| `HOPER_textrepresentations` | TF-IDF, BioBERT, BioSentVec, BioWordVec, OpenAI representations and result visualization |
+| `hoper_case_study_env` | `fuse_representations`, `case_study_main.py` |
+| `HoloProtRep-AE` | SimpleAE, MultiModalAE, TransferAE |
+| `prott5xl` | ProtT5-XL sequence representations |
+| `hoper_build` | only used to compile SNAP node2vec into `ppi_representations/bin/` |
 
-* To make Node2vec executable; Clone repository git clone https://github.com/snap-stanford/snap and Compiles SNAP. The code to compile is as below:
-  
-  - cd snap/
-  - rm -rf examples/Release
-  - make all
-  - cd examples/node2vec
-  - chmod +x node2vec
-  - ls -alh node2vec
+`download_data.sh` places the data where the modules expect it: `./data/`, the UniProt and PubMed text files in
+`text_representations/representation_generation/data/{uniprot,pubmed}/` and the benchmark results in
+`text_representations/result_visualization/result_files/results/`.
 
-* Make node2vec executable and add it to the system PATH or move it to the location you run.
-
-* You can make protein names using edgelist_code.py. You will need these names later for node2vec.py and HOPE.py. Do not forget the location information.
-
-
-
-## Text Model Installation Instructions
-
-* To use the text representation generator, copy UniProt and PubMed text files to HOPER/text_representations/representation_generation/data/ in separate folders named uniprot and pubmed.
-  
-* biosentvec and biowordvec models must be downloaded to HOPER/text_representations/representation_generation/models from the urls given below. Alternatively, set model_download to "y" to download models automatically if you select biosentvec or biowordvec representations.
-
-  https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
-  https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
-
-  
 # How to run HOPER
 
-Run the module main function after editing  the configuration file Hoper.yaml as in the examples below;
+Representation modules are run by the launcher with the configuration file `Hoper_representation_generetor.yaml`
+(edit `choice_of_module` and the matching section; a different config file can be passed as an argument):
 
-```
-python Hoper_representation_generetor_main.py 
-```
-
-* Run HOPER to produce Text Representation Preprocessing [readme.md](https://github.com/serbulent/HOPER/tree/main/text_representations/preprocess)
-  
-```
-  choice_of_module: [Preprocessing] # Module selection PPI, Preprocessing, SimpleAe
- #********************Preprocessing Module********************************
-    module_name: Preprocessing
-    uniprot_dir: ./uniprot_sprot.xml.gz 
-```
-* Run HOPER to produce a text representation example; for more information, please read
-[readme.md](https://github.com/serbulent/HOPER/blob/main/text_representations/representation_generation/README.md)
-
-```
- parameters:
-     module_name: text
-    choice_of_process:  [generate,visualize]
-    generate_module:
-        choice_of_representation_type:  [all]
-        uniprot_files_path:  [./text_representations/representation_generation/data/uniprot/]
-        pubmed_files_path:  [./text_representations/representation_generation/data/pubmed/]
-        model_download: y
-    visualize_module:
-        choice_of_visualization_type:  [a]
-        result_files_path:  [./data/text_representations/result_visualization/result_files/results/]
+```shell
+conda activate hoper
+python Hoper_representation_generetor_main.py            # or: python Hoper_representation_generetor_main.py my_config.yaml
 ```
 
-* Run HOPER to produce a PPI representation example; for more information, please read
-[readme.md](https://github.com/serbulent/HOPER/blob/main/ppi_representations/readme.md)
+The launcher runs each selected module in its environment and stops with an error message if a step fails.
 
-```
+### PPI representations (Node2vec, HOPE)
 
+More information: [ppi_representations/readme.md](ppi_representations/readme.md)
+
+```yaml
 parameters:
-    choice_of_module: [PPI] # Module selection PPI,Preprocessing,case_study
-    #*************************************MODULES********************************************************************
-    #********************PPI Module********************************
-    module_name: PPI
+    choice_of_module: [PPI]
     choice_of_representation_name:  [Node2vec,HOPE]
     interaction_data_path:  [./data/hoper_PPI/PPI_example_data/example.edgelist]
     protein_id_list:  [./data/hoper_PPI/PPI_example_data/proteins_id.csv]
+    is_directed: false
     node2vec_module:
         parameter_selection:
             d:  [10]  
-            p: [0.25]
+            p:  [0.25]
             q:  [0.25]
     HOPE_module:
         parameter_selection:
@@ -120,91 +93,222 @@ parameters:
             beta:  [0.00390625]
 ```
 
-* Run HOPER to produce SimpleAE example
-  
+Output: `data/Node2vec_d_<d>_p_<p>_q_<q>.pkl` and `data/HOPE_d_<d>_beta_<beta>.pkl` (columns `Entry`, `Vector`).
+
+### Sequence representations (ProtT5-XL)
+
+More information: [sequence_representations/readme.md](sequence_representations/readme.md)
+
+```yaml
+parameters:
+    choice_of_module: [sequence]
+    sequence_module:
+        input_path: ./sequence_representations/example_sequences.fasta   # FASTA, or CSV with Entry + Sequence
+        output_path: ./outputs/prott5_bfd_representation.csv
+        model: bfd          # bfd (matches the example data) or uniref50
+        batch_size: 8
 ```
 
-python simple_ae.py train \
-  --fused_rep_path data/fused_train.csv \
-  --model_save_path models/simple_ae_weights.pth \
-  --scaler_save_path models/simple_ae_scaler.pkl \
-  --output_csv outputs/simple_ae_representation.csv \
-  --epochs 400 \
-  --batch_size 128 \
-  --learning_rate 0.001 \
-  --validation_split 0.2 \
-  --seed 42 \
-  --loss_plot_path outputs/simple_ae_loss.png
+or directly:
+
+```shell
+conda activate prott5xl
+python sequence_representations/prott5xl.py --input proteins.fasta --output outputs/prott5_bfd_representation.csv
 ```
 
-  
-* Run HOPER to produce MultiModalAE example
+Output: a multi-column CSV (`Entry`, 1024 columns). The default model, `Rostlab/prot_t5_xl_bfd`, is the one used
+for the sequence vectors in the example data (`data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv`).
+The encoder weights (~4.8 GB) are downloaded on first use to `sequence_representations/models/`.
+
+### Text preprocessing (UniProt / PubMed)
+
+More information: [text_representations/preprocess/preprocess.md](text_representations/preprocess/preprocess.md). Needs `bash download_data.sh --uniprot`.
+
+```yaml
+parameters:
+    choice_of_module: [Preprocessing]
+    uniprot_dir: ./uniprot_sprot.xml.gz 
 ```
-  python multimodal_ae.py \
-  --seq_csv data/sequence_representation.csv \
-  --ppi_csv data/ppi_representation.csv \
-  --text_csv data/text_representation.csv \
-  --representation_dim 512 \
-  --epochs 400 \
-  --batch_size 128 \
-  --lr 0.001 \
-  --save_model_path models/multimodal_ae_weights.pth \
-  --save_csv_path outputs/multimodal_representation.csv \
-  --loss_plot_path outputs/multimodal_ae_loss.png
+
+Output goes to `text_representations/preprocess/data/`. Parsing all of Swiss-Prot takes ~10-15 minutes and ~9 GB of disk
+(about 2.3 million small files; on WSL2 with 8 GB RAM the VM can become unresponsive for a few minutes while they are written).
+The last step downloads PubMed abstracts for ~20,000 human proteins from NCBI (several hours); it runs only when
+`HOPER_ENTREZ_EMAIL` is set to your e-mail address (NCBI policy). `NCBI_API_KEY` is used if set.
+
+### Text representations
+
+More information: [text_representations/representation_generation/representation.md](text_representations/representation_generation/representation.md)
+
+```yaml
+parameters:
+    choice_of_module: [text]
+    choice_of_process:  [generate,visualize]
+    generate_module:
+        choice_of_representation_type:  [tfidf]     # tfidf, biobert, biosentvec, biowordvec, openai or all
+        uniprot_files_path:  [./text_representations/representation_generation/data/uniprot/]
+        pubmed_files_path:  [./text_representations/representation_generation/data/pubmed/]
+        model_download: y
+    visualize_module:
+        choice_of_visualization_type:  [a]
+        result_files_path:  [./text_representations/result_visualization/result_files/results/]
 ```
-* Run HOPER to produce TransferAE example
-  
-```
-python Transfer_ae.py \
-  --mode train \
-  --seq_csv data/sequence_representation.csv \
-  --ppi_csv data/ppi_representation.csv \
-  --text_csv data/text_representation.csv \
-  --model_weights models/multimodal_ae_weights.pth \
-  --save_model_path models/transfer_ae_weights.pth \
-  --save_csv_path outputs/transfer_ae_representation.csv \
-  --representation_dim 512 \
-  --epochs 200 \
-  --batch_size 128 \
-  --seed 42 \
-  --loss_plot_path outputs/transfer_ae_loss.png
+
+Outputs are written to `text_representations/representation_generation/<type>_representations/`.
+
+- `tfidf`: SVD-reduced vectors (`*_tfidf_vectors_svd{256,512,1024,2048}.csv`) and the full sparse matrix
+  (`*_tfidf_vectors.npz` + `*_tfidf_entries.csv` + `*_tfidf_vocabulary.csv`). Set `HOPER_TFIDF_DENSE_CSV=1` to also
+  write the full matrix as a dense CSV (needs ~8 GB RAM for the full data set).
+- `biobert` downloads `dmis-lab/biobert-base-cased-v1.1` from Hugging Face on first use.
+- `biosentvec` / `biowordvec`: with `model_download: y` the models are downloaded to
+  `text_representations/representation_generation/models/`. Alternatively download them beforehand:
+
+  ```shell
+  cd text_representations/representation_generation/models
+  curl -L -o BioSentVec_PubMed_MIMICIII-bigram_d700.bin https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
+  curl -L -o BioWordVec_PubMed_MIMICIII_d200.bin https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
   ```
-*Reproducible run of the paper
+- `openai` needs `OPENAI_API_KEY` in the environment (model `text-embedding-3-large`).
+- `visualize` writes figures to `text_representations/result_visualization/figures/` and tables to `.../tables/`.
 
+### Fusing representations
+
+```yaml
+parameters:
+    choice_of_module: [fuse_representations]
+    representation_files: [./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv]
+    min_fold_number:  2
+    representation_names:  [node2vec,modal_rep_ae]   # same order as representation_files
 ```
+
+Output: `data/node2vec_modal_rep_ae_binary_fused_representations_dataframe_multi_col.csv`.
+
+### SimpleAE
+
+```yaml
+parameters:
+    choice_of_module: [SimpleAe]
+    representation_path: ./data/hoper_sequence_representations/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
+    simple_ae_module:
+        output_dir: ./outputs
+        epochs: 400
+```
+
+or directly (train / inference):
+
+```shell
+conda activate HoloProtRep-AE
+python multimodal_representations/simple_ae.py train \
+  --fused_rep_path data/hoper_sequence_representations/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv \
+  --model_save_path outputs/simple_ae_weights.pth \
+  --scaler_save_path outputs/simple_ae_scaler.pkl \
+  --output_csv outputs/simple_ae_representation.csv \
+  --epochs 400 --batch_size 128 --learning_rate 0.001 --validation_split 0.2 --seed 42 \
+  --loss_plot_path outputs/simple_ae_loss.png
+
+python multimodal_representations/simple_ae.py inference \
+  --fused_rep_path <multi-column csv with an Entry column> \
+  --model_load_path outputs/simple_ae_weights.pth \
+  --scaler_load_path outputs/simple_ae_scaler.pkl \
+  --output_csv outputs/simple_ae_inference.csv
+```
+
+Training on the 14,941 example proteins for 400 epochs takes ~30 minutes on CPU.
+
+### MultiModalAE (sequence + PPI + text)
+
+More information: [multimodal_representations/readme.md](multimodal_representations/readme.md)
+
+Inputs are multi-column CSVs (`Entry`, `0`, `1`, ...). Their dimensions are read from the files and only proteins
+present in all three are used. With the example data: ProtT5 sequence vectors (1024-d), Node2vec PPI vectors (50-d)
+and TF-IDF text vectors (1024-d, produced by the text module), ~16,000 proteins in common.
+
+```yaml
+parameters:
+    choice_of_module: [text, MultiModalAe]    # [MultiModalAe] alone once the TF-IDF vectors exist
+    multimodal_ae_module:
+        seq_csv: ./data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv
+        ppi_csv: ./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv
+        text_csv: ./text_representations/representation_generation/tfidf_representations/uniprotpubmed_tfidf_vectors_svd1024.csv
+        output_dir: ./outputs
+        representation_dim: 512
+        epochs: 100
+```
+
+Outputs: `outputs/multimodal_ae_representation.csv` (`Entry` + `representation_dim` columns),
+`outputs/multimodal_ae_weights.pth`, `outputs/multimodal_ae_loss.png`.
+
+### TransferAE (sequence → sequence + PPI + text)
+
+TransferAE produces multimodal-informed representations from the sequence representation alone, so it can be applied
+to proteins without PPI or text data. It is initialised from the MultiModalAE weights (run `MultiModalAe` first or
+in the same run) and trained to reconstruct all three modalities from the sequence. With `test_seq_csv` it embeds
+proteins that only have a sequence representation, e.g. the output of the sequence module.
+
+```yaml
+parameters:
+    choice_of_module: [sequence, MultiModalAe, TransferAe]
+    transfer_ae_module:
+        seq_csv: ./data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv
+        ppi_csv: ./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv
+        text_csv: ./text_representations/representation_generation/tfidf_representations/uniprotpubmed_tfidf_vectors_svd1024.csv
+        multimodal_weights: ./outputs/multimodal_ae_weights.pth
+        test_seq_csv: ./outputs/prott5_bfd_representation.csv   # optional ('' to skip)
+        output_dir: ./outputs
+        epochs: 200
+```
+
+Outputs: `outputs/transfer_ae_representation.csv`, `outputs/transfer_ae_test_representation.csv`,
+`outputs/transfer_ae_weights.pth` (+ the sequence scaling factors used in test mode) and `outputs/transfer_ae_loss.png`.
+
+A sequence + text variant (`TransferAeSeqText`, module `transfer_ae_seq_text_module` in the config) trains its own
+sequence + text autoencoder first and does not need PPI data.
+
+The scripts can also be run directly in the `HoloProtRep-AE` environment
+(`multimodal_representations/multi_odal_representations.py`, `transfer_ae.py`, `multimodal_text_seq.py`,
+`transfer_text_seq.py`); see [multimodal_representations/readme.md](multimodal_representations/readme.md).
+
+## Reproducible run of the paper (case study)
+
+Immune-escape prediction; more information: [case_study/readme.md](case_study/readme.md).
+`case_study.yaml` is configured for the example data: it prepares the dataset, trains and tests the classifier and
+predicts the 1,085 proteins in `rep_dif_ae.csv` (~1 minute on CPU).
+
+```shell
+conda activate hoper_case_study_env
 python case_study_main.py
 ```
-* Run case_study_main.py to make immune escape prediction; for more information, please read
-[readme.md](https://github.com/serbulent/HOPER/blob/main/case_study/readme.md)
 
-```
+Outputs: `case_study/case_study_results/{training,test,prediction}/`.
+
+```yaml
 parameters:
     choice_of_module: [case_study] 
-    #********************case_study Module********************************
     module_name: case_study
-    choice_of_task_name:  [fuse_representations] #prepare_datasets,fuse_representations,model_training_test,prediction
+    choice_of_task_name:  [prepare_datasets,model_training_test,prediction] # also: fuse_representations
     fuse_representations:
-        representation_files: [./data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv]
+        representation_files: [./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv,./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv]
         min_fold_number:  2
-        representation_names:  [modal_rep_ae,node2vec]        
+        representation_names:  [node2vec,modal_rep_ae]
     prepare_datasets:  
         positive_sample_data:  ["./data/hoper_case_study_example_data/prepare_datasets/positive.csv"]
         negative_sample_data:  ["./data/hoper_case_study_example_data/prepare_datasets/neg_data.csv"]
-        prepared_representation_file:  [./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv] 
-        representation_names:  [modal_rep_ae] 
-    
+        prepared_representation_file:  ["./data/hoper_case_study_example_data/representation_files/multi_modal_rep_ae_multi_col_256.csv"] 
+        representation_names:  [modal_rep_ae]     
     model_training_test:
         representation_names:  [modal_rep_ae]
-        scoring_function:  ["f_max"]  #"f1_micro",f1_macro","f1_weighted"
-        prepared_path:  ["./case_study/case_study_results/modal_rep_ae_node2vec_binary_data.pickle"]
-        classifier_name:  ["Fully_Connected_Neural_Network"] 
-   
+        scoring_function:  ["f_max"]
+        prepared_path:  ["./case_study/case_study_results/modal_rep_ae_binary_data.pickle"]
+        classifier_name:  ["Fully_Connected_Neural_Network"]    
     prediction:
         representation_names:  [modal_rep_ae]
         prepared_path:  ["./data/hoper_case_study_example_data/prediction_example_data/rep_dif_ae.csv"]
         classifier_name:  ['Fully_Connected_Neural_Network']         
-        model_directory:  ["./case_study/case_study_results/training/m_o_d_a_l___r_e_p___a_e___n_o_d_e_2_v_e_c_Fully_Connected_Neural_Network_binary_classifier.pt"] 
+        model_directory:  ["./case_study/case_study_results/training/modal_rep_ae_Fully_Connected_Neural_Network_binary_classifier.pt"] 
 ```
+
+The prediction input must have the same representation (and dimension) as the one the model was trained on:
+`multi_modal_rep_ae_multi_col_256.csv` and `rep_dif_ae.csv` are both 384-dimensional.
+Model files are named `<representation_names>_<classifier>_binary_classifier.pt`.
 
 ## License
 Copyright (C) 2026

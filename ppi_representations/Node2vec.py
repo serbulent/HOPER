@@ -10,6 +10,16 @@ import pickle
 from gem.embedding.node2vec import node2vec
 import os
 
+# GEM calls the SNAP ``node2vec`` executable by name; create_env.sh builds it (and its runtime libraries)
+# into ppi_representations/bin.
+_BIN_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bin")
+os.environ["PATH"] = _BIN_DIR + os.pathsep + os.environ.get("PATH", "")
+os.environ["LD_LIBRARY_PATH"] = _BIN_DIR + os.pathsep + os.environ.get("LD_LIBRARY_PATH", "")
+
+
+def str2bool(value):
+    return str(value).strip().lower() in ("1", "true", "yes", "y")
+
 
 # File that contains the edges. Format: source target
 # Optionally, you can add weights as third column: source target weight
@@ -28,7 +38,7 @@ def node2vec_repesentation_call(edge_f,protein_ids,isDirected,d_lst,p_lst,q_lst)
     p = ast.literal_eval(p_lst)
     q = ast.literal_eval(q_lst)
     protein_id=pd.read_csv(protein_ids)
-    G = graph_util.loadGraphFromEdgeListTxt(edge_f, directed =isDirected )
+    G = graph_util.loadGraphFromEdgeListTxt(edge_f, directed =str2bool(isDirected) )
     G = G.to_directed()
     for i in d:
     

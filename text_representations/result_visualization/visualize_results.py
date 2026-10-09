@@ -11,12 +11,9 @@ parser.add_argument("-s", "--significance", action='store_true',  help="Create s
 parser.add_argument("-rfp", "--resultfilespath", required=True,  help="Path for the result files")
 parser.add_argument("-a", "--all", action='store_true',  help="Create both figures and significance tables")
 
-try:
-    args = parser.parse_args()
-    if not (args.figures or args.significance):
-            parser.error('At least one option should be selected!')
-except:
-    parser.print_help()
+args = parser.parse_args()
+if not (args.figures or args.significance or args.all):
+    parser.error('At least one option should be selected!')
 
 print(args)
 

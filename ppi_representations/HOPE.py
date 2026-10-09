@@ -19,13 +19,19 @@ protein_id="/media/DATA2/sinem/25-10-2023/HOPER/data/hoper_PPI/PPI_example_data/
 """
 
 import ast
+
+
+def str2bool(value):
+    return str(value).strip().lower() in ("1", "true", "yes", "y")
+
+
 def hope_repesentation_call(edge_f,protein_ids,isDirected,d_lst,beta_lst):
 # Load graph
     d = ast.literal_eval(d_lst)
     beta = ast.literal_eval(beta_lst)
-    
+
     protein_id=pd.read_csv(protein_ids)
-    G = graph_util.loadGraphFromEdgeListTxt(edge_f, directed =isDirected )
+    G = graph_util.loadGraphFromEdgeListTxt(edge_f, directed =str2bool(isDirected) )
     G = G.to_directed()
 
 
