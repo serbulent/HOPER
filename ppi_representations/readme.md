@@ -13,7 +13,9 @@ Please refer https://palash1992.github.io/GEM/ to access the readme as a webpage
 
 ## Dependencies
 
-Related dependencies are available in the **ppi_environment.yml** file. Related dependencies can be installed by importing **ppi_environment.yml** file.
+`bash create_env.sh` (repository root) creates the `hoper_PPI` environment from **hoper_PPI.yml**, installs
+[GEM](https://github.com/palash1992/GEM) at commit `213189b` and builds the SNAP `node2vec` binary into
+`ppi_representations/bin/`. No manual installation is needed.
 
 ## Node2vec parameters
 | Parameter  |Description|  Value |
@@ -73,52 +75,34 @@ Related dependencies are available in the **ppi_environment.yml** file. Related 
 </td></tr> </table>
 
 
-#### How to run methods 
-* Our users who have installed Hoper do not need to perform the following operations.
-  
-* If you have not installed Hoper, you must perform the steps below to run PPI.
-  
-* Dependencies are imported first.
+#### How to run methods
 
-* Create edgelist (input data)  Please refer  **edgelist_code.py**
+Inputs: an edge list (`.edgelist`, node indices) and a CSV that maps node indices to protein ids (column `0`).
+The example data (`bash download_data.sh`) contains a small network in `data/hoper_PPI/PPI_example_data/`
+(`example.edgelist`, `proteins_id.csv`).
 
-* If you are going to use the IntAct database, Preprocessing is required for the IntAct database.The relevant code for 
- this  https://github.com/serbulent/HOPER/blob/main/ppi_representations/data_preprocess.py  
+Run from the repository root with the launcher (`choice_of_module: [PPI]` in `Hoper_representation_generetor.yaml`,
+parameters as in the tables above):
 
-* To install packages to use for Node2vec and HOPE in your home directory, use:
+```shell
+conda activate hoper
+python Hoper_representation_generetor_main.py
+```
 
-  * GEM version 213189b; use for old version:
-  
-    git clone [https://github.com/palash1992/GEM.git]
-    
-    git checkout  [213189b]
+or directly, in the `hoper_PPI` environment (list arguments are JSON/Python lists):
 
-* To make Node2vec executable; Clone repository git clone https://github.com/snap-stanford/snap and Compiles SNAP. The code for compiles is as below:
-  
-  - cd snap/
-  - rm -rf examples/Release
-  - make all
-  - cd examples/node2vec
-  - chmod +x node2vec
-  - ls -alh node2vec
+```shell
+conda activate hoper_PPI
+python ppi_representations/Node2vec.py data/hoper_PPI/PPI_example_data/example.edgelist data/hoper_PPI/PPI_example_data/proteins_id.csv False "[10]" "[0.25]" "[0.25]"
+python ppi_representations/HOPE.py data/hoper_PPI/PPI_example_data/example.edgelist data/hoper_PPI/PPI_example_data/proteins_id.csv False "[5]" "[0.00390625]"
+```
 
-* Make node2vec executable and add to system PATH or move it to the location you run.
+The third argument is `is_directed` (`False` for an undirected interaction network).
+Outputs are written to `data/Node2vec_d_<d>_p_<p>_q_<q>.pkl` and `data/HOPE_d_<d>_beta_<beta>.pkl`
+(pandas DataFrames with columns `Entry` and `Vector`).
 
-* Identify the protein names corresponding to the nodes(Reproduction/ppi_representations/data/proteins_id.csv)
-
-You can make protein names using **edgelist_code.py** These names will be needed later for the node2vec.py and HOPE.py files. Do not forget the location information.
-
-  
-* You can use small sample for application . The sample interaction is randomly generated (Reproduction/ppi_representations/data/small_example.xlsx) 
- 
-* Set parameters
-
-* Create representations
-
-
-It can be run  as python Node2vec.py and HOPE.py(input data: .edgelist file and proteins id names file **ppi_representations/data**)
-
-Node2vec and HOPE outputs are recorded in **ppi_representations/data**.
+`edgelist_code.py` and `data_preprocess.py` (IntAct preprocessing) are the scripts used to build the paper's
+network; they still contain the authors' local paths and are not part of the tested workflow.
 
 
 

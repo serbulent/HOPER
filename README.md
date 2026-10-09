@@ -17,8 +17,15 @@ The overview of HOPER. We first generated protein representations (embeddings) i
 
 ## Requirements
 
-- Linux x86-64 (on Windows use WSL2), `git`, and [Miniforge](https://github.com/conda-forge/miniforge) / Miniconda / Anaconda.
+- Linux x86-64 (on Windows use WSL2) and `git`. macOS and native Windows are not supported.
+- [Miniforge](https://github.com/conda-forge/miniforge) (recommended; the workflow is tested with it). Miniconda/Anaconda
+  may ask you to accept the Anaconda Terms of Service for the `defaults` channel used by some environment files.
   No system C/C++ compiler or `sudo` is needed.
+
+  ```shell
+  wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+  bash Miniforge3-Linux-x86_64.sh -b -p ~/miniforge3 && ~/miniforge3/bin/conda init bash   # then reopen the terminal
+  ```
 - Disk: ~35 GB for the conda environments, ~1 GB for the example data
   (+ ~0.85 GB for `uniprot_sprot.xml.gz` and ~9 GB of preprocessing output if you run *Preprocessing*).
 - RAM: 8 GB is enough for every step in this README (ProtT5-XL needs ~6 GB) except BioSentVec (~22 GB model) and
@@ -115,7 +122,7 @@ The encoder weights (~4.8 GB) are downloaded on first use to `sequence_represent
 
 ### Text preprocessing (UniProt / PubMed)
 
-More information: [text_representations/preprocess](text_representations/preprocess). Needs `bash download_data.sh --uniprot`.
+More information: [text_representations/preprocess/preprocess.md](text_representations/preprocess/preprocess.md). Needs `bash download_data.sh --uniprot`.
 
 ```yaml
 parameters:
@@ -130,7 +137,7 @@ The last step downloads PubMed abstracts for ~20,000 human proteins from NCBI (s
 
 ### Text representations
 
-More information: [text_representations/representation_generation/README.md](text_representations/representation_generation/README.md)
+More information: [text_representations/representation_generation/representation.md](text_representations/representation_generation/representation.md)
 
 ```yaml
 parameters:
@@ -209,47 +216,56 @@ Training on the 14,941 example proteins for 400 epochs takes ~30 minutes on CPU.
 
 ### MultiModalAE (sequence + PPI + text)
 
-Inputs are multi-column CSVs with an `Entry` column. The model expects 1024-d sequence (ProtT5, e.g. the output of
-`sequence_representations/prott5xl.py`), 500-d PPI and 3072-d text (OpenAI `text-embedding-3-large`) representations.
+More information: [multimodal_representations/readme.md](multimodal_representations/readme.md)
 
-```shell
-conda activate HoloProtRep-AE
-python multimodal_representations/multi_odal_representations.py \
-  --seq_csv data/sequence_representation.csv \
-  --ppi_csv data/ppi_representation.csv \
-  --text_csv data/text_representation.csv \
-  --representation_dim 512 --epochs 400 --batch_size 128 --lr 0.001 \
-  --save_model_path outputs/multimodal_ae_weights.pth \
-  --save_csv_path outputs/multimodal_representation.csv \
-  --loss_plot_path outputs/multimodal_ae_loss.png
+Inputs are multi-column CSVs (`Entry`, `0`, `1`, ...). Their dimensions are read from the files and only proteins
+present in all three are used. With the example data: ProtT5 sequence vectors (1024-d), Node2vec PPI vectors (50-d)
+and TF-IDF text vectors (1024-d, produced by the text module), ~16,000 proteins in common.
+
+```yaml
+parameters:
+    choice_of_module: [text, MultiModalAe]    # [MultiModalAe] alone once the TF-IDF vectors exist
+    multimodal_ae_module:
+        seq_csv: ./data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv
+        ppi_csv: ./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv
+        text_csv: ./text_representations/representation_generation/tfidf_representations/uniprotpubmed_tfidf_vectors_svd1024.csv
+        output_dir: ./outputs
+        representation_dim: 512
+        epochs: 100
 ```
 
-### TransferAE (sequence → sequence + text)
+Outputs: `outputs/multimodal_ae_representation.csv` (`Entry` + `representation_dim` columns),
+`outputs/multimodal_ae_weights.pth`, `outputs/multimodal_ae_loss.png`.
 
-TransferAE is initialised from a sequence + text autoencoder, so first train that model, then the transfer model.
-In `test` mode only sequence representations are needed.
+### TransferAE (sequence → sequence + PPI + text)
 
-```shell
-conda activate HoloProtRep-AE
-python multimodal_representations/multimodal_text_seq.py \
-  --seq_csv data/sequence_representation.csv --text_csv data/text_representation.csv \
-  --epochs 100 --save_model_path outputs/dual_modal_weights.pth \
-  --save_csv_path outputs/fused_dual.csv --loss_plot_path outputs/dual_loss.png
+TransferAE produces multimodal-informed representations from the sequence representation alone, so it can be applied
+to proteins without PPI or text data. It is initialised from the MultiModalAE weights (run `MultiModalAe` first or
+in the same run) and trained to reconstruct all three modalities from the sequence. With `test_seq_csv` it embeds
+proteins that only have a sequence representation, e.g. the output of the sequence module.
 
-python multimodal_representations/transfer_text_seq.py --mode train \
-  --seq_csv data/sequence_representation.csv --text_csv data/text_representation.csv \
-  --model_weights outputs/dual_modal_weights.pth \
-  --save_model_path outputs/transfer_ae_weights.pth \
-  --save_csv_path outputs/transfer_ae_representation.csv \
-  --representation_dim 512 --epochs 200 --batch_size 128 --seed 42 \
-  --loss_plot_path outputs/transfer_ae_loss.png
-
-python multimodal_representations/transfer_text_seq.py --mode test \
-  --seq_csv data/new_sequence_representation.csv \
-  --model_weights outputs/transfer_ae_weights.pth \
-  --save_csv_path outputs/transfer_ae_test.csv
-  # optional: --shift_factors <file> --scaling_factors <file>  (per-dimension (x + shift) * scale normalisation)
+```yaml
+parameters:
+    choice_of_module: [sequence, MultiModalAe, TransferAe]
+    transfer_ae_module:
+        seq_csv: ./data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv
+        ppi_csv: ./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv
+        text_csv: ./text_representations/representation_generation/tfidf_representations/uniprotpubmed_tfidf_vectors_svd1024.csv
+        multimodal_weights: ./outputs/multimodal_ae_weights.pth
+        test_seq_csv: ./outputs/prott5_bfd_representation.csv   # optional ('' to skip)
+        output_dir: ./outputs
+        epochs: 200
 ```
+
+Outputs: `outputs/transfer_ae_representation.csv`, `outputs/transfer_ae_test_representation.csv`,
+`outputs/transfer_ae_weights.pth` (+ the sequence scaling factors used in test mode) and `outputs/transfer_ae_loss.png`.
+
+A sequence + text variant (`TransferAeSeqText`, module `transfer_ae_seq_text_module` in the config) trains its own
+sequence + text autoencoder first and does not need PPI data.
+
+The scripts can also be run directly in the `HoloProtRep-AE` environment
+(`multimodal_representations/multi_odal_representations.py`, `transfer_ae.py`, `multimodal_text_seq.py`,
+`transfer_text_seq.py`); see [multimodal_representations/readme.md](multimodal_representations/readme.md).
 
 ## Reproducible run of the paper (case study)
 

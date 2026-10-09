@@ -1,5 +1,6 @@
 parameters:
-    # Modules to run, in this order: PPI, sequence, Preprocessing, text, fuse_representations, SimpleAe
+    # Modules to run, in this order: PPI, sequence, Preprocessing, text, fuse_representations, SimpleAe,
+    # MultiModalAe, TransferAe, TransferAeSeqText   (e.g. [sequence, MultiModalAe, TransferAe])
     choice_of_module: [PPI]
     #*************************************MODULES********************************************************************
     #********************PPI Module********************************
@@ -55,4 +56,46 @@ parameters:
         batch_size: 128
         learning_rate: 0.001
         validation_split: 0.2
+        seed: 42
+    #*******************MultiModalAe (sequence + PPI + text)****************************
+    # Inputs are multi-column CSVs (Entry, 0, 1, ...); dimensions are read from the files and only proteins
+    # present in all three are used. text_csv is produced by the text module (tfidf).
+    module_name: MultiModalAe
+    multimodal_ae_module:
+        seq_csv: ./data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv
+        ppi_csv: ./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv
+        text_csv: ./text_representations/representation_generation/tfidf_representations/uniprotpubmed_tfidf_vectors_svd1024.csv
+        output_dir: ./outputs
+        representation_dim: 512
+        epochs: 100
+        batch_size: 128
+        learning_rate: 0.001
+        seed: 42
+    #*******************TransferAe (sequence -> sequence + PPI + text)******************
+    # Sequence-only model initialised from the MultiModalAe weights (run MultiModalAe first); trained to
+    # reconstruct all three modalities from the sequence representation.
+    # test_seq_csv (optional): proteins with only a sequence representation, e.g. the sequence module output.
+    module_name: TransferAe
+    transfer_ae_module:
+        seq_csv: ./data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv
+        ppi_csv: ./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv
+        text_csv: ./text_representations/representation_generation/tfidf_representations/uniprotpubmed_tfidf_vectors_svd1024.csv
+        multimodal_weights: ./outputs/multimodal_ae_weights.pth
+        test_seq_csv: ./outputs/prott5_bfd_representation.csv
+        output_dir: ./outputs
+        epochs: 200
+        batch_size: 128
+        seed: 42
+    #*******************TransferAeSeqText (sequence -> sequence + text)*****************
+    # Sequence + text variant: trains a dual autoencoder, then a sequence-only model initialised from it.
+    module_name: TransferAeSeqText
+    transfer_ae_seq_text_module:
+        seq_csv: ./data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv
+        text_csv: ./text_representations/representation_generation/tfidf_representations/uniprotpubmed_tfidf_vectors_svd1024.csv
+        test_seq_csv: ./outputs/prott5_bfd_representation.csv
+        output_dir: ./outputs
+        representation_dim: 512
+        dual_epochs: 100
+        transfer_epochs: 200
+        batch_size: 128
         seed: 42

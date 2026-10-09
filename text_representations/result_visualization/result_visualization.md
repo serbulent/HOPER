@@ -3,17 +3,7 @@
 This repository contains Python scripts for analyzing prediction results and creating figures and significance tables for ontology-based function prediction.
 
 # Dependencies
- 1.	Python 3.7.3
- 2.	pandas 1.1.4
- 3.	scipy
- 4.	seaborn
- 5.	matplotlib
- 6.	numpy
- 7.	glob
- 8.	os
- 9.	statsmodels
- 10.	math
- 11.	ast
+`text_representations/text_representations.yml` (environment `HOPER_textrepresentations`, created by `create_env.sh`).
 
 ## Data
 
@@ -39,33 +29,16 @@ At least one option should be selected. If no options are provided, an error mes
 
 ### How to Run
 
-Step by step operation:
-  1. Clone repository
-  2. Install dependencies(given above)
-  3. Download and unzip result files to result_files folder from https://drive.google.com/file/d/1Y6WIfkM9IQakqvDJJHsIKrfY2Td3C7r8/view?usp=drive_link
-  4. Run the script
+`bash download_data.sh` places the result files in `result_files/results/` (see the main [README](../../README.md#installation)).
+Run from the repository root, either with the launcher (`choice_of_module: [text]`, `choice_of_process: [visualize]`)
+or directly:
 
-Examples:
-
-1. To create figures from the result files:
-
-```
-python visualize_results -f -rfp /path/to/result/files
+```shell
+conda activate HOPER_textrepresentations
+python text_representations/result_visualization/visualize_results.py -a -rfp ./text_representations/result_visualization/result_files/results/
 ```
 
-2. To create significance tables from the result files:
-
-```
-python visualize_results -s -rfp /path/to/result/files
-```
-
-3. To create both figures and significance tables:
-
-```
-python visualize_results -a -rfp /path/to/result/files
-```
-
-Make sure to replace `/path/to/result/files` with the actual path to your result files.
+Use `-f` for the figures only and `-s` for the significance tables only.
 
 ## Definition of Output
 

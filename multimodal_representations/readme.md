@@ -21,8 +21,41 @@ Autoencoder-based architectures are used to project these heterogeneous feature 
 | `multi_odal_representations.py` | Multimodal Autoencoder | Sequence + Text + PPI | Learning a joint multimodal latent representation |
 | `multimodal_text_seq.py` | Dual-Modal Autoencoder | Sequence + Text | Learning a joint sequence–text representation |
 | `simple_ae.py` | Autoencoder | Previously fused representation | Further dimensionality reduction of fused embeddings |
-| `Transfer_ae.py` | Transfer Autoencoder | Sequence + pretrained multimodal model | Transferring information learned from Sequence + Text + PPI |
+| `transfer_ae.py` | Transfer Autoencoder | Sequence + pretrained multimodal model | Transferring information learned from Sequence + Text + PPI |
 | `transfer_text_seq.py` | Transfer Autoencoder | Sequence + pretrained dual-modal model | Transferring information learned from Sequence + Text |
+| `rep_io.py` | (helper) | | Reading and aligning the representation CSVs |
+
+## Running from the HOPER launcher
+
+All three autoencoders can be run with `Hoper_representation_generetor_main.py` (from the repository root, in the
+`hoper` environment) by adding `SimpleAe`, `MultiModalAe` and/or `TransferAe` to `choice_of_module` in
+`Hoper_representation_generetor.yaml`. With the example data:
+
+```yaml
+    choice_of_module: [text, sequence, MultiModalAe, TransferAe]   # text (tfidf) and sequence produce inputs
+    multimodal_ae_module:
+        seq_csv: ./data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv          # ProtT5, 1024-d
+        ppi_csv: ./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv  # Node2vec, 50-d
+        text_csv: ./text_representations/representation_generation/tfidf_representations/uniprotpubmed_tfidf_vectors_svd1024.csv
+        output_dir: ./outputs
+        epochs: 100
+    transfer_ae_module:                       # TransferAE initialised from the MultiModalAE above
+        seq_csv: ./data/hoper_sequence_representations/T5_UNIPROT_HUMAN.csv
+        ppi_csv: ./data/hoper_case_study_example_data/representation_files/node2vec_d_50_p_0.5_q_0.25_multi_col.csv
+        text_csv: ./text_representations/representation_generation/tfidf_representations/uniprotpubmed_tfidf_vectors_svd1024.csv
+        multimodal_weights: ./outputs/multimodal_ae_weights.pth
+        test_seq_csv: ./outputs/prott5_bfd_representation.csv   # optional; output of the sequence module
+        output_dir: ./outputs
+        epochs: 200
+```
+
+`TransferAe` trains the sequence-only model from the MultiModalAE weights and, if `test_seq_csv` is set, produces
+representations for proteins that only have a sequence representation. `TransferAeSeqText`
+(`transfer_ae_seq_text_module`: `seq_csv`, `text_csv`, `test_seq_csv`, `dual_epochs`, `transfer_epochs`) does the same
+from a sequence + text autoencoder that it trains first.
+Outputs (in `output_dir`): `multimodal_ae_representation.csv`, `transfer_ae_representation.csv`,
+`transfer_ae_test_representation.csv` (and `dual_ae_representation.csv`, `transfer_ae_seq_text_*.csv` for the
+sequence + text variant), the model weights (`.pth`) and loss curves.
 
 ---
 
@@ -48,25 +81,13 @@ A corresponding sequence–text transfer model is also provided for the dual-mod
 
 # Requirements
 
-The implementation requires Python and the following major libraries:
-
-```text
-Python
-PyTorch
-NumPy
-pandas
-scikit-learn
-matplotlib
-tqdm
-```
-
-Installation can be performed using:
+The scripts run in the `HoloProtRep-AE` environment (`simple_ae_env.yml`), created by `bash create_env.sh`:
 
 ```bash
-pip install torch numpy pandas scikit-learn matplotlib tqdm
+conda activate HoloProtRep-AE
 ```
 
-GPU acceleration is automatically used when a CUDA-enabled device is available.
+The scripts run on CPU by default; set `HOPER_DEVICE=cuda` to use a CUDA GPU.
 
 ---
 
@@ -90,7 +111,10 @@ P12345,0.124,0.532,-0.214,...,0.381
 Q67890,0.423,-0.217,0.921,...,-0.114
 ```
 
-The `Entry` field is used to match proteins across the different representation modalities.
+The `Entry` field is used to match proteins across the different representation modalities: only proteins present
+in every input file are used. The input dimensions of the multimodal, dual-modal and transfer autoencoders are read
+from the files (and, for the transfer model, from the dual-modal weights), so any representation sizes can be
+combined. In test/inference mode the inputs must have the same dimensions as during training.
 
 ---
 
@@ -263,32 +287,26 @@ The final CSV contains the compressed latent protein representations extracted f
 
 ## 4. Multimodal Transfer Autoencoder
 
-### `Transfer_ae.py`
+### `transfer_ae.py`
 
-This script implements transfer learning from a previously trained three-modal autoencoder.
+Transfer learning from a trained three-modal autoencoder (`multi_odal_representations.py`, Sequence + Text + PPI):
+its sequence encoder and its decoders initialise a sequence-only model that is trained to reconstruct all three
+modalities from the sequence representation. Multimodal information can then shape the representation of proteins
+for which only a sequence representation is available.
 
-The original model is trained using:
-
-```text
-Sequence + Text + PPI
-```
-
-and information learned from the multimodal architecture is transferred to a sequence-based model.
-
-This strategy enables multimodal information to influence the final representation even when only sequence information is available during representation extraction.
+As in the multimodal autoencoder, all modalities are standardised during training; the sequence factors are saved
+next to the weights (`<weights>.shift_factors.txt`, `<weights>.scaling_factors.txt`) and applied automatically in
+test mode (`--no_scaling` uses the inputs as given; `--shift_factors` / `--scaling_factors` override the saved files).
 
 ### Training
 
-Training requires sequence, PPI, and text representations together with the weights of the previously trained multimodal model.
-
 ```bash
-python Transfer_ae.py \
+python multimodal_representations/transfer_ae.py \
     --mode train \
     --seq_csv data/sequence.csv \
     --ppi_csv data/ppi.csv \
     --text_csv data/text.csv \
     --model_weights models/multi_modal_weights.pth \
-    --representation_dim 512 \
     --batch_size 128 \
     --epochs 200 \
     --save_model_path models/transfer_ae_weights.pth \
@@ -299,17 +317,12 @@ python Transfer_ae.py \
 
 ### Representation Extraction / Test Mode
 
-After training, sequence-only representations can be generated using:
-
 ```bash
-python Transfer_ae.py \
+python multimodal_representations/transfer_ae.py \
     --mode test \
     --seq_csv data/sequence_test.csv \
     --model_weights models/transfer_ae_weights.pth \
-    --representation_dim 512 \
-    --batch_size 128 \
-    --save_csv_path outputs/transfer_representation_test.csv \
-    --seed 42
+    --save_csv_path outputs/transfer_representation_test.csv
 ```
 
 ### Main Output
@@ -362,11 +375,13 @@ python transfer_text_seq.py \
     --mode test \
     --seq_csv data/sequence_test.csv \
     --model_weights models/transfer_text_seq_weights.pth \
-    --representation_dim 512 \
-    --batch_size 128 \
-    --save_csv_path outputs/transfer_text_seq_test.csv \
-    --seed 42
+    --save_csv_path outputs/transfer_text_seq_test.csv
 ```
+
+The representation size is that of the dual-modal model given in `--model_weights` (`--representation_dim` is
+ignored). As in the dual-modal autoencoder, sequence and text representations are standardised during training
+(`--no_scaling` uses them as given); the sequence factors are saved next to the weights and applied automatically in
+test mode (`--shift_factors` / `--scaling_factors` override them).
 
 ### Main Output
 

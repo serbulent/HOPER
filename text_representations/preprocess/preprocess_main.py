@@ -7,7 +7,7 @@ import os
 import os.path
 from os import path
 import gzip
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 from Bio import Entrez
 from Bio.Entrez import efetch
 import pdb

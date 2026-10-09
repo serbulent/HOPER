@@ -7,7 +7,7 @@ import os
 import os.path
 from os import path
 import gzip
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 
 #removing PubMed references in the text; removing parentheses, dots and spaces in order
 #breakpoint()

@@ -14,18 +14,22 @@ It provides functionality to:
   • Plot training and validation loss curves.
   • Save fused representations and model weights.
 
+The input dimensions are taken from the CSV files (multi-column: Entry, 0, 1, ...); only proteins present
+in all three files are used.
+
 Usage:
   # Training + extraction:
-  python multimodal_ae.py --seq_csv path/to/seq.csv --ppi_csv path/to/ppi.csv --text_csv path/to/text.csv \
-       --representation_dim 512 --epochs 400 --batch_size 128 --lr 1e-3 \
+  python multimodal_representations/multi_odal_representations.py --seq_csv seq.csv --ppi_csv ppi.csv \
+       --text_csv text.csv --representation_dim 512 --epochs 100 --batch_size 128 --lr 1e-3 \
        --save_model_path model.pth --save_csv_path fused.csv
 
-  # Inference-only:
-  python multimodal_ae.py --seq_csv path/to/seq.csv --ppi_csv path/to/ppi.csv --text_csv path/to/text.csv \
-       --inference --load_model_path model.pth --save_csv_path fused_inference.csv
+  # Inference-only (same input dimensions as the trained model):
+  python multimodal_representations/multi_odal_representations.py --seq_csv seq.csv --ppi_csv ppi.csv \
+       --text_csv text.csv --inference --load_model_path model.pth --save_csv_path fused_inference.csv
 """
 
 import os
+import sys
 import random
 import time
 import copy
@@ -37,11 +41,12 @@ from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
-import tqdm
 import matplotlib
 matplotlib.use('Agg')  # Disable GUI backends
 import matplotlib.pyplot as plt
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rep_io
 
 
 def set_seed(seed: int = 42) -> None:
@@ -51,20 +56,6 @@ def set_seed(seed: int = 42) -> None:
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     os.environ['PYTHONHASHSEED'] = str(seed)
-
-
-def convert_dataframe_to_multi_col(df: pd.DataFrame) -> pd.DataFrame:
-    entry = pd.DataFrame(df['Entry'])
-    vector = pd.DataFrame(list(df['Vector']))
-    return pd.merge(left=entry, right=vector, left_index=True, right_index=True)
-
-
-def convert_to_two_col(multi_col_df: pd.DataFrame) -> pd.DataFrame:
-    vals = multi_col_df.iloc[:, 1:]
-    out = pd.DataFrame(columns=['Entry', 'Vector'])
-    for idx, row in tqdm.tqdm(vals.iterrows(), total=len(vals)):
-        out.loc[idx] = [multi_col_df.at[idx, 'Entry'], list(row.astype(float))]
-    return out
 
 
 class MultiModalAutoencoder(nn.Module):
@@ -107,7 +98,6 @@ class MultiModalAutoencoder(nn.Module):
         )
 
     def forward(self, x_text, x_ppi, x_seq):
-        #breakpoint()
         et = self.encoder_text(x_text)
         ep = self.encoder_ppi(x_ppi)
         es = self.encoder_seq(x_seq)
@@ -128,9 +118,9 @@ class MultiModalAutoencoder(nn.Module):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Multi-modal Autoencoder Training Script.")
-    parser.add_argument("--seq_csv", type=str, default="T5_UNIPROT_HUMAN.csv")
-    parser.add_argument("--ppi_csv", type=str, default="ppi_rep.csv")
-    parser.add_argument("--text_csv", type=str, default="unipubmed_tfidf_vectors_pca1024.csv")
+    parser.add_argument("--seq_csv", type=str, required=True, help="Sequence representations (e.g. ProtT5)")
+    parser.add_argument("--ppi_csv", type=str, required=True, help="PPI representations (e.g. Node2vec)")
+    parser.add_argument("--text_csv", type=str, required=True, help="Text representations (e.g. TF-IDF SVD)")
     parser.add_argument("--representation_dim", type=int, default=512)
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--epochs", type=int, default=100)
@@ -149,30 +139,20 @@ def parse_arguments():
 
 
 def load_and_preprocess_data(args):
-    seq = pd.read_csv(args.seq_csv,index_col=False)
-    ppi = pd.read_csv(args.ppi_csv)
-    text = pd.read_csv(args.text_csv)
-    
-    for df in (seq, ppi, text):    
-        cols = df.columns.difference(['Entry'])
-        #breakpoint()
-        df[cols] = StandardScaler().fit_transform(df[cols])
-    #breakpoint()
-    seq2 = convert_to_two_col(seq)
-    ppi2 = convert_to_two_col(ppi)
-    text2 = convert_to_two_col(text)
-    
-    merged = seq2.merge(ppi2, on='Entry').merge(text2, on='Entry')
-    merged.columns = ['Entry', 'sequence', 'ppi', 'text']
-    seq_t = torch.tensor(list(merged['sequence']), dtype=torch.float)
-    ppi_t = torch.tensor(list(merged['ppi']), dtype=torch.float)
-    text_t= torch.tensor(list(merged['text']), dtype=torch.float)
-    N = len(merged)
+    # Each modality is standardised separately, then the proteins common to all three are kept.
+    seq = rep_io.read_representation(args.seq_csv, scale=True)
+    ppi = rep_io.read_representation(args.ppi_csv, scale=True)
+    text = rep_io.read_representation(args.text_csv, scale=True)
+    entries, (seq_v, ppi_v, text_v) = rep_io.align(seq, ppi, text)
+    seq_t = torch.tensor(seq_v, dtype=torch.float)
+    ppi_t = torch.tensor(ppi_v, dtype=torch.float)
+    text_t = torch.tensor(text_v, dtype=torch.float)
+    N = len(entries)
     idx = list(range(N))
     np.random.shuffle(idx)
     split = int(args.validation_split * N)
     val_i, train_i = idx[:split], idx[split:]
-    return merged, seq_t, text_t, ppi_t, train_i, val_i
+    return entries, seq_t, text_t, ppi_t, train_i, val_i
 
 
 def plot_losses(train_hist, val_hist,save_path):
@@ -195,7 +175,7 @@ def train_model(model, train_i, val_i, seq_t, text_t, ppi_t,
             loader = DataLoader(train_i if phase=='train' else val_i,batch_size=batch_size, shuffle=(phase=='train'))
             running=0
             for bi in loader:
-                bi = torch.tensor(bi, device=device)
+                bi = bi.long()
                 x_s = seq_t[bi].to(device); x_p = ppi_t[bi].to(device); x_t = text_t[bi].to(device)
                 if phase=='train': optimizer.zero_grad()
                 with torch.set_grad_enabled(phase=='train'):
@@ -215,21 +195,22 @@ def train_model(model, train_i, val_i, seq_t, text_t, ppi_t,
     return model, train_hist, val_hist
 
 
-def extract_fused_representations(model, merged, seq_t, text_t, ppi_t, device):
-    activation = {}
-    def hook_fn(_, _in, out): activation['z'] = out.detach()
-    handle = model.encoder_fuse.register_forward_hook(hook_fn)
+def extract_fused_representations(model, entries, seq_t, text_t, ppi_t, device, batch_size=512):
+    """Latent (encoder_fuse) vectors for all proteins, as a multi-column DataFrame."""
     model.eval()
-    out_list = []
-    for idx, row in tqdm.tqdm(merged.iterrows(), total=len(merged)):
-        x_s = seq_t[idx].unsqueeze(0).to(device)
-        x_p = ppi_t[idx].unsqueeze(0).to(device)
-        x_t = text_t[idx].unsqueeze(0).to(device)
-        _ = model(x_t, x_p, x_s)
-        vec = activation['z'].cpu().numpy().flatten().tolist()
-        out_list.append({'Entry': row['Entry'], 'Vector': vec})
-    handle.remove()
-    return pd.DataFrame(out_list)
+    chunks = []
+    with torch.no_grad():
+        for start in range(0, len(entries), batch_size):
+            sl = slice(start, start + batch_size)
+            _, _, _, z = model(text_t[sl].to(device), ppi_t[sl].to(device), seq_t[sl].to(device))
+            chunks.append(z.cpu().numpy())
+    return rep_io.to_multi_col(entries, np.concatenate(chunks))
+
+
+def ensure_parent_dirs(*paths):
+    for path in paths:
+        if path and os.path.dirname(path):
+            os.makedirs(os.path.dirname(path), exist_ok=True)
 
 
 def main():
@@ -237,15 +218,17 @@ def main():
     set_seed(args.seed)
     device = torch.device(os.environ.get('HOPER_DEVICE', 'cpu'))  # set HOPER_DEVICE=cuda for GPU
     print(f"Using device: {device}")
-    
-    merged, seq_t, text_t, ppi_t, train_i, val_i = load_and_preprocess_data(args)
-    model = MultiModalAutoencoder(zdim=args.representation_dim).to(device)
+    ensure_parent_dirs(args.save_model_path, args.save_csv_path, args.loss_plot_path)
+
+    entries, seq_t, text_t, ppi_t, train_i, val_i = load_and_preprocess_data(args)
+    model = MultiModalAutoencoder(text_dim=text_t.shape[1], ppi_dim=ppi_t.shape[1], seq_dim=seq_t.shape[1],
+                                  zdim=args.representation_dim).to(device)
 
     if args.inference:
         assert args.load_model_path, "--load_model_path is required in inference mode"
         model.load_state_dict(torch.load(args.load_model_path, map_location=device))
-        rep_df = extract_fused_representations(model, merged, seq_t, text_t, ppi_t, device)
-        convert_dataframe_to_multi_col(rep_df).to_csv(args.save_csv_path, index=False)
+        rep_df = extract_fused_representations(model, entries, seq_t, text_t, ppi_t, device)
+        rep_df.to_csv(args.save_csv_path, index=False)
         print(f"[Inference] Saved fused reps to {args.save_csv_path}")
         return
 
@@ -262,8 +245,8 @@ def main():
     plot_losses(train_hist, val_hist, args.loss_plot_path)
 
     # extract and save after training
-    rep_df = extract_fused_representations(model, merged, seq_t, text_t, ppi_t, device)
-    convert_dataframe_to_multi_col(rep_df).to_csv(args.save_csv_path, index=False)
+    rep_df = extract_fused_representations(model, entries, seq_t, text_t, ppi_t, device)
+    rep_df.to_csv(args.save_csv_path, index=False)
     print(f"Saved fused reps to {args.save_csv_path}")
 
     torch.save(model.state_dict(), args.save_model_path)

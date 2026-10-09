@@ -7,7 +7,7 @@ import os
 import os.path
 from os import path
 import gzip
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 
 #extracting the information of the subsections in the General annotation (Comments) part of the xml files of the proteins
 #subsections are function, cofactor, subunit, tissue specificity, induction, domain, PTM, disease
